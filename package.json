@@ -1,7 +1,7 @@
 {
   "name": "nodejs-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "14:332:452 taught by Ivan Marsic",
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
@@ -15,5 +15,13 @@
   },
   "dependencies": {
     "mongodb": "^6.0.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adarnara/Software-Engineering-2023.git"
+  },
+  "bugs": {
+    "url": "https://github.com/adarnara/Software-Engineering-2023/issues"
+  },
+  "homepage": "https://github.com/adarnara/Software-Engineering-2023#readme"
 }
