@@ -1,18 +1,43 @@
 const mongoose = require('mongoose');
 
+const imageSchema = new mongoose.Schema({
+  url: String,
+  dimensions: [Number],
+});
+
 const productSchema = new mongoose.Schema({
-  // Define your schema fields here, for example:
+  _id: String,
   name: {
     type: String,
-    required: true
+    required: true,
   },
   price: {
-    type: Number,
-    required: true
-  }
-  // ... any other fields ...
+    type: String,
+    required: true,
+  },
+  stars: String,
+  rating_count: String,
+  feature_bullets: [String],
+  images: [
+    {
+      hiRes: String,
+      thumb: String,
+      large: String,
+      main: [imageSchema],
+      variant: String,
+      lowRes: String,
+      shoppableScene: String,
+    },
+  ],
+  variant_data: [String],
 });
 
 const Product = mongoose.model('Product', productSchema);
 
+Product.createWithCustomId = function (id, productData, callback) {
+  const customProductData = { _id: id, ...productData };
+  return this.create(customProductData, callback);
+};
+
 module.exports = Product;
+
