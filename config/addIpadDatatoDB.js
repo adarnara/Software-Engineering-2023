@@ -10,12 +10,33 @@ mongoose.connection.on('open', async () => {
     try {
         const data = fs.readFileSync('../data/ipad.json', 'utf8');
         const jsonData = JSON.parse(data);
+        let nextCustomId = 1;
 
-        await Product.create(jsonData);
-        console.log('Data from ipad.json inserted into MongoDB');
+        for (let i = 0; i < jsonData.length; i++) {
+            const customId = `ipad${nextCustomId}`;
+            const productData = jsonData[i];
+
+            if (
+                typeof productData.price === 'string' &&
+                productData.price.match(/^\$\d+(\.\d+)?$/) &&
+                typeof productData.stars === 'string' &&
+                productData.stars.trim() !== '' &&
+                typeof productData.rating_count === 'string' &&
+                productData.rating_count.trim() !== ''
+            ) {
+                await Product.createWithCustomId(customId, productData);
+                nextCustomId++;
+            } else {
+                console.log('Skipping object');
+            }
+        }
+
+        console.log('Proper data from ipad.json inserted into MongoDB');
     } catch (error) {
-        console.error('Error processing ipad.json:', error);
+        console.error('Error while processing ipad.json:', error);
     } finally {
         mongoose.connection.close();
     }
 });
+
+
