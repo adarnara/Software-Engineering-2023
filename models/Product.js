@@ -6,6 +6,7 @@ const imageSchema = new mongoose.Schema({
 });
 
 const productSchema = new mongoose.Schema({
+  _id: String,
   name: {
     type: String,
     required: true,
@@ -32,6 +33,11 @@ const productSchema = new mongoose.Schema({
 });
 
 const Product = mongoose.model('Product', productSchema);
+
+Product.createWithCustomId = function (id, productData, callback) {
+  const customProductData = { _id: id, ...productData };
+  return this.create(customProductData, callback);
+};
 
 module.exports = Product;
 
