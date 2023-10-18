@@ -15,7 +15,6 @@ async function checkDatabaseStructure() {
         for (const collectionInfo of collections) {
             const collectionName = collectionInfo.name;
 
-            // Only process collections that are not system collections
             if (!collectionName.startsWith('system.')) {
                 const collection = database.collection(collectionName);
                 const sampleDocument = await collection.findOne();

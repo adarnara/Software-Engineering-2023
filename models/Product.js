@@ -28,7 +28,7 @@ const productSchema = new mongoose.Schema({
       shoppableScene: String,
     },
   ],
-  variant_data: [String], // Assuming variant_data is an array of strings
+  variant_data: [String],
 });
 
 const Product = mongoose.model('Product', productSchema);
