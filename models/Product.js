@@ -1,18 +1,37 @@
 const mongoose = require('mongoose');
 
+const imageSchema = new mongoose.Schema({
+  url: String,
+  dimensions: [Number],
+});
+
 const productSchema = new mongoose.Schema({
-  // Define your schema fields here, for example:
   name: {
     type: String,
-    required: true
+    required: true,
   },
   price: {
-    type: Number,
-    required: true
-  }
-  // ... any other fields ...
+    type: String,
+    required: true,
+  },
+  stars: String,
+  rating_count: String,
+  feature_bullets: [String],
+  images: [
+    {
+      hiRes: String,
+      thumb: String,
+      large: String,
+      main: [imageSchema],
+      variant: String,
+      lowRes: String,
+      shoppableScene: String,
+    },
+  ],
+  variant_data: [String], // Assuming variant_data is an array of strings
 });
 
 const Product = mongoose.model('Product', productSchema);
 
 module.exports = Product;
+
