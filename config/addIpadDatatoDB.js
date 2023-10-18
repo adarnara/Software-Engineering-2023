@@ -42,6 +42,3 @@ mongoose.connection.on('open', async () => {
         mongoose.connection.close();
     }
 });
-
-
-
