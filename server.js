@@ -3,7 +3,8 @@ const http = require('http');
 const url = require('url');  
 const fs = require('fs'); 
 const PORT = process.env.PORT || 4000
-const authRouter = require("./routes/authRoute");
+const userRouter = require("./routes/userRoute");
+const adminRouter = require("./routes/adminRoute");
 
 connectDB();
 
@@ -11,14 +12,8 @@ const server = http.createServer(async (request, response) => {
   const parsedUrl = url.parse(request.url, true);
   const path = parsedUrl.pathname;
   const method = request.method;
-
-  if (method === "POST" && path === '/register') {
-    authRouter.register(request, response);
-  }
-  else if (method === "POST" && path === '/login') {
-    authRouter.login(request, response);
-  }
-  else if (path === '/' && method === "GET") {
+try{
+  if (path === '/' && method === "GET") {
     response.writeHead(200, { 'Content-Type': 'text/html' });
     fs.readFile('./views/homePage.html', (error, data) => {
       if (error) {
@@ -30,10 +25,32 @@ const server = http.createServer(async (request, response) => {
         response.end();
       }
     });
-  } else {
+  }
+  else if (method === "POST" && path === '/member/login') {
+    userRouter.login(request, response);
+  }
+  else if (method === "POST" && path === '/member/register') {
+    userRouter.register(path,request,response);
+  }
+  else if( method === "POST" && path ==='/seller/login'){
+    userRouter.login(request, response);
+  } 
+  else if (method === "POST"&& path ==='/seller/register'){
+    userRouter.register(path,request, response);
+  }
+  else if(method === "POST" && path === '/admin/register'){
+    adminRouter.adminRegister(request,response)
+  }
+  else if(method === "POST" && path === '/admin/login'){
+    adminRouter.adminLogin(request,response)
+  }
+   else {
     response.writeHead(404);
     response.end('Not Found');
   }
+}catch(error){
+  console.log(error); //
+}
 });
 
 server.listen(PORT, (error) => {
