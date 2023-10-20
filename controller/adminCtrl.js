@@ -49,6 +49,16 @@ const Login = async (req, res) =>{
         console.log(error);
     }
 }
+
+const getAdmins = async (req,res)=>{
+  try{
+    const getAdmins = await adminRepo.findAllAdmins()
+    res.writeHead(201, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(getAdmins));
+}catch(error){
+    throw new Error(error)
+}
+}
 const getAdminCount = async () => {
   try {
       const count = await admin.countDocuments({});
@@ -58,4 +68,4 @@ const getAdminCount = async () => {
   }
 };
 
-module.exports = { createAdmin, Login };
+module.exports = { createAdmin, Login, getAdmins };

@@ -7,6 +7,9 @@ class adminRepository {
     async createAdmin(adminData) {
         return await admin.create(adminData);
     }
+    async findAllAdmins(){
+      return await admin.find();
+    }
 }
 
 module.exports = new adminRepository();

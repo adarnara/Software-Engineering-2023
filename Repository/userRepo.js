@@ -19,6 +19,9 @@ class UserRepository {
     async findByEmail(email){
         return await user.findOne({email})
     }
+    async findAllUser(){
+        return await user.find()
+    }
 }
 
 module.exports = new UserRepository();

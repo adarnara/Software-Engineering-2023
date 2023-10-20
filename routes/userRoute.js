@@ -1,4 +1,4 @@
-const { createUser, userLogin} = require('../controller/userCtrl');
+const { createUser, userLogin, getAllUsers} = require('../controller/userCtrl');
 
 function getPostData(request) {
   return new Promise((resolve, reject) => {
@@ -38,8 +38,18 @@ async function login(request, response){
   }
 
 }
+async function allUsers(request,response){
+    try{
+      getAllUsers(request, response)
+    }
+    catch(error){
+      response.writeHead(500, { 'Content-Type': 'application/json' })
+      response.end(JSON.stringify({ message: 'server error Unable to get all users' }))
+    }
+}
 
 module.exports = {
   register,
-  login
+  login,
+  allUsers
 };

@@ -1,4 +1,4 @@
-const { createAdmin, Login} = require('../controller/adminCtrl');
+const { createAdmin, Login, getAdmins} = require('../controller/adminCtrl');
 
 function getPostData(request) {
   return new Promise((resolve, reject) => {
@@ -39,8 +39,17 @@ async function adminLogin(request, response){
   }
 
 }
+async function allAdmins(request,response){
+  try{
+    getAdmins(request, response)
+  }
+  catch(error){
+    response.writeHead(500, { 'Content-Type': 'application/json' })
+    response.end(JSON.stringify({ message: 'server error Unable to get all users' }))
+  }
+}
 
 module.exports = {
   adminRegister,
-  adminLogin
+  adminLogin,allAdmins
 };

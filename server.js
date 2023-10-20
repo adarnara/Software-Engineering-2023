@@ -35,6 +35,12 @@ try{
   else if( method === "POST" && path ==='/seller/login'){
     userRouter.login(request, response);
   } 
+  else if (method === "GET" && path === '/users') {
+    userRouter.allUsers(request, response);
+  }
+  else if (method === "GET" && path === '/admins') {
+    adminRouter.allAdmins(request, response);
+  }
   else if (method === "POST"&& path ==='/seller/register'){
     userRouter.register(path,request, response);
   }

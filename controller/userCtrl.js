@@ -59,4 +59,14 @@ const userLogin = async (req, res) =>{
     }
 }
 
-module.exports = { createUser, userLogin };
+
+const getAllUsers = async(req,res) =>{
+    try{
+        const getUsers = await userRepo.findAllUser()
+        res.writeHead(201, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(getUsers));
+    }catch(error){
+        throw new Error(error)
+    }
+}
+module.exports = { createUser, userLogin, getAllUsers };
