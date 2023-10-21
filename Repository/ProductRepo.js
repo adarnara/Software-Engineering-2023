@@ -2,14 +2,20 @@ const Product = require('../models/Product');
 
 class ProductRepository {
   async getAll() {
-    return Product.find({});
+    try {
+      const products = await Product.find({});
+      if (!products) {
+        throw new Error('No products found');
+      }
+      return products;
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      throw error;
+    }
   }
 
-  async getById(id) {
-    return Product.findById(id);
-  }
 
   // ... other CRUD methods specific to products
 }
 
-module.exports = new ProductRepository();
+module.exports = new ProductRepository; // Export the class itself

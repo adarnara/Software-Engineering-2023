@@ -1,30 +1,51 @@
-const ProductRepository = require('/repository/ProductRepo');
+const ProductRepository = require('../Repository/ProductRepo');
 
 class ProductController {
+  // ... other methods ...
 
-  async getAllProducts(req, res) {
+  async getAllProductsForLanding() {
     try {
       const products = await ProductRepository.getAll();
-      res.status(200).json(products);
+
+      // Shuffle the products using Fisher-Yates algorithm
+      const shuffledProducts = shuffle(products);
+
+      // Keep 20 randomly chosen items from the shuffled array
+      const sectionSize = 20;
+      const sectionOfShuffledProducts = getRandomItems(shuffledProducts, sectionSize);
+
+      return sectionOfShuffledProducts;
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch products." });
+      throw error;
     }
   }
-
-  async getProductById(req, res) {
-    try {
-      const product = await ProductRepository.getById(req.params.id);
-      if (product) {
-        res.status(200).json(product);
-      } else {
-        res.status(404).json({ message: "Product not found." });
-      }
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch product." });
-    }
-  }
-
-  // Other methods for create, update, delete, etc.
 }
 
 module.exports = new ProductController();
+
+// Fisher-Yates shuffle algorithm
+function shuffle(arr) {
+  var i = arr.length, j, temp;
+  while (--i > 0) {
+    j = Math.floor(Math.random() * (i + 1));
+    temp = arr[j];
+    arr[j] = arr[i];
+    arr[i] = temp;
+  }
+  return arr;
+}
+
+// Function to get 20 randomly chosen items from an array
+function getRandomItems(arr, count) {
+  if (arr.length <= count) {
+    return arr;
+  }
+
+  const shuffled = arr.slice(); //create a copy to avoid memory errors
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
+  return shuffled.slice(0, count);
+}
