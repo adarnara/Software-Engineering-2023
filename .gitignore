@@ -5,6 +5,4 @@ node_modules/
 .idea/
 
 # Ignore data folder and .json files
-data/
 data/*.json
-
