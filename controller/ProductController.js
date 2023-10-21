@@ -3,7 +3,7 @@ const ProductRepository = require('../Repository/ProductRepo');
 class ProductController {
   // ... other methods ...
 
-  async getAllProductsForLanding() {
+  async getAllProductsForLanding(req, res) {
     try {
       const products = await ProductRepository.getAll();
 
@@ -14,9 +14,9 @@ class ProductController {
       const sectionSize = 20;
       const sectionOfShuffledProducts = getRandomItems(shuffledProducts, sectionSize);
 
-      return sectionOfShuffledProducts;
+      res.status(200).json(sectionOfShuffledProducts);
     } catch (error) {
-      throw error;
+      res.status(500).json({ message: "Failed to fetch products for the landing page." });
     }
   }
 }

@@ -1,6 +1,7 @@
 const ProductController = require('../controller/ProductController');
 
-module.exports = {
-    '/landing': ProductController.getAllProductsForLanding,
-    // Define other routes here
+module.exports = module.exports = {
+    '/landing': {
+        GET: ProductController.getAllProductsForLanding
+    },
 };
