@@ -4,3 +4,6 @@ node_modules/
 # Ignore .idea folder and files
 .idea/
 
+# Ignore data folder and .json files
+data/
+data/*.json
