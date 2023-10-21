@@ -1,4 +1,4 @@
-const ProductRepository = require('/repository/ProductRepo');
+const ProductRepository = require('../repository/ProductRepo');
 
 class ProductController {
 

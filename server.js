@@ -4,7 +4,7 @@ const http = require('http');
 const url = require('url');  
 const fs = require('fs'); // for file paths 
 const PORT = 3000
-const ProductController = require('./controllers/productController');
+const ProductController = require('./controller/ProductController');
 connectDB()
 
 const server = http.createServer(async (request, response)=>{
