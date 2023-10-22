@@ -2,7 +2,11 @@ const mongoose = require('mongoose');
 const User = require('./users');
 
 const MemberSchema = new mongoose.Schema({
-  // TODO: shipping info to be populated during PUT request populated by subgroup1?
+  // TODO: shipping info to be populated during PUT/PATCH methods to populate request populated by subgroup1?
+  cart:[{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'cart'
+  }],
   shippingInfo: {
     address: {
         type: String,
