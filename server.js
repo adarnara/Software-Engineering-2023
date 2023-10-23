@@ -27,13 +27,13 @@ try{
     });
   }
   else if (method === "POST" && path === '/member/login') {
-    userRouter.login(request, response);
+    userRouter.login(path,request, response);
   }
   else if (method === "POST" && path === '/member/register') {
     userRouter.register(path,request,response);
   }
   else if( method === "POST" && path ==='/seller/login'){
-    userRouter.login(request, response);
+    userRouter.login(path,request, response);
   } 
   else if (method === "GET" && path === '/users') {
     userRouter.allUsers(request, response);

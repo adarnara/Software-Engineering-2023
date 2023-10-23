@@ -1,4 +1,4 @@
-const { createUser, userLogin, getAllUsers} = require('../controller/userCtrl');
+const { createUser, memberLogin, getAllUsers,sellerLogin} = require('../controller/userCtrl');
 
 function getPostData(request) {
   return new Promise((resolve, reject) => {
@@ -26,11 +26,16 @@ async function register(path,request, response) {
     response.end(JSON.stringify({ message: 'Internal Server Error' }));
   }
 }
-async function login(request, response){
+async function login(path,request, response){
   try {
     const postData = await getPostData(request);
     const userData = JSON.parse(postData);
-    const result = await userLogin({ body: userData }, response);
+    if(path === '/member/login'){
+      const result = await memberLogin({ body: userData }, response);
+    }
+    else if ( path === '/seller/login'){
+      const result = await sellerLogin({ body: userData }, response);
+    }
   } catch (error) {
     console.log(error)
     response.writeHead(500, { 'Content-Type': 'application/json' });

@@ -39,9 +39,28 @@ const createUser = async (path,req, res) => { // passs path as argument parame..
     }
 };
 
-const userLogin = async (req, res) =>{
+const memberLogin = async (req, res) =>{
     const {email, password} = req.body;
-    const findUser = await userRepo.findByEmail(email)
+    const findUser = await userRepo.findMemberByEmail(email)
+    try{ 
+        if(findUser && await findUser.isPasswordMatched(password)){
+        res.writeHead(201, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+            _id: findUser?._id,  //'?' is there so our code do not break if those properties are null
+            name: findUser?.name,
+            email: findUser?.email,
+            token: generateToken(findUser?._id)
+        }));
+    } else {
+        res.writeHead(409, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ message: 'invalid credentials please try again', success: false }));
+    }}catch(error){
+        console.log(error);
+    }
+}
+const sellerLogin = async (req, res) =>{
+    const {email, password} = req.body;
+    const findUser = await userRepo.findSellerByEmail(email)
     try{ 
         if(findUser && await findUser.isPasswordMatched(password)){
         res.writeHead(201, { 'Content-Type': 'application/json' });
@@ -69,4 +88,4 @@ const getAllUsers = async(req,res) =>{
         throw new Error(error)
     }
 }
-module.exports = { createUser, userLogin, getAllUsers };
+module.exports = { createUser, memberLogin, getAllUsers,sellerLogin };
