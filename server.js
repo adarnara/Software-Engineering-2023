@@ -5,6 +5,7 @@ const fs = require('fs');
 const PORT = process.env.PORT || 4000
 const userRouter = require("./routes/userRoute");
 const adminRouter = require("./routes/adminRoute");
+const routes = require('./routes/Products');
 
 connectDB();
 
@@ -12,51 +13,36 @@ const server = http.createServer(async (request, response) => {
   const parsedUrl = url.parse(request.url, true);
   const path = parsedUrl.pathname;
   const method = request.method;
-try{
-  if (path === '/' && method === "GET") {
-    response.writeHead(200, { 'Content-Type': 'text/html' });
-    fs.readFile('./views/homePage.html', (error, data) => {
-      if (error) {
-        response.writeHead(404);
-        response.write('Error: path not found');
-        response.end();
-      } else {
-        response.write(data);
-        response.end();
-      }
-    });
+  const routeKey = `${method}${path}`;
+  if (routes[routeKey]) {
+    const routeHandler = routes[path][method];
+    const req = { query: parsedUrl.query };
+    const res = {
+        status(code) {
+            this.statusCode = code;
+            return this;
+        },
+        json(data) {
+            response.writeHead(this.statusCode, { 'Content-Type': 'application/json' });
+            response.end(JSON.stringify(data));
+        },
+    }
+  };
+  try {
+    const userRouteHandler = userRouter[routeKey];
+    const adminRouteHandler = adminRouter[routeKey];
+    if (userRouteHandler) {
+      userRouteHandler(request, response);
+    } else if(adminRouteHandler) {
+      adminRouteHandler(request,response)
+    } else{
+      response.writeHead(404);
+      response.end('Not Found');
+    }
+  } catch (error) {
+    console.log(error);
   }
-  else if (method === "POST" && path === '/member/login') {
-    userRouter.login(path,request, response);
-  }
-  else if (method === "POST" && path === '/member/register') {
-    userRouter.register(path,request,response);
-  }
-  else if( method === "POST" && path ==='/seller/login'){
-    userRouter.login(path,request, response);
-  } 
-  else if (method === "GET" && path === '/users') {
-    userRouter.allUsers(request, response);
-  }
-  else if (method === "GET" && path === '/admins') {
-    adminRouter.allAdmins(request, response);
-  }
-  else if (method === "POST"&& path ==='/seller/register'){
-    userRouter.register(path,request, response);
-  }
-  else if(method === "POST" && path === '/admin/register'){
-    adminRouter.adminRegister(request,response)
-  }
-  else if(method === "POST" && path === '/admin/login'){
-    adminRouter.adminLogin(request,response)
-  }
-   else {
-    response.writeHead(404);
-    response.end('Not Found');
-  }
-}catch(error){
-  console.log(error); //
-}
+
 });
 
 server.listen(PORT, (error) => {

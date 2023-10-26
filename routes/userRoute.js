@@ -1,60 +1,25 @@
-const { createUser, memberLogin, getAllUsers,sellerLogin} = require('../controller/userCtrl');
+const userController = require('../controller/userCtrl');
 
-function getPostData(request) {
-  return new Promise((resolve, reject) => {
-    try {
-      let body = '';
-      request.on('data', chunk => {
-        body += chunk.toString(); 
-      });
-      request.on('end', () => {
-        resolve(body);
-      });
-    } catch (error) {
-      reject(error);
-    }
-  });
-}
+const routes = {
+  'GET/': (request, response) => {
+    response.writeHead(200, { 'Content-Type': 'text/html' });
+    fs.readFile('../views/homePage.html', (error, data) => {
+      if (error) {
+        response.writeHead(404);
+        response.write('Error: path not found');
+        response.end();
+      } else {
+        response.write(data);
+        response.end();
+      }
+    });
+  },
+  'POST/member/login': (request,response) => userController.login('/member/login',request,response),
+  'POST/member/register': (request,response) => userController.register('/member/register',request,response),
+  'POST/seller/login': (request,response) => userController.login('/seller/login',request,response),
+  'GET/users': userController.allUsers,
+  'POST/seller/register': (request,response) => userController.register('/seller/register',request,response),
 
-async function register(path,request, response) {
-  try {
-    const postData = await getPostData(request);
-    const userData = JSON.parse(postData);
-    const result = await createUser(path,{ body: userData }, response);
-  } catch (error) {
-    response.writeHead(500, { 'Content-Type': 'application/json' });
-    response.end(JSON.stringify({ message: 'Internal Server Error' }));
-  }
-}
-async function login(path,request, response){
-  try {
-    const postData = await getPostData(request);
-    const userData = JSON.parse(postData);
-    if(path === '/member/login'){
-      const result = await memberLogin({ body: userData }, response);
-    }
-    else if ( path === '/seller/login'){
-      const result = await sellerLogin({ body: userData }, response);
-    }
-  } catch (error) {
-    console.log(error)
-    response.writeHead(500, { 'Content-Type': 'application/json' });
-    response.end(JSON.stringify({ message: 'Internal Server Error' }));
-  }
-
-}
-async function allUsers(request,response){
-    try{
-      getAllUsers(request, response)
-    }
-    catch(error){
-      response.writeHead(500, { 'Content-Type': 'application/json' })
-      response.end(JSON.stringify({ message: 'server error Unable to get all users' }))
-    }
-}
-
-module.exports = {
-  register,
-  login,
-  allUsers
 };
+
+module.exports = routes
