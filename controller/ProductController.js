@@ -11,7 +11,7 @@ class ProductController {
       const shuffledProducts = shuffle(products);
 
       // Keep 20 randomly chosen items from the shuffled array
-      const sectionSize = 20;
+      const sectionSize = 3;
       const sectionOfShuffledProducts = getRandomItems(shuffledProducts, sectionSize);
 
       res.status(200).json(sectionOfShuffledProducts);

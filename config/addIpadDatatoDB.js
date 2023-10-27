@@ -39,4 +39,4 @@ mongoose.connection.on('open', async () => {
     }
 });
 
-
+// add property for quantity of items
