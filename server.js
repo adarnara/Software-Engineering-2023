@@ -1,55 +1,54 @@
-
 const connectDB = require('./config/db');
 const http = require('http'); 
 const url = require('url');  
-const fs = require('fs'); // for file paths 
-const PORT = 3000
-const ProductController = require('./controllers/productController');
-connectDB()
+const fs = require('fs'); 
+const PORT = process.env.PORT || 4000
+const userRouter = require("./routes/userRoute");
+const adminRouter = require("./routes/adminRoute");
+const routes = require('./routes/Products');
 
-const server = http.createServer(async (request, response)=>{
-  const parsedUrl = url.parse(request.url,true);
-  const path = parsedUrl.pathname; // path name of routes obtained from url i.e: '/products' , '/reviews' etc...
-  if (path === '/'){
-    response.writeHead(200,{ 'Content-Type': 'text/html'}); // '/' points to our landing page so index.html
-    fs.readFile('/views/homePage.html', (error,data) =>{
-      if(error){
-        response.writeHead(404);
-        response.write('Error: path not found')    // will need to create an error page if the path the user goes to is not available 
-      } else {
-        response.write(data)
-      }
-      response.end()
-    })
-    if (path === '/products') {
-      try {
-          const products = await ProductController.getAllProducts();
-          fs.readFile('./views/products.html', 'utf8', (err, data) => {
-              if (err) {
-                  res.writeHead(500);
-                  res.end('Internal server error');
-                  return;
-              }
-              // Simple template rendering: Replace placeholder with products
-              res.writeHead(200, { 'Content-Type': 'text/html' });
-              res.end(renderedHtml);
-          });
-      } catch (error) {
-          res.writeHead(500);
-          res.end('Failed to fetch products');
-      }
-  } else {
-      res.writeHead(404);
-      res.end('Not Found');
-  }
-  }
-  
+connectDB();
 
-})
-server.listen(PORT, (error) =>{
+const server = http.createServer(async (request, response) => {
+  const parsedUrl = url.parse(request.url, true);
+  const path = parsedUrl.pathname;
+  const method = request.method;
+  const routeKey = `${method}${path}`;
+  if (routes[routeKey]) {
+    const routeHandler = routes[path][method];
+    const req = { query: parsedUrl.query };
+    const res = {
+        status(code) {
+            this.statusCode = code;
+            return this;
+        },
+        json(data) {
+            response.writeHead(this.statusCode, { 'Content-Type': 'application/json' });
+            response.end(JSON.stringify(data));
+        },
+    }
+  };
+  try {
+    const userRouteHandler = userRouter[routeKey];
+    const adminRouteHandler = adminRouter[routeKey];
+    if (userRouteHandler) {
+      userRouteHandler(request, response);
+    } else if(adminRouteHandler) {
+      adminRouteHandler(request,response)
+    } else{
+      response.writeHead(404);
+      response.end('Not Found');
+    }
+  } catch (error) {
+    console.log(error);
+  }
+
+});
+
+server.listen(PORT, (error) => {
   if (error){
-    console.log('Error Occured', error)
-  }else {
-    console.log(`server is running on ${PORT}`)
+    console.log('Error Occured', error);
+  } else {
+    console.log(`server is running on port: ${PORT}`);
   }
-})
+});
