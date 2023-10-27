@@ -1,6 +1,7 @@
 const userRepo = require('../Repository/userRepo');
 const { generateToken } = require('../config/jwt');
 const url = require('url');
+const fs = require('fs');
 const createUser = async (path,req, res) => { // passs path as argument parame...
     const email = req.body.email;
     console.log(path)
