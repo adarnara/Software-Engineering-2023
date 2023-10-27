@@ -2,7 +2,9 @@ const connectDB = require('./config/db');
 const http = require('http');
 const url = require('url');
 const PORT = process.env.PORT || 3000;
-const routes = require('./routes/Products');
+const userRouter = require("./routes/userRoute");
+const adminRouter = require("./routes/adminRoute");
+const landingRouter = require('./routes/landingRoute');
 
 connectDB();
 
@@ -23,8 +25,9 @@ const server = http.createServer(async (request, response) => {
         return;
     }
 
-    if (routes[path] && routes[path][method]) {
-        const routeHandler = routes[path][method];
+    const routeKey = `${method}${path}`;
+    if (landingRouter[routeKey]) {
+        const routeHandler = landingRouter[routeKey];
         const req = { query: parsedUrl.query };
         const res = {
             status(code) {
@@ -42,9 +45,17 @@ const server = http.createServer(async (request, response) => {
         } catch (error) {
             res.status(500).json({ message: "Internal Server Error" });
         }
-    } else {
-        response.writeHead(404);
-        response.end('Not Found');
+    }
+    try {
+        const userRouteHandler = userRouter[routeKey];
+        const adminRouteHandler = adminRouter[routeKey];
+        if (userRouteHandler) {
+            userRouteHandler(request, response);
+        } else if(adminRouteHandler) {
+            adminRouteHandler(request,response)
+        }
+    } catch (error) {
+        console.log(error);
     }
 });
 
