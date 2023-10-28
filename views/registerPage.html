@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<title>Login Page</title>
+
+</head>
+
+<body>
+
+<!-- Login page form -->
+<!-- Note the `method="dialog"` since we want JS to send the request in JSON -->
+<form id="register-form" method="dialog" autocomplete="off">
+  <div class="form-section">
+    <label for="username">Username: </label>
+    <input type="text" name="username" id="username" required />
+  </div>
+  <div class="form-section">
+    <label for="email">Email: </label>
+    <input type="email" name="email" id="email" required />
+  </div>
+  <div class="form-section">
+    <label for="password">Password: </label>
+    <input type="password" name="password" id="password" required />
+  </div>
+  <div class="form-section">
+    <label for="confirm">Confirm Password: </label>
+    <input type="password" name="confirm" id="confirm" required />
+  </div>
+  <div class="form-section">
+    <input type="submit" value="Login">
+  </div>
+</form>
+
+<script src="registerPage.js"></script>
+
+</body>
+</html>

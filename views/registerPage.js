@@ -1,19 +1,23 @@
-// Ideally, the client is able to either:
-// 1. Access a 3rd-party API to generate the requisite data to send to the server
-// 2. Generate the data to send to the server
-//   a. Encryption (Don't send plaintext passwords over internet)
+// Register copy of login
 
-// Notes
-// 1. Notice that we use emails as the key to login
+/**
+ * @returns {boolean} `true` if all fields are valid.
+ */
+function checkForm() {
+    const formElement = document.getElementById("register-form");
+    const formData = new FormData(formElement);
+    // TODO: Check valid/available username
+    // TODO: Check valid/available email address
+    // Check passwords match (TODO: check strength?)
+    if (formData.get("password") !== formData.get("confirm")) {
+        alert("Passwords do not match!");
+        return false;
+    }
+    return true;
+}
 
-// Implementation Notes
-// 1. Uses the Fetch API
-// 2. Currently sends the data in json
-
-// Sends a request to register the user simply by sending the form
-// data in JSON format.
-function login() {
-    const formElement = document.getElementById("login-form");
+function register() {
+    const formElement = document.getElementById("register-form");
     const formData = new FormData(formElement);
 
     let formJson = {};
@@ -26,7 +30,7 @@ function login() {
 
     // Fetch API
     const request = new Request(
-        "/member/login", {
+        "/member/register", {
             headers: headers,
             method: "POST",
             body: JSON.stringify(formJson),
@@ -48,9 +52,11 @@ function login() {
 // Attach an event listener to the form, which is set to `method="dialog"`.
 // The form will not submit by itself since this is the case.
 addEventListener("submit", function(evt) {
-    if (evt.target === document.getElementById("login-form")) {
+    if (evt.target === document.getElementById("register-form")) {
         // Send the register request, which will automatically retrieve all the
         // information from the form.
-        login();
+        if (checkForm()) {
+            register();
+        }
     }
 })
