@@ -12,7 +12,10 @@ const shoppingCartSchema = new Schema({
         type: Date
     },
     products: {
-        type: [{productId: Number, quantity: Number}]
+        type: [{productId: Number, quantity: Number, from: String, to: String, startShipping: Date, endShipping: Date, shippingID: Number}]
+    },
+    numShipped: {
+        type: Number
     }
 });
 
