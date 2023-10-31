@@ -11,6 +11,16 @@ class ProductRepository {
     return products;
   }
 
+  async getProductById(id) {
+    console.log('called getProductById()')
+    const product = await Product.findById(id)
+
+    if(!product) {
+      throw new Error('Product not found');
+    }
+
+    return product;
+  }
   // ... other CRUD methods specific to products
 }
 

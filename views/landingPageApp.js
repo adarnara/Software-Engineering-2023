@@ -1,6 +1,31 @@
 document.addEventListener("DOMContentLoaded", () => {
+    
     const productsContainer = document.getElementById("products-container");
     const products = [];
+
+    //Search Button functionality
+    const searchButton = document.querySelector('.search-bar .search-button');
+    if (searchButton) {
+        searchButton.addEventListener('click', async function() {
+            const searchText = document.querySelector('.search-bar input[type="text"]').value; //get the text in the search bar
+            fetch(`http://localhost:3000/search?productId=${searchText}`) //fetch requested product
+            .then(response => response.json())
+            .then(data => {
+                console.log(data); 
+                products.forEach((product) => { //remove all products from page
+                    const productHTML = createProductHTML(product);
+                    productsContainer.innerHTML -= productHTML;
+                    products.pop();
+                })
+                products.push(data); //add new product and display it
+                const productHTML = createProductHTML(data);
+                productsContainer.innerHTML += productHTML;
+            })
+            .catch(error => {
+                console.error(JSON.stringify({ error: 'Error fetching data!' }));
+            });
+        });
+    }
 
     fetch('http://localhost:3000/')
         .then((response) => {
@@ -10,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return response.json();
         })
         .then(data => {
-            console.log('Response from /:', JSON.stringify(data, null, 2));
+            // console.log('Response from /:', JSON.stringify(data, null, 2));
 
             data.forEach((product) => {
                 // Push each product into the products array
