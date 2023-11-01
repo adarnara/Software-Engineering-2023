@@ -16,6 +16,18 @@ function checkForm() {
     return true;
 }
 
+function checkName() {
+
+}
+
+function checkEmail() {
+    
+}
+
+function checkPassword() {
+    
+}
+
 function register() {
     const formElement = document.getElementById("register-form");
     const formData = new FormData(formElement);
