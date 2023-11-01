@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const shoppingCart = require("../models/shoppingCart");
 const connectDB = require("../config/db");
-const member = require("../models/memberModel");
+const membersCollection = require("../models/memberModel");
 const shoppingCartCollection = require("../models/shoppingCart"); // dupliicate
 const cartProductCollection = require("../models/cartProduct");
 const url = require("url");
@@ -394,7 +394,7 @@ async function getProducts(req, res) {
     const parsedUrl = url.parse(req.url, true);
     const urlPath = parsedUrl.path;
     const splitUrl = urlPath.split("/");
-    const currUser = splitUrl[1];
+    const currUser = splitUrl[2];
     let currMemberCart;
     try {
       const currMemberCart = await membersCollection.findOne({
@@ -405,10 +405,10 @@ async function getProducts(req, res) {
     } catch (err) {
       console.log(err);
     }
-    if (currMemberCart == undefined) {
-      resCode = 400;
+    if (currMemberCart == null) {
+      resCode = 200;
       resType = "text/plain";
-      resMsg = "Bad Request: Please ensure URI includes user ID";
+      resMsg = "There are no items in your shopping cart!";
     } else {
       resCode = 200;
       resType = "application/json";
@@ -465,3 +465,6 @@ async function removeProductFromCart(req, res) {
     }
   });
 }
+
+module.exports = { getProducts,removeProductFromCart,addProductToCart, changeProductQuantityFromCart, changeProductQuantityFromCatalog };
+
