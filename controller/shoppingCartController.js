@@ -39,4 +39,4 @@ async function test(shoppingCartId) {
     }
 
 }
-test("65418b1b8c27e7ea520ba7d2");
+// test("65418b1b8c27e7ea520ba7d2");
