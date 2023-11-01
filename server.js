@@ -56,12 +56,23 @@ const server = http.createServer(async (request, response) => {
         } else if(adminRouteHandler) {
             adminRouteHandler(request,response)
         } else if(shoppingCartRouteHandler) {
-            shoppingCartRouteHandler(request,response)
+            
+                console.log(path);
+                const user_id = path.split("/")[2];
+                shoppingCartRouteHandler(request,response)
+            
         }
     } catch (error) {
         console.log(error);
     }
 });
+
+// const routes = {
+//     'PATCH/cart/<id>': (request, response) => shoppingCartController.changeProductQuantityFromCart(request,response),
+//     'GET/cart/6532fb96e94f77fda92b8bc0': (request, response) => shoppingCartController.getProducts(request,response),
+//     'POST/cart/<id>/add': (request, response) => shoppingCartController.addProductToCart(request,response),
+//     'DELETE/cart/remove': (request, response) => shoppingCartController.removeProductFromCart(request,response),
+// };
 
 server.listen(PORT, (error) => {
     if (error) {

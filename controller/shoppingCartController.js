@@ -432,6 +432,8 @@ async function removeProductFromCart(req, res) {
       return;
     }
 
+// ...REMOVE/cart/{user_id}/cartProduct/{cartProduct_id}
+
     const address = req.url; // request url
     let urlObject = url.parse(address, true);
     productId = urlObject["productId"];
@@ -462,6 +464,44 @@ async function removeProductFromCart(req, res) {
       res.writeHead(400);
       response.end("bad request");
       resolve("bad request");
+    }
+  });
+}
+
+const NOT_FOUND = 404;
+const INVALID_METHOD = 405;
+const FOUND_USER = 200;
+
+async function verifyUserID(id, method) {
+  return new Promise(async (resolve, reject) => {
+    if (method === 'GET') {
+      const currMember = await membersCollection.findOne({
+        _id: id
+      });
+
+      if (!currMember) {
+        reject(NOT_FOUND);
+        return;
+      } else {
+        resolve(FOUND_USER);
+        return;
+      }
+    } else if (method === 'POST' || method === 'PATCH' || method === 'DELETE') {
+      const currMember = await membersCollection.findOne({
+        _id: id,
+        "cart.purchaseTime": null,
+      });
+
+      if (!currMember) {
+        reject(NOT_FOUND);
+        return;
+      } else {
+        resolve(FOUND_USER);
+        return;
+      }
+    } else {
+      reject(INVALID_METHOD);
+      return;
     }
   });
 }
