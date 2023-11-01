@@ -7,19 +7,30 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchButton = document.querySelector('.search-bar .search-button');
     if (searchButton) {
         searchButton.addEventListener('click', async function() {
-            const searchText = document.querySelector('.search-bar input[type="text"]').value; //get the text in the search bar
-            fetch(`http://localhost:3000/search?productId=${searchText}`) //fetch requested product
+            const searchText = document.querySelector('.search-bar input[type="text"]').value; //Get the text in the search bar
+            let url = '';
+            if (['books', 'ipad', 'laptop', 'tshirts'].includes(searchText.toLowerCase())) { //Check if the search text is one of the categories
+                url = `http://localhost:3000/search/category?name=${searchText}`; //Search by category
+            } else {
+                url = `http://localhost:3000/search?productId=${searchText}`; //Search by exact product ID
+            }
+            fetch(url) //Fetch requested product(s)
             .then(response => response.json())
             .then(data => {
                 console.log(data); 
                 products.forEach((product) => { //remove all products from page
-                    const productHTML = createProductHTML(product);
-                    productsContainer.innerHTML -= productHTML;
+                    productsContainer.innerHTML -= createProductHTML(product);
                     products.pop();
                 })
-                products.push(data); //add new product and display it
-                const productHTML = createProductHTML(data);
-                productsContainer.innerHTML += productHTML;
+                if(Array.isArray(data)){ //add new products
+                    data.forEach((product) => { 
+                        products.push(product);
+                        productsContainer.innerHTML += createProductHTML(product);
+                    });
+                } else { //add single product 
+                    products.push(data)
+                    productsContainer.innerHTML += createProductHTML(data);
+                }
             })
             .catch(error => {
                 console.error(JSON.stringify({ error: 'Error fetching data!' }));

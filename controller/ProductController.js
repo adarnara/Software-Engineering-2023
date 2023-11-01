@@ -22,12 +22,21 @@ class ProductController {
 
   async getExactProduct(req,res) {
     try {
-      // console.log('made it to search route')
       const productId = req.query.productId;
       const product = await ProductRepository.getProductById(productId);
       res.status(200).json(product);
     } catch (error) {
-      res.status(500).json({ message: 'Failed to fetch product.' });
+      res.status(500).json({ message: 'Failed to fetch specified product.' });
+    }
+  }
+
+  async getProductsByCategory(req, res) {
+    try {
+      const category = req.query.name;
+      const products = await ProductRepository.getProductsByCategory(category);
+      res.status(200).json(products);
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to fetch category.' });
     }
   }
 }

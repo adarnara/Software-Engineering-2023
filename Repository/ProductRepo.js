@@ -13,6 +13,7 @@ class ProductRepository {
 
   async getProductById(id) {
     console.log('called getProductById()')
+
     const product = await Product.findById(id)
 
     if(!product) {
@@ -20,6 +21,14 @@ class ProductRepository {
     }
 
     return product;
+  }
+
+  async getProductsByCategory(category) {
+    const products = await Product.find({});
+    if (!products) {
+      throw new Error('No products found');
+    }
+    return products.filter(product => product._id.includes(category));
   }
   // ... other CRUD methods specific to products
 }
