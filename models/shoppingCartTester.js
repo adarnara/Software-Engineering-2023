@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 const shoppingCartCollection = require("../models/shoppingCart");
 const cartProductCollection = require("../models/cartProduct");
 const connectDB = require('../config/db')
-
+const userRepo = require('../Repository/userRepo');
+const cartRepo = require('../Repository/cartRepo')
 
 // const cartProductSchema = new Schema({
 //     parent_cart: {
@@ -20,14 +21,15 @@ const connectDB = require('../config/db')
 
 connectDB();
 
-const testShoppingCart = new shoppingCartCollection(
-    {
-        email: "johndoes23@gmail.com"
-    }
-)
+// const testShoppingCart = new shoppingCartCollection(
+//     {
+//         email: "johndoes23@gmail.com", 
+//         purchaseTime: Date.now()
+//     }
+// )
 
-console.log(testShoppingCart);
-testShoppingCart.save();
+// console.log(testShoppingCart);
+// testShoppingCart.save();
 
 // const testCartProduct1 = new cartProductCollection(
 //     {
@@ -41,6 +43,8 @@ testShoppingCart.save();
 
 
 
+// cartRepo.getUserCurrentCart("johndoes23@gmail.com").then((res) => console.log(res))
 
+cartRepo.createEmptyCart("johndoes23@gmail.com").then((res) => console.log(res))
 
-
+// cartRepo.getUserCartHistory("johndoes23@gmail.com").then((res) => console.log(res))
