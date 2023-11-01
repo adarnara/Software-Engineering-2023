@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 // const newProduct = new cartProduct({
 //     parent_cart: 
@@ -17,10 +18,14 @@ const mongoose = require('mongoose');
 const cartProductSchema = new Schema({
     parent_cart: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'shoppingCart'
+        ref: 'shoppingCart',
+        required: true
     },
     product_id: String,
-    quantity: quantity,
+    quantity: {
+        type: Number,
+        default: 1
+    },
     from: String,
     to: String,
     date_shipped: Date,
