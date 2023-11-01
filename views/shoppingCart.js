@@ -1,10 +1,10 @@
-const membersCollection = require('../models/memberModel')
+
 const currMemberEmail = "johndoes23@gmail.com";
 
 const getCurrMemberCart = async () => {
   try {
-    const currMemberCart = await membersCollection.findOne({email: currMemberEmail})['cart'];
-
+    const currMemberCart = await cartRepo.getUserCurrentCart(currMemberEmail);
+    
 
     console.log("Curr Member: ", JSON.stringify(currMemberCart));
     return currMemberCart;
@@ -15,11 +15,13 @@ const getCurrMemberCart = async () => {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
+  
   const productsContainer = document.getElementById("products-container");
   const products = [];
 
-  fetch("http://localhost:3000/")
+  fetch("http://localhost:3000/cart")
     .then((response) => {
+      console.log(response)
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
