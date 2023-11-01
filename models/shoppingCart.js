@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const cartProduct = require('./cartProduct');
 const Schema = mongoose.Schema;
 
 
@@ -13,7 +14,7 @@ const shoppingCartSchema = new Schema({
         type: Number // epoch time
     },
     products: {
-        type: [{productId: String, quantity: Number, from: String, to: String, startShipping: Date, endShipping: Date, shippingID: Number}]
+        type: [cartProduct]
     },
     numShipped: {
         type: Number

@@ -1,12 +1,10 @@
 const shoppingCartController = require('../controller/shoppingCartController');
 // const fs = require('fs');
 const routes = {
- 
-
-    'GET/': (request, response) => shoppingCartController.addProductToCart(request,response),
-    'POST/': (request, response) => shoppingCartController.addProductToCart(request,response),
-    'PATCH/': (request, response) => shoppingCartController.changeProductQuantity(request,response),
-    'DELETE/': (request, response) => shoppingCartController.removeProductFromCart(request,response),
+    'PATCH/cart': (request, response) => shoppingCartController.changeProductQuantityFromCart(request,response),
+    'GET/cart': (request, response) => shoppingCartController.getProducts(request,response),
+    'POST/cart/add': (request, response) => shoppingCartController.addProductToCart(request,response),
+    'DELETE/cart/remove': (request, response) => shoppingCartController.removeProductFromCart(request,response),
 };
 
 module.exports = routes
