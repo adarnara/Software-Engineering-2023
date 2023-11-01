@@ -21,15 +21,15 @@ const cartRepo = require('../Repository/cartRepo')
 
 connectDB();
 
-// const testShoppingCart = new shoppingCartCollection(
-//     {
-//         email: "johndoes23@gmail.com", 
-//         purchaseTime: Date.now()
-//     }
-// )
+const testShoppingCart = new shoppingCartCollection(
+    {
+        email: "johndoes23@gmail.com", 
+        purchaseTime: Date.now()
+    }
+)
 
 // console.log(testShoppingCart);
-// testShoppingCart.save();
+testShoppingCart.save();
 
 // const testCartProduct1 = new cartProductCollection(
 //     {
@@ -45,6 +45,6 @@ connectDB();
 
 // cartRepo.getUserCurrentCart("johndoes23@gmail.com").then((res) => console.log(res))
 
-cartRepo.createEmptyCart("johndoes23@gmail.com").then((res) => console.log(res))
+// cartRepo.createEmptyCart("johndoes23@gmail.com").then((res) => console.log(res))
 
 // cartRepo.getUserCartHistory("johndoes23@gmail.com").then((res) => console.log(res))
