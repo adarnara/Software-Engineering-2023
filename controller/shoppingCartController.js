@@ -258,6 +258,7 @@ async function addProductToCart(req, res) {
         resolve(resMsg);
         return;
       } else {
+        console.log("261");
         if (
           !reqBodyKeys.includes("quantity") ||
           !reqBodyKeys.includes("product_id") ||
@@ -277,6 +278,7 @@ async function addProductToCart(req, res) {
             typeof parsedRequestBody.product_id !== "string" ||
             typeof parsedRequestBody.email !== "string"
           ) {
+            console.log("280");
             resCode = 400;
             resMsg =
               "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String, email: String}";
@@ -291,6 +293,7 @@ async function addProductToCart(req, res) {
             parsedRequestBody.product_id == null ||
             parsedRequestBody.email == null
           ) {
+            console.log("294");
             resCode = 400;
             resMsg =
               "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String, email: String} that are not null";
@@ -301,6 +304,7 @@ async function addProductToCart(req, res) {
             return;
           } // Reaching this else means the request body is good to go
           else {
+            console.log("304");
             const currMemberCart = await membersCollection.findOne({
               email: email,
               "cart.purchaseTime": null,
@@ -312,10 +316,12 @@ async function addProductToCart(req, res) {
   
             const existingProduct = await cartProductCollection.findOne({
               product_id: product_id,
-              parent_cart: currMemberCart.id,
+              parent_cart: currMemberCart._id,
             });
             // If product exists, we want to increase its quantity in the shopping cart, so call PATCH method to return the proper response
             if (existingProduct) {
+              console.log("319");
+
               resMsg = changeProductQuantityFromCatalog(
                 parsedRequestBody,
                 res,
@@ -328,6 +334,7 @@ async function addProductToCart(req, res) {
               resolve(resMsg);
               return;
             } else {
+              console.log("331");
               // Add to shopping cart collection
   
               const newProduct = new cartProduct({
@@ -343,11 +350,20 @@ async function addProductToCart(req, res) {
               });
   
               try {
-                const savedNewProduct = await newProduct.save();
+                // const grabCart = await membersCollection.findOne({ email: `${user}` })[
+                //   "cart"
+                // ];
+          
+                // const grabCartProduct = await cartProductCollection.findOneAndDelete({
+                //   parent_cart: grabCart._id,
+                //   product_id: productId,
+                // });
 
+                const savedNewProduct = await newProduct.save();
+                console.log(currMemberCart._id);
                 shoppingCartCollection.updateOne(
                   { _id: currMemberCart._id },
-                  { $push: { products: savedNewProduct } },
+                  { $push: { products: newProduct } },
                   (error, result) => {
                     if (error) {
                       console.log(
@@ -364,7 +380,7 @@ async function addProductToCart(req, res) {
                     } else {
                       console.log(
                         "Product added to Shopping Cart " +
-                          currMemberCart._id +
+                          result +
                           " --> ",
                         savedNewProduct
                       );

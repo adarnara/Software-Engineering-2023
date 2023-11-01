@@ -4,6 +4,8 @@ const cartProductCollection = require("../models/cartProduct");
 const connectDB = require('../config/db')
 const userRepo = require('../Repository/userRepo');
 const cartRepo = require('../Repository/cartRepo')
+const shoppingCartController = require('../controller/shoppingCartController');
+
 
 // const cartProductSchema = new Schema({
 //     parent_cart: {
@@ -106,16 +108,12 @@ const request = {
 let user = "johndoes23@gmail.com";
 
 // fetch(url, request).then(res => console.log("fetch: ",  res)).then(data => console.log("fetch: ",  data));
-
-// cartRepo.addProductToCart("johndoes23@gmail.com", 123124, 69).then(res => console.log(res))
-
+// cartRepo.addProductToCart("johndoes23@gmail.com", 11111, 69).then(res => console.log(res))
 // cartRepo.createEmptyCart("johndoes23@gmail.com").then((res) => console.log(res))
-
 // cartRepo.getUserCartHistory("johndoes23@gmail.com").then((res) => console.log(res))
-
 // cartRepo.getProductsFromUser("johndoes23@gmail.com").then(res => console.log(res));
 
-
+shoppingCartController.addProductToCart("johndoes23@gmail.com", 11111, 69).then(res => console.log(res));
 
 // cartRepo.getUserCartHistory(user)
 //     .then(
@@ -131,4 +129,4 @@ let user = "johndoes23@gmail.com";
 // cartRepo.changeProductQuantity(user, 123124, 1337).then(res => console.log(res))
 
 
-cartRepo.removeProductFromCart(user, 123124).then(res => console.log(res))
+// cartRepo.removeProductFromCart(user, 888888).then(res => console.log(res))
