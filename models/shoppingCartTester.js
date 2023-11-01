@@ -56,6 +56,9 @@ const testShoppingCart = new shoppingCartCollection(
 // console.log(testShoppingCart);
 testShoppingCart.save();
 
+
+
+
 cartProductCollection.find({})
     .then((cartProducts) => {
         console.log('Data retrieved from MongoDB: ');
