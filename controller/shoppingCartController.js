@@ -39,4 +39,41 @@ async function test(shoppingCartId) {
     }
 
 }
+
+
+// 'GET/': (request, response) => shoppingCartController.addProductToCart(request,response),
+// 'POST/': (request, response) => shoppingCartController.addProductToCart(request,response),
+// 'PATCH/': (request, response) => shoppingCartController.changeProductQuantity(request,response),
+// 'DELETE/': (request, response) => shoppingCartController.removeProductFromCart(request,response),
+
+async function addProductToCart(req, res) {
+    
+    let resMsg = "";
+    let resCode, resType;
+    let requestBody;
+
+    // verify correct format --> 
+    /**
+     * {
+     *  quantity: 
+     *  product_id: 
+     *  email:
+     * }
+     */
+
+    try {
+        await req.on("data", (chunk) => {
+            requestBody += chunk;
+        });
+    
+    
+    
+    
+    } catch (err) {
+        console.error(err)
+    }
+    
+    
+}
+
 // test("65418b1b8c27e7ea520ba7d2");
