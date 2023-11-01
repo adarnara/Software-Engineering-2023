@@ -15,9 +15,9 @@ async function addURIToRoute(id)
 }
 
 const routes = {
-    'PATCH/cart/<id>': (request, response) => shoppingCartController.changeProductQuantityFromCart(request,response),
-    'GET/cart/6532fb96e94f77fda92b8bc0': (request, response) => shoppingCartController.getProducts(request,response),
-    'POST/cart/<id>/add': (request, response) => shoppingCartController.addProductToCart(request,response),
+    'PATCH/cart': (request, response) => shoppingCartController.changeProductQuantityFromCart(request,response),
+    'GET/cart': (request, response) => shoppingCartController.getProducts(request,response),
+    'POST/cart/add': (request, response) => shoppingCartController.addProductToCart(request,response),
     'DELETE/cart/remove': (request, response) => shoppingCartController.removeProductFromCart(request,response),
 };
 

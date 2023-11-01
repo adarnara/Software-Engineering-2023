@@ -56,11 +56,9 @@ const server = http.createServer(async (request, response) => {
         } else if(adminRouteHandler) {
             adminRouteHandler(request,response)
         } else if(shoppingCartRouteHandler) {
-            
-                console.log(path);
-                const user_id = path.split("/")[2];
-                shoppingCartRouteHandler(request,response)
-            
+                // console.log(path);
+                // const user_id = path.split("/")[2];
+                shoppingCartRouteHandler(request,response);
         }
     } catch (error) {
         console.log(error);

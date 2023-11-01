@@ -344,21 +344,42 @@ async function addProductToCart(req, res) {
   
               try {
                 const savedNewProduct = await newProduct.save();
-                // test
-                console.log(
-                  "Product added to Shopping Cart " +
-                    currMemberCart._id +
-                    " --> ",
-                  savedNewProduct
+
+                shoppingCartCollection.updateOne(
+                  { _id: currMemberCart._id },
+                  { $push: { products: savedNewProduct } },
+                  (error, result) => {
+                    if (error) {
+                      console.log(
+                        "Error adding product to cart."
+                      );
+
+                      resCode = 500;
+                      resMsg = "Internal Server Error: Unable to add product to cart.";
+                      resType = "application/json";
+                      res.writeHead(resCode, { "Content-Type": resType });
+                      res.end(resMsg);
+                      resolve(resMsg);
+                      return;
+                    } else {
+                      console.log(
+                        "Product added to Shopping Cart " +
+                          currMemberCart._id +
+                          " --> ",
+                        savedNewProduct
+                      );
+
+                      resCode = 200;
+                      resMsg = JSON.stringify(savedNewProduct);
+                      resType = "application/json";
+                      res.writeHead(resCode, { "Content-Type": resType });
+                      res.end(resMsg);
+                      resolve(resMsg);
+                      return;
+                    }
+                  }
                 );
-  
-                resCode = 200;
-                resMsg = JSON.stringify(savedNewProduct);
-                resType = "application/json";
-                res.writeHead(resCode, { "Content-Type": resType });
-                res.end(resMsg);
-                resolve(resMsg);
-                return;
+                
               } catch (e) {
                 console.log("Error adding to cart: " + e);
                 resCode = 500;
@@ -397,10 +418,13 @@ async function getProducts(req, res) {
     const currUser = splitUrl[2];
     let currMemberCart;
     try {
-      const currMemberCart = await membersCollection.findOne({
-        _id: currUser,
-        "cart.purchaseTime": null,
+      const currMember = await membersCollection.findOne({
+        _id: currUser
       });
+      const currMemberCart = await shoppingCartCollection.findOne({
+        email: currMember.email,
+        purchaseTime: null
+      })
       console.log("Curr Member Cart: ", JSON.stringify(currMemberCart));
     } catch (err) {
       console.log(err);
@@ -505,6 +529,8 @@ async function verifyUserID(id, method) {
     }
   });
 }
+
+
 
 module.exports = { getProducts,removeProductFromCart,addProductToCart, changeProductQuantityFromCart, changeProductQuantityFromCatalog };
 
