@@ -3,25 +3,40 @@ document.addEventListener("DOMContentLoaded", () => {
     const productsContainer = document.getElementById("products-container");
     const products = [];
 
-    //Search Button functionality
+    let currentSearchText = '';
+    let currentPage = 1;
+    const pageSize = 5; //how many products to display per page
+    let lastFetchedProductCount = 0;
+
+    //Set up event listener for search bar.
     const searchButton = document.querySelector('.search-bar .search-button');
     if (searchButton) {
-        searchButton.addEventListener('click', async function() {
-            const searchText = document.querySelector('.search-bar input[type="text"]').value; //Get the text in the search bar
-            let url = '';
-            if (['books', 'ipad', 'laptop', 'tshirts'].includes(searchText.toLowerCase())) { //Check if the search text is one of the categories
-                url = `http://localhost:3000/search/category?name=${searchText}`; //Search by category
-            } else {
-                url = `http://localhost:3000/search?productId=${searchText}`; //Search by exact product ID
-            }
-            fetch(url) //Fetch requested product(s)
+        searchButton.addEventListener('click', function() {
+            const searchText = document.querySelector('.search-bar input[type="text"]').value;
+            currentSearchText = searchText; // Store the current search text
+            searchProducts(searchText);
+        });
+    }
+
+    //Searches for and displays requested products
+    function searchProducts(searchText) {
+        document.querySelectorAll("button.hidden").forEach(button => button.classList.remove('hidden')); //unhide the prev/next buttons when user searches
+        currentSearchText = searchText;
+        let url = '';
+        if (['books', 'ipad', 'laptop', 'tshirts'].includes(searchText.toLowerCase())) { 
+            url = `http://localhost:3000/search/category?name=${searchText}&page=${currentPage}&pageSize=${pageSize}`; //searching by category
+        } else {
+            url = `http://localhost:3000/search?productId=${searchText}`;//searching for specific product
+        }
+        fetch(url) //Fetch requested product(s)
             .then(response => response.json())
             .then(data => {
+                lastFetchedProductCount = data.length;
                 console.log(data); 
-                products.forEach((product) => { //remove all products from page
-                    productsContainer.innerHTML -= createProductHTML(product);
-                    products.pop();
-                })
+                
+                productsContainer.innerHTML = ''; //Clear the products container
+                products.length = 0; //Reset the products array
+
                 if(Array.isArray(data)){ //add new products
                     data.forEach((product) => { 
                         products.push(product);
@@ -31,12 +46,33 @@ document.addEventListener("DOMContentLoaded", () => {
                     products.push(data)
                     productsContainer.innerHTML += createProductHTML(data);
                 }
+
+                //logic to hide or reveal next/previous button when searching
+                const prevButton = document.querySelector('.previous-button');
+                const nextButton = document.querySelector('.next-button');
+                if (prevButton) {
+                prevButton.classList.toggle('hidden', currentPage === 1);
+                }
+                if (nextButton) {
+                nextButton.classList.toggle('hidden', lastFetchedProductCount < pageSize);
+            }
             })
             .catch(error => {
-                console.error(JSON.stringify({ error: 'Error fetching data!' }));
+                console.error('Error fetching data:', error);            
             });
-        });
     }
+
+    window.nextPage = function() { //go to next page
+        currentPage += 1;
+        searchProducts(currentSearchText);
+    };
+
+    window.previousPage = function() { //go to previous page
+        if (currentPage > 1) {
+            currentPage -= 1;
+            searchProducts(currentSearchText);
+        }
+    };
 
     fetch('http://localhost:3000/')
         .then((response) => {

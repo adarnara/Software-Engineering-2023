@@ -12,8 +12,6 @@ class ProductRepository {
   }
 
   async getProductById(id) {
-    console.log('called getProductById()')
-
     const product = await Product.findById(id)
 
     if(!product) {
@@ -23,12 +21,17 @@ class ProductRepository {
     return product;
   }
 
-  async getProductsByCategory(category) {
-    const products = await Product.find({});
+  async getProductsByCategory(category, page = 1, pageSize = 5) {
+    const offset = (page - 1) * pageSize;
+    const products = await Product.find({
+      _id: { $regex: new RegExp(category) }
+    }).skip(offset).limit(pageSize);
+  
     if (!products) {
       throw new Error('No products found');
     }
-    return products.filter(product => product._id.includes(category));
+  
+    return products;
   }
   // ... other CRUD methods specific to products
 }
