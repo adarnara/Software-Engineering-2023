@@ -1,3 +1,14 @@
+const currMember = require('../models/memberModel');
+
+const getCurrMemberCart = async () => {
+    try {
+        const currMemberCart = currMember.find();
+        console.log("Curr Member: ", JSON.stringify(currMemberCart));
+    } catch (err) {
+        throw new Error(err);
+    }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const productsContainer = document.getElementById("products-container");
     const products = [];
@@ -81,5 +92,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     window.changeImage = changeImage;
 });
-
-
