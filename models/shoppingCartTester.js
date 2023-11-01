@@ -103,7 +103,7 @@ const request = {
             }
         )
 };
-
+let user = "johndoes23@gmail.com";
 
 // fetch(url, request).then(res => console.log("fetch: ",  res)).then(data => console.log("fetch: ",  data));
 
@@ -113,5 +113,22 @@ const request = {
 
 // cartRepo.getUserCartHistory("johndoes23@gmail.com").then((res) => console.log(res))
 
-cartRepo.getProductsFromUser("johndoes23@gmail.com").then(res => console.log(res));
+// cartRepo.getProductsFromUser("johndoes23@gmail.com").then(res => console.log(res));
 
+
+
+// cartRepo.getUserCartHistory(user)
+//     .then(
+//         // returns an array of cart objects
+//         res => {
+//             console.log(res[0]._id);
+
+//             cartRepo.getProductsFromCartObject(res[0]).then(res => console.log(res));
+//         }
+//     )
+
+
+// cartRepo.changeProductQuantity(user, 123124, 1337).then(res => console.log(res))
+
+
+cartRepo.removeProductFromCart(user, 123124).then(res => console.log(res))
