@@ -35,7 +35,6 @@ class ProductController {
       const category = req.query.name;
       const page = parseInt(req.query.page) || 1;
       const pageSize = parseInt(req.query.pageSize) || 5;
-      
       const products = await ProductRepository.getProductsByCategory(category, page, pageSize);
       res.status(200).json(products);
     } catch (error) {

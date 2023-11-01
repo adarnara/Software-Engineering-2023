@@ -6,43 +6,47 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentSearchText = '';
     let currentPage = 1;
     const pageSize = 5; //how many products to display per page
-    let lastFetchedProductCount = 0;
+    let lastFetchedProductCount = 0; //how many products we're fetched last
 
     //Set up event listener for search bar.
     const searchButton = document.querySelector('.search-bar .search-button');
     if (searchButton) {
         searchButton.addEventListener('click', function() {
             const searchText = document.querySelector('.search-bar input[type="text"]').value;
-            currentSearchText = searchText; // Store the current search text
-            searchProducts(searchText);
+            const pattern = /^(books|ipad|tshirts|laptop)\d*$/;
+            if(pattern.test(searchText)){ //only continues if the search was valid
+                currentSearchText = searchText; // Store the current search text
+                searchProducts(searchText);
+            }
         });
     }
 
     //Searches for and displays requested products
     function searchProducts(searchText) {
-        document.querySelectorAll("button.hidden").forEach(button => button.classList.remove('hidden')); //unhide the prev/next buttons when user searches
-        currentSearchText = searchText;
+        currentSearchText = searchText; //stores in global variable so that it can be accessed in next and previous method
         let url = '';
         if (['books', 'ipad', 'laptop', 'tshirts'].includes(searchText.toLowerCase())) { 
             url = `http://localhost:3000/search/category?name=${searchText}&page=${currentPage}&pageSize=${pageSize}`; //searching by category
         } else {
-            url = `http://localhost:3000/search?productId=${searchText}`;//searching for specific product
+            url = `http://localhost:3000/search?productId=${searchText}`; //searching for specific product
         }
         fetch(url) //Fetch requested product(s)
             .then(response => response.json())
             .then(data => {
-                lastFetchedProductCount = data.length;
                 console.log(data); 
-                
+                lastFetchedProductCount = data.length;
+                let singleSearch = false;
+
                 productsContainer.innerHTML = ''; //Clear the products container
                 products.length = 0; //Reset the products array
 
-                if(Array.isArray(data)){ //add new products
+                if(Array.isArray(data)){ //add new products and display
                     data.forEach((product) => { 
                         products.push(product);
                         productsContainer.innerHTML += createProductHTML(product);
                     });
-                } else { //add single product 
+                } else { //add single product and display
+                    singleSearch = true;
                     products.push(data)
                     productsContainer.innerHTML += createProductHTML(data);
                 }
@@ -50,12 +54,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 //logic to hide or reveal next/previous button when searching
                 const prevButton = document.querySelector('.previous-button');
                 const nextButton = document.querySelector('.next-button');
-                if (prevButton) {
-                prevButton.classList.toggle('hidden', currentPage === 1);
+                if(!singleSearch){
+                    if (prevButton) {
+                        prevButton.classList.toggle('hidden', currentPage === 1); //hide previous button if on the first page
+                    }
+                    if (nextButton) {
+                        //hide next button if the amount of products found is less then the page can fit (meaning theres no more products to display on the next page)
+                        nextButton.classList.toggle('hidden', lastFetchedProductCount < pageSize); 
+                    }
+                } else {
+                    prevButton.classList.toggle('hidden',true);
+                    nextButton.classList.toggle('hidden',true);
                 }
-                if (nextButton) {
-                nextButton.classList.toggle('hidden', lastFetchedProductCount < pageSize);
-            }
             })
             .catch(error => {
                 console.error('Error fetching data:', error);            

@@ -21,16 +21,15 @@ class ProductRepository {
     return product;
   }
 
-  async getProductsByCategory(category, page = 1, pageSize = 5) {
-    const offset = (page - 1) * pageSize;
+  async getProductsByCategory(category, page, pageSize) {
+    const offset = (page - 1) * pageSize; //calculates how many items should be skipped to get to the current page.
     const products = await Product.find({
-      _id: { $regex: new RegExp(category) }
-    }).skip(offset).limit(pageSize);
-  
+      _id: { $regex: new RegExp(category) } //RegExp will filter the products out that don't belong to the right category.
+    }).skip(offset).limit(pageSize); //.skip() will skip the amount of products specified by offset.
+                                     //.limit() will limit it to only returning a 5 products (or however many should be allowed per page).
     if (!products) {
       throw new Error('No products found');
     }
-  
     return products;
   }
   // ... other CRUD methods specific to products
