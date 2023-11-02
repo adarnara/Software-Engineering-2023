@@ -107,6 +107,29 @@ async function changeProductQuantityFromCart(req, res) {
     let requestBody;
     let parsedRequestBody;
 
+    const parsedUrl = url.parse(req.url, true);
+    const queryParams = parsedUrl.query;
+    
+    // ensure that only one query parameter (the user_id)
+    if (Object.keys(queryParams).length !== 1) {
+      resCode = 400;
+      resMsg = "Bad Request: Please Ensure only one query param for user_id is specified";
+      res.writeHead(resCode, { "Content-Type": resType });
+      res.end(resMsg);
+      resolve(resMsg);
+      return;
+    }
+    if (!('user_id' in queryParams)) {
+      resCode = 400;
+      resMsg = "Bad Request: Single query param must have the key 'user_id'";
+      res.writeHead(resCode, { "Content-Type": resType });
+      res.end(resMsg);
+      resolve(resMsg);
+      return;
+    }
+    const user_id = queryParams['user_id'];
+
+
     try {
       await req.on("data", (chunk) => {
         requestBody += chunk;
@@ -164,9 +187,14 @@ async function changeProductQuantityFromCart(req, res) {
             resType = "text/plain";
           } // Reaching this else means the request body is good to go
           else {
+            // Get JSON body
             const quantity = parsedRequestBody.quantity;
             const product_id = parsedRequestBody.product_id;
             const email = parsedRequestBody.email;
+
+            // Get query params in the URI (should just be user_id)
+
+
 
             // If product exists, we want to increase its quantity in the shopping cart, so call PATCH method to return the proper response
 
@@ -176,12 +204,41 @@ async function changeProductQuantityFromCart(req, res) {
                 "cart.purchaseTime": null,
               });
 
+              // If no cart returned, this user is not registered!
+              if (!currMemberCart) {
+                resCode = 401;
+                resMsg = "Unauthorized Access: Email <" + email + "> is not currently registered!";
+                res.writeHead(resCode, { "Content-Type": resType });
+                res.end(resMsg);
+                resolve(resMsg);
+                return;
+              }
+
               const updatedProduct =
                 await cartProductCollection.findOneAndUpdate(
-                  { product_id: product_id, parent_cart: currMemberCart.id },
+                  { product_id: product_id, parent_cart: currMemberCart._id.toString() },
                   { $set: { quantity: quantity } },
                   { new: true }
                 );
+
+                const newProductList = [];
+                for (const product of currMemberCart.products) {
+                  if (product.product_id === updatedProduct.product_id) {
+                    newProductList.push(updatedProduct);
+                  } else {
+                    newProductList.push(product);
+                  }
+                }
+                console.log(newProductList);
+                console.log(currCart._id + "");
+
+                await shoppingCartCollection.findOneAndUpdate(
+                  { _id: currMemberCart._id.toString(), purchaseTime: null },
+                  { $set: { 
+                    products: newProductList
+                  }},
+                  { new: true }
+                  );
 
               resCode = 200;
               resMsg = "Update Successful";

@@ -91,29 +91,29 @@ connectDB();
 // fetch("localhost")
 
 const url = `http://localhost:3000/cart/add`
-const request = {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body:
-        JSON.stringify(
-            {
-                quantity: 1,
-                product_id: '1232131',
-                email: "johndoes23@gmail.com"
-            }
-        )
-};
-let user = "johndoes23@gmail.com";
+// const request = {
+//     method: 'POST',
+//     headers: {
+//         'Content-Type': 'application/json'
+//     },
+//     body:
+//         JSON.stringify(
+//             {
+//                 quantity: 1,
+//                 product_id: '1232131',
+//                 email: "johndoes23@gmail.com"
+//             }
+//         )
+// };
+// let user = "johndoes23@gmail.com";
 
 // fetch(url, request).then(res => console.log("fetch: ",  res)).then(data => console.log("fetch: ",  data));
 // cartRepo.addProductToCart("johndoes23@gmail.com", 11111, 69).then(res => console.log(res))
-// cartRepo.createEmptyCart("johndoes23@gmail.com").then((res) => console.log(res))
+cartRepo.createEmptyCart("johndoes@gmail.com").then((res) => console.log(res))
 // cartRepo.getUserCartHistory("johndoes23@gmail.com").then((res) => console.log(res))
 // cartRepo.getProductsFromUser("johndoes23@gmail.com").then(res => console.log(res));
 
-shoppingCartController.addProductToCart("johndoes23@gmail.com", 11111, 69).then(res => console.log(res));
+// shoppingCartController.addProductToCart("johndoes23@gmail.com", 11111, 69).then(res => console.log(res));
 
 // cartRepo.getUserCartHistory(user)
 //     .then(
