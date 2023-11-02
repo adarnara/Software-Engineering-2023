@@ -6,6 +6,7 @@ const shoppingCartCollection = require("../models/shoppingCart"); // dupliicate
 const cartProductCollection = require("../models/cartProduct");
 const url = require("url");
 const { request } = require("http");
+const { parse } = require("path");
 
 // connectDB();
 
@@ -484,36 +485,44 @@ async function addProductToCart(req, res) {
 }
 
 async function getProducts(req, res) {
+  console.log("Hello World!");
   return new Promise(async (resolve) => {
     let resMsg = "";
     let resCode, resType;
 
     const parsedUrl = url.parse(req.url, true);
-    const urlPath = parsedUrl.path;
-    const splitUrl = urlPath.split("/");
-    const currUser = splitUrl[2];
+    let currUser = parsedUrl.search;
+    currUser = currUser.substring(9, currUser.length);
+    currUser = currUser
+    console.log(currUser);
     let currMemberCart;
     try {
       const currMember = await membersCollection.findOne({
-        _id: currUser,
+        _id: currUser.toString(),
       });
+      console.log(currMember);
       const currMemberCart = await shoppingCartCollection.findOne({
         email: currMember.email,
         purchaseTime: null,
       });
       console.log("Curr Member Cart: ", JSON.stringify(currMemberCart));
+
+      if (currMemberCart == null) {
+        resCode = 200;
+        resType = "text/plain";
+        resMsg = "There are no items in your shopping cart!";
+      } else {
+        resCode = 200;
+        resType = "application/json";
+        resMsg = JSON.stringify(currMemberCart);
+      }
     } catch (err) {
-      console.log(err);
-    }
-    if (currMemberCart == null) {
-      resCode = 200;
+      console.log("You are not a registered member!");
+      resCode = 401;
       resType = "text/plain";
-      resMsg = "There are no items in your shopping cart!";
-    } else {
-      resCode = 200;
-      resType = "application/json";
-      resMsg = currMemberCart;
+      resMsg = "You are not a registered member!";
     }
+    
 
     console.log("Status: " + resCode);
 
