@@ -19,6 +19,10 @@ const shoppingCartSchema = new Schema({
     numShipped: {
         type: Number,
         default: null
+    },
+    totalPrice: {
+        type: Number,
+        default: 0.00
     }
 });
 

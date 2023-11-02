@@ -1,6 +1,10 @@
 const shoppingCart = require('../models/shoppingCart');
 const cartProduct = require('../models/cartProduct');
-
+const membersCollection = require("../models/memberModel");
+const shoppingCartCollection = require("../models/shoppingCart"); // dupliicate
+const cartProductCollection = require("../models/cartProduct");
+const productCollection = require("../models/Product");
+const usersCollection = require("../models/users.js");
 
 class ShoppingCart {
     async getUserCurrentCart(email) {
@@ -50,6 +54,91 @@ class ShoppingCart {
                 cartProduct.find({parent_cart: res})
             )
 
+    }
+
+    async getCurrProduct(product_id, currCart_id) {
+        return new Promise(async (resolve) => {
+            const currProduct = await cartProductCollection.findOne({
+                product_id: product_id,
+                parent_cart: currCart_id.toString(),
+            });
+            resolve(currProduct);
+            return;
+        });
+    }
+
+    async setProductQuantity(product_id, currCart_id, newQuantity) {
+        return new Promise(async (resolve) => {
+            const updatedProduct = await cartProductCollection.findOneAndUpdate(
+                { product_id: product_id, parent_cart: currCart_id.toString() },
+                { $set: { quantity: newQuantity } },
+                { new: true }
+            );
+            resolve(updatedProduct);
+            return;
+        });
+    }
+
+    async updateProductsAndPriceInCurrCart(currCart_id, newProductList, newPrice) {
+        return new Promise(async (resolve) => {
+            await shoppingCartCollection.findOneAndUpdate(
+                { _id: currCart_id.toString(), purchaseTime: null },
+                { $set: { 
+                  products: newProductList,
+                  totalPrice: newPrice
+                 }},
+                { new: true }
+            );
+            resolve();
+            return;            
+        });
+    }
+
+    async getCurrCart(email) {
+        return new Promise(async (resolve) => {
+            const currMemberCart = await shoppingCartCollection.findOne({
+                email: email,
+                purchaseTime: null
+            });
+            resolve(currMemberCart);
+            return;
+        });
+    }
+
+    async pushProductToCart(currCart_id, newProduct, newPrice) {
+        return new Promise(async (resolve) => {
+            await shoppingCartCollection.updateOne(
+                { _id: currCart_id.toString(), purchaseTime: null },
+                { $push: { products: newProduct },
+                  $set: {
+                    totalPrice: newPrice
+                }
+              }
+              );
+            resolve();
+            return;
+        });
+    }
+
+    async getMember(currUser) {
+        return new Promise(async (resolve) => {
+            console.log(currUser.toString());
+            const currMember = await membersCollection.findOne({
+                _id: currUser.toString(),
+              });
+            resolve(currMember);
+            return;
+        });
+    }
+
+    async deleteProductFromCart(product_id, currCart_id) {
+        return new Promise(async (resolve) => {
+            const removedCartProduct = await cartProductCollection.findOneAndDelete({
+                product_id: product_id, parent_cart: currCart_id.toString() 
+             });
+            resolve(removedCartProduct);
+            return;
+        });
     }
    
 
