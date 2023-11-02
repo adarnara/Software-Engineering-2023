@@ -21,21 +21,69 @@ document.addEventListener("DOMContentLoaded", () => {
 
   fetch("http://localhost:3000/cart?user_id=6532fa735eac7cbb50adc268")
     .then((response) => {
-      console.log(response)
+      console.log("***********************************************************************");
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
+      // console.log(response.json());
       return response.json();
     })
-    .then((data) => {
+    .then(async (data) => {
+      console.log('hi');
       console.log("Response from /:", JSON.stringify(data, null, 2));
 
-      data.forEach((product) => {
-        // Push each product into the products array
-        products.push(product);
-        const productHTML = createProductHTML(product);
-        productsContainer.innerHTML += productHTML;
+      data.products.forEach(async (product) => {
+        await fetch(`http://localhost:3000/search?productId=${product.product_id}`)
+        .then(async (response) => {
+          // console.log(response.json());
+          response = await response.json();
+          console.log(response);
+          console.log(product);
+          products.push(response);
+          console.log(products);
+          const productHTML = createProductHTML(response);
+          productsContainer.innerHTML += productHTML;
+        });
       });
+
+
+
+      // console.log(data.products);
+//       data.products.forEach(async (product) => {
+
+//         await fetch(`http://localhost:3000/search?productId=${product.product_id}`)
+//                 .then((response) => {
+//                   console.log(response);
+//                   if (!response.ok) {
+//                     throw new Error(`Uh Oh: ${response.status}`);
+//                   }
+
+//                   console.log(product);
+//                   products.push(product);
+
+//                 });
+
+
+        
+
+// //            url = `http://localhost:3000/search?productId=${searchText}`; //searching for specific product
+
+
+
+
+
+//         // const productHTML = createProductHTML(product);
+//         // productsContainer.innerHTML += productHTML;
+//       });
+
+
+
+      // data.forEach((product) => {
+      //   // Push each product into the products array
+      //   products.push(product);
+      //   const productHTML = createProductHTML(product);
+      //   productsContainer.innerHTML += productHTML;
+      // });
     })
     .catch((error) => {
       console.error("Error fetching product data:", error);
@@ -44,7 +92,10 @@ document.addEventListener("DOMContentLoaded", () => {
   function createProductHTML(product) {
     // Check if variant_data is empty
     let colorsHTML = "";
-    if (product.variant_data.length > 0) {
+    console.log(product.name);
+    console.log(typeof product);
+    console.log(product.variant_data);
+    if (product.variant_data !== undefined && product.variant_data.length > 0) {
       const variantData = JSON.parse(product.variant_data[0]);
       const colors = Object.values(variantData).flat();
       colorsHTML = `
@@ -54,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 </ul>
             `;
     }
-
+    console.log(product.images);
     const productHTML = `
         <div class="product-container">
             <div class="product-image">
