@@ -9,6 +9,8 @@ const url = require("url");
 const { request } = require("http");
 const { parse } = require("path");
 
+const parseProductPrice = /\$([\d.]+)/;
+
 // connectDB();
 
 // 'GET/': (request, response) => shoppingCartController.getProducts(request,response),
@@ -75,13 +77,17 @@ async function changeProductQuantityFromCatalog(
 
       // get current price of product and update totalPrice of cart as well
       const productInfo = await productCollection.findById(parsedRequestBody.product_id);
-      const productPrice = productInfo.price;
+      let productPrice = productInfo.price;
+      productPrice = parseFloat(productPrice.match(parseProductPrice)[1]);
+
+      console.log(productPrice);
+
 
       await shoppingCartCollection.findOneAndUpdate(
         { _id: currCart._id, purchaseTime: null },
         { $set: { 
           products: newProductList,
-          totalPrice: (currCart.totalPrice + (productPrice * parsedRequestBody.quantity)).toFixed(2)
+          totalPrice: (currCart.totalPrice + (productPrice * parseFloat(parsedRequestBody.quantity))).toFixed(2)
          }},
         { new: true }
         );
@@ -97,7 +103,7 @@ async function changeProductQuantityFromCatalog(
     } catch (err) {
       console.log(err);
       resolve(
-        "Unable to add product: " + parsedRequestBody.product_id + " to cart: " + currCart._id.toString()
+        "Unable to add product: " + parsedRequestBody.product_id + " to cart: " + currCart._id.toString() + "\n" + err
       );
       return;
     }
@@ -248,13 +254,14 @@ async function changeProductQuantityFromCart(req, res) {
                 }
 
                 const productInfo = await productCollection.findById(parsedRequestBody.product_id);
-                const productPrice = productInfo.price;
+                let productPrice = productInfo.price;
+                productPrice = parseFloat(productPrice.match(parseProductPrice)[1]);
 
                 await shoppingCartCollection.findOneAndUpdate(
                   { _id: currMemberCart._id.toString(), purchaseTime: null },
                   { $set: { 
                     products: newProductList,
-                    totalPrice: (currMemberCart.totalPrice - (productPrice * oldProductQuantity) + (productPrice * quantity)).toFixed(2)
+                    totalPrice: (currMemberCart.totalPrice - (productPrice * parseFloat(oldProductQuantity)) + (productPrice * parseFloat(quantity))).toFixed(2)
                   }},
                   { new: true }
                   );
@@ -445,10 +452,18 @@ async function addProductToCart(req, res) {
                 //   product_id: productId,
                 // });
 
+                const productInfo = await productCollection.findById(product_id);
+                let productPrice = productInfo.price;
+                productPrice = parseFloat(productPrice.match(parseProductPrice)[1]);
+
                 const savedNewProduct = await newProduct.save();
                 await shoppingCartCollection.updateOne(
                   { _id: currMemberCart._id.toString(), purchaseTime: null },
-                  { $push: { products: newProduct } }
+                  { $push: { products: newProduct },
+                    $set: {
+                      totalPrice: (currMemberCart.totalPrice + (productPrice) * parseFloat(quantity)).toFixed(2)
+                  }
+                }
                 );
 
                 resCode = 200;
@@ -638,13 +653,14 @@ async function removeProductFromCart(req, res) {
       }
 
       const productInfo = await productCollection.findById(product_id);
-      const productPrice = productInfo.price;
+      let productPrice = productInfo.price;
+      productPrice = parseFloat(productPrice.match(parseProductPrice)[1]);
 
       await shoppingCartCollection.findOneAndUpdate(
         { _id: currMemberCart._id.toString(), purchaseTime: null },
         { $set: { 
           products: newProductList,
-          totalPrice: (currMemberCart.price - (productPrice * removedCartProduct.quantity)).toFixed(2)
+          totalPrice: (currMemberCart.totalPrice - (productPrice * parseFloat(removedCartProduct.quantity))).toFixed(2)
         }},
         { new: true }
         );
