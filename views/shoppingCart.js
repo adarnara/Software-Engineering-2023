@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const productsContainer = document.getElementById("products-container");
   const products = [];
 
-  fetch("http://localhost:3000/cart")
+  fetch("http://localhost:3000/cart?user_id=6532fa735eac7cbb50adc268")
     .then((response) => {
       console.log(response)
       if (!response.ok) {
