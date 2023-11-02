@@ -20,6 +20,9 @@ function changeNumber() {
     displayNumber.value = 0;
   }
 }
+function deleteProduct(productId){
+  console.log(productId)
+}
 document.addEventListener("DOMContentLoaded", () => {
 
 
@@ -151,7 +154,8 @@ document.addEventListener("DOMContentLoaded", () => {
                   <!-- Number Control -->
                   <div class="number-control">
                   <p style="display: inline-block; margin-right: 10px;">Quantity: </p>
-                      <input type="number" class="display-number" value="0" oninput="changeNumber()">
+                      <input type="number" class="display-number" value="0" oninput="changeNumber()"> 
+                      <button class= "delete-button" onclick="deleteProduct('${product._id}')">Remove Item From Cart</button>
                   </div>
               </div>
           </div>
