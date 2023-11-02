@@ -67,10 +67,10 @@ class ShoppingCart {
         });
     }
 
-    async setProductQuantity(product_id, newQuantity) {
+    async setProductQuantity(product_id, currCart_id, newQuantity) {
         return new Promise(async (resolve) => {
             const updatedProduct = await cartProductCollection.findOneAndUpdate(
-                { product_id: product_id },
+                { product_id: product_id, parent_cart: currCart_id.toString() },
                 { $set: { quantity: newQuantity } },
                 { new: true }
             );
@@ -91,6 +91,17 @@ class ShoppingCart {
             );
             resolve();
             return;            
+        });
+    }
+
+    async getCurrCart(email) {
+        return new Promise(async (resolve) => {
+            const currMemberCart = await shoppingCartCollection.findOne({
+                email: email,
+                purchaseTime: null
+            });
+            resolve(currMemberCart);
+            return;
         });
     }
    

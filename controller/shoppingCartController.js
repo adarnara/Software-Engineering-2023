@@ -49,7 +49,7 @@ async function changeProductQuantityFromCatalog(
       const currProduct = await cartRepo.getCurrProduct(parsedRequestBody.product_id, currCart._id);
       const newQuantity = parsedRequestBody.quantity + currProduct.quantity;
 
-      const updatedProduct = await cartRepo.setProductQuantity(parsedRequestBody.product_id, newQuantity);
+      const updatedProduct = await cartRepo.setProductQuantity(parsedRequestBody.product_id, currCart._id, newQuantity);
       
       const newProductList = [];
       for (const product of currCart.products) {
@@ -83,7 +83,7 @@ async function changeProductQuantityFromCatalog(
       console.log(productPrice);
 
       await cartRepo.updateProductsAndPriceInCurrCart(currCart._id, newProductList, (currCart.totalPrice + (productPrice * parseFloat(parsedRequestBody.quantity))).toFixed(2));
-              
+
       resolve(
         "Successfully added product: " +
         parsedRequestBody.product_id +
@@ -208,10 +208,7 @@ async function changeProductQuantityFromCart(req, res) {
             // If product exists, we want to increase its quantity in the shopping cart, so call PATCH method to return the proper response
 
             try {
-              const currMemberCart = await shoppingCartCollection.findOne({
-                email: email,
-                purchaseTime: null,
-              });
+              const currMemberCart = await cartRepo.getCurrCart(email);
 
               // If no cart returned, this user is not registered!
               if (!currMemberCart) {
@@ -223,18 +220,11 @@ async function changeProductQuantityFromCart(req, res) {
                 return;
               }
 
-              const oldProduct = await cartProductCollection.findOne(
-                { product_id: product_id, parent_cart: currMemberCart._id.toString() },
-              );
+              const oldProduct = await cartRepo.getCurrProduct(product_id, currMemberCart._id);
+
               const oldProductQuantity = oldProduct.quantity;
 
-
-              const updatedProduct =
-                await cartProductCollection.findOneAndUpdate(
-                  { product_id: product_id, parent_cart: currMemberCart._id.toString() },
-                  { $set: { quantity: quantity } },
-                  { new: true }
-                );
+              const updatedProduct = await cartRepo.setProductQuantity(product_id, currMemberCart._id, quantity);
 
                 const newProductList = [];
                 for (const product of currMemberCart.products) {
@@ -248,15 +238,8 @@ async function changeProductQuantityFromCart(req, res) {
                 const productInfo = await productCollection.findById(parsedRequestBody.product_id);
                 let productPrice = productInfo.price;
                 productPrice = parseFloat(productPrice.match(parseProductPrice)[1]);
-
-                await shoppingCartCollection.findOneAndUpdate(
-                  { _id: currMemberCart._id.toString(), purchaseTime: null },
-                  { $set: { 
-                    products: newProductList,
-                    totalPrice: (currMemberCart.totalPrice - (productPrice * parseFloat(oldProductQuantity)) + (productPrice * parseFloat(quantity))).toFixed(2)
-                  }},
-                  { new: true }
-                  );
+                
+                await cartRepo.updateProductsAndPriceInCurrCart(currMemberCart._id, newProductList, (currMemberCart.totalPrice - (productPrice * parseFloat(oldProductQuantity)) + (productPrice * parseFloat(quantity))).toFixed(2));
 
               resCode = 200;
               resMsg = "Update Successful";
