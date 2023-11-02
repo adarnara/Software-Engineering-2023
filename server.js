@@ -67,3 +67,4 @@ server.listen(PORT, (error) => {
     }
 });
 
+module.exports = server;
