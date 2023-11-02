@@ -14,6 +14,7 @@ jest.mock('../Repository/userRepo.js', () => {
     }),
   };
 });
+
 jest.mock('../models/memberModel', () => {
   return {
     findOne: jest.fn().mockImplementation(() => ({
@@ -37,27 +38,26 @@ describe('member Login API', () => {
 
   afterAll(async () => {
     await mongoose.connection.close();
-    server.close();
+    await new Promise(resolve => server.close(resolve));
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
   
-  describe('POST /member/login', () => {
+  describe('POST tests for member login and login functionality ', () => {
     it('should return 201 and a token if the credentials are correct', async () => {
       //creating a user
       const user = {
         firstName:"testing",
         lastName:"test",
         email: 'test@example.com',
-        password: 'password123',
+        password: 'correctPassword',
       };
       member.findOne.mockResolvedValueOnce(user); //mocking member model
-      bcrypt.compare.mockResolvedValueOnce(true); // mocking bcrypt
-
+      bcrypt.compare.mockResolvedValueOnce(true);
       const response = await request(server)
-        .post('/member/login')
+        .post('/member/login') 
         .set ("Content-Type", "application/json")
         .send(user);
 
@@ -91,7 +91,6 @@ describe('member Login API', () => {
         password: 'wrongpassword123',
       };
       member.findOne.mockResolvedValueOnce(user);
-      bcrypt.compare.mockResolvedValueOnce(false); 
       const response = await request(server)
         .post('/member/login')
         .send(user);
