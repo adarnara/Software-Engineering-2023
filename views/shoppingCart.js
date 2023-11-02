@@ -39,11 +39,11 @@ function changeNumber(productId) {
     // location.reload();
   }
 }
-function deleteProduct(productId) {
+async function deleteProduct(productId) {
 
   console.log(productId)
 
-  fetch(`http://localhost:3000/cart/remove?user_id=6532fa735eac7cbb50adc268&product_id=${productId}`,
+  await fetch(`http://localhost:3000/cart/remove?user_id=6532fa735eac7cbb50adc268&product_id=${productId}`,
     {
       method: 'DELETE'
     }
@@ -211,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>
   </div>
       `;
-    if (data.totalPrice == 0) {
+    if (data.products.length == 0) {
       return emptyCart;
     }
     return subtotalHTML;
