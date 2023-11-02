@@ -1,5 +1,5 @@
 
-const currMemberEmail = "johndoes23@gmail.com";
+const currMemberEmail = "johndoes@gmail.com";
 
 const getCurrMemberCart = async () => {
   try {
@@ -21,8 +21,19 @@ function changeNumber() {
   }
 }
 function deleteProduct(productId){
+
   console.log(productId)
+
+  fetch(`http://localhost:3000/cart/remove?user_id=${currMemberEmail}&product_id=${productId}`, 
+    {
+      method: 'DELETE'
+    }
+  ).then(res => console.log(res))
+
+  location.reload();
+
 }
+
 document.addEventListener("DOMContentLoaded", () => {
 
 
@@ -42,6 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = 'http://127.0.0.1:5500/views/landingPage.html';
     });
   }
+  
   fetch("http://localhost:3000/cart?user_id=6532fa735eac7cbb50adc268")
     .then((response) => {
       console.log("***********************************************************************");

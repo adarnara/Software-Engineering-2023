@@ -5,6 +5,8 @@ const membersCollection = require("../models/memberModel");
 const shoppingCartCollection = require("../models/shoppingCart"); // dupliicate
 const cartProductCollection = require("../models/cartProduct");
 const productCollection = require("../models/Product");
+const usersCollection = require("../models/users.js");
+
 const url = require("url");
 const { request } = require("http");
 const { parse } = require("path");
@@ -569,7 +571,7 @@ async function getProducts(req, res) {
 
 async function removeProductFromCart(req, res) {
   return new Promise(async (resolve) => {
-    // take a delete request with uri of /cart/remove/?userId=___&productId=____
+    // take a delete request with uri of /cart/remove?userId=___&productId=____
     
     /*
     const address = req.url; // request url
@@ -578,6 +580,9 @@ async function removeProductFromCart(req, res) {
     userId = urlObject["userId"];
     */
 
+
+
+    
     if (req.method != "DELETE") {
       res.writeHead(405, { 'Content-Type': 'application/json' });
 		  res.end(JSON.stringify({ message: 'Method Not Allowed' }));
@@ -590,17 +595,18 @@ async function removeProductFromCart(req, res) {
 
       let resMsg = "";
       let resCode, resType;
-      let requestBody ="";
-      let parsedRequestBody;
+      // let requestBody = "";
+      // let parsedRequestBody;
 
       const parsedUrl = url.parse(req.url, true);
       const queryParams = parsedUrl.query;
-      
+      // console.log(queryParams)
+
       // ensure that only one query parameter (the user_id)
       if (Object.keys(queryParams).length !== 2) {
         resCode = 400;
-        resMsg = "Bad Request: Please Ensure exactly two query params for user_id and product_id are specified";
-        resType = "text/plain";
+        resMsg = JSON.stringify({message: "Bad Request: Please Ensure exactly two query params for user_id and product_id are specified"});
+        resType = "application/json";
         res.writeHead(resCode, { "Content-Type": resType });
         res.end(resMsg);
         resolve(resMsg);
@@ -617,13 +623,22 @@ async function removeProductFromCart(req, res) {
       const user_id = queryParams['user_id'];
       const product_id = queryParams['product_id'];
 
-      const currMember = await membersCollection.findOne({
-        _id: user_id,
+      console.log(user_id);
+      // console.log(queryParams);
+
+      const currMember = await usersCollection.findOne({
+        // _id: user_id,
+        email: user_id
       });
+
+      // console.log(currMember)
+
       const currMemberCart = await shoppingCartCollection.findOne({
         email: currMember.email,
         purchaseTime: null,
       });
+
+      
       if (!currMemberCart) {
         resCode = 401;
         resMsg = "Unauthorized Access: Email <" + email + "> is not currently registered!";
@@ -632,9 +647,11 @@ async function removeProductFromCart(req, res) {
         resolve(resMsg);
         return;
       }
+
       const removedCartProduct = await cartProductCollection.findOneAndDelete({
          product_id: product_id, parent_cart: currMemberCart._id.toString() 
       });
+
       if (!removedCartProduct) {
         resCode = 404;
         resMsg = "Not Found: Product with ID <" + product_id + "> not found in current cart";

@@ -5,6 +5,6 @@ Initial Setup:
 
 Run `npm install` to install dependencies into node_modules
 
-Run `node server.js` to start server
+Run `npm start` to start server
 
-Open `landingPage.html` to access website
+Open `landingPage.html` through desired browser to access website
