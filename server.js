@@ -19,6 +19,7 @@ const server = http.createServer(async (request, response) => {
     response.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS'); // Add the necessary HTTP methods you want to support
     response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Add the necessary headers
 
+    // TODO make all the routers consistent with each other
     if (request.method === 'OPTIONS') {
         // Respond to preflight requests
         response.writeHead(200);
@@ -54,9 +55,16 @@ const server = http.createServer(async (request, response) => {
         if (userRouteHandler) {
             userRouteHandler(request, response);
         } else if(adminRouteHandler) {
-            adminRouteHandler(request,response);
+            adminRouteHandler(request, response);
         } else if(paymentRouteHandler){
-            paymentRouteHandler(request,response);
+            paymentRouteHandler(request, response);
+        } else {
+            // Might as well return something than
+            // let the client get stuck fetching
+            if(!landingRouter[routeKey]){
+                response.writeHead(404);
+                response.end("Could not find resource!");
+            }
         }
     } catch (error) {
         console.log(error);
