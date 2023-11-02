@@ -4,6 +4,7 @@ const connectDB = require("../config/db");
 const membersCollection = require("../models/memberModel");
 const shoppingCartCollection = require("../models/shoppingCart"); // dupliicate
 const cartProductCollection = require("../models/cartProduct");
+const productCollection = require("../models/Product");
 const url = require("url");
 const { request } = require("http");
 const { parse } = require("path");
@@ -58,11 +59,29 @@ async function changeProductQuantityFromCatalog(
           newProductList.push(product);
         }
       }
+      // data.products.forEach(async (product) => {
+      //   await fetch(`http://localhost:3000/search?productId=${product.product_id}`)
+      //   .then(async (response) => {
+      //     // console.log(response.json());
+      //     response = await response.json();
+      //     console.log(response);
+      //     console.log(product);
+      //     products.push(response);
+      //     console.log(products);
+      //     const productHTML = createProductHTML(response);
+      //     productsContainer.innerHTML += productHTML;
+      //   });
+      // });
+
+      // get current price of product and update totalPrice of cart as well
+      const productInfo = await productCollection.findById(parsedRequestBody.product_id);
+      const productPrice = productInfo.price;
 
       await shoppingCartCollection.findOneAndUpdate(
         { _id: currCart._id, purchaseTime: null },
         { $set: { 
-          products: newProductList
+          products: newProductList,
+          totalPrice: (currCart.totalPrice + (productPrice * parsedRequestBody.quantity)).toFixed(2)
          }},
         { new: true }
         );
@@ -206,6 +225,12 @@ async function changeProductQuantityFromCart(req, res) {
                 return;
               }
 
+              const oldProduct = await cartProductCollection.findOne(
+                { product_id: product_id, parent_cart: currMemberCart._id.toString() },
+              );
+              const oldProductQuantity = oldProduct.quantity;
+
+
               const updatedProduct =
                 await cartProductCollection.findOneAndUpdate(
                   { product_id: product_id, parent_cart: currMemberCart._id.toString() },
@@ -222,10 +247,14 @@ async function changeProductQuantityFromCart(req, res) {
                   }
                 }
 
+                const productInfo = await productCollection.findById(parsedRequestBody.product_id);
+                const productPrice = productInfo.price;
+
                 await shoppingCartCollection.findOneAndUpdate(
                   { _id: currMemberCart._id.toString(), purchaseTime: null },
                   { $set: { 
-                    products: newProductList
+                    products: newProductList,
+                    totalPrice: (currMemberCart.totalPrice - (productPrice * oldProductQuantity) + (productPrice * quantity)).toFixed(2)
                   }},
                   { new: true }
                   );
@@ -608,10 +637,14 @@ async function removeProductFromCart(req, res) {
         }
       }
 
+      const productInfo = await productCollection.findById(product_id);
+      const productPrice = productInfo.price;
+
       await shoppingCartCollection.findOneAndUpdate(
         { _id: currMemberCart._id.toString(), purchaseTime: null },
         { $set: { 
-          products: newProductList
+          products: newProductList,
+          totalPrice: (currMemberCart.price - (productPrice * removedCartProduct.quantity)).toFixed(2);
         }},
         { new: true }
         );
