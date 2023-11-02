@@ -38,13 +38,10 @@ async function changeProductQuantityFromCatalog(
 ) {
   return new Promise(async (resolve) => {
     try {
-      console.log(parsedRequestBody.product_id)
-      console.log(currCart)
       const currProduct = await cartProductCollection.findOne({
         product_id: parsedRequestBody.product_id,
         parent_cart: currCart._id.toString(),
       });
-      console.log(currProduct.quantity)
       const newQuantity = parsedRequestBody.quantity + currProduct.quantity;
 
       const updatedProduct = await cartProductCollection.findOneAndUpdate(
@@ -61,8 +58,6 @@ async function changeProductQuantityFromCatalog(
           newProductList.push(product);
         }
       }
-      console.log(newProductList);
-      console.log(currCart._id + "");
 
       await shoppingCartCollection.findOneAndUpdate(
         { _id: currCart._id, purchaseTime: null },
@@ -105,7 +100,7 @@ async function changeProductQuantityFromCart(req, res) {
 
     let resMsg = "";
     let resCode, resType;
-    let requestBody;
+    let requestBody ="";
     let parsedRequestBody;
 
     const parsedUrl = url.parse(req.url, true);
@@ -115,6 +110,7 @@ async function changeProductQuantityFromCart(req, res) {
     if (Object.keys(queryParams).length !== 1) {
       resCode = 400;
       resMsg = "Bad Request: Please Ensure only one query param for user_id is specified";
+      resType = "text/plain";
       res.writeHead(resCode, { "Content-Type": resType });
       res.end(resMsg);
       resolve(resMsg);
@@ -141,7 +137,6 @@ async function changeProductQuantityFromCart(req, res) {
       return;
     }
     // Ensure request body is a singular JSON object with non-object properties quantity (Number), etc.
-    const badRequest = false;
     if (
       typeof parsedRequestBody === "object" &&
       !Array.isArray(parsedRequestBody)
@@ -152,7 +147,6 @@ async function changeProductQuantityFromCart(req, res) {
         resCode = 400;
         resMsg =
           "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String, email: String}";
-        badRequest = true;
         resType = "text/plain";
       } else {
         if (
@@ -163,7 +157,6 @@ async function changeProductQuantityFromCart(req, res) {
           resCode = 400;
           resMsg =
             "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String, email: String}";
-          badRequest = true;
           resType = "text/plain";
         } else {
           if (
@@ -174,7 +167,6 @@ async function changeProductQuantityFromCart(req, res) {
             resCode = 400;
             resMsg =
               "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String, email: String}";
-            badRequest = true;
             resType = "text/plain";
           } else if (
             parsedRequestBody.quantity == null ||
@@ -184,7 +176,6 @@ async function changeProductQuantityFromCart(req, res) {
             resCode = 400;
             resMsg =
               "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String, email: String} that are not null";
-            badRequest = true;
             resType = "text/plain";
           } // Reaching this else means the request body is good to go
           else {
@@ -200,9 +191,9 @@ async function changeProductQuantityFromCart(req, res) {
             // If product exists, we want to increase its quantity in the shopping cart, so call PATCH method to return the proper response
 
             try {
-              const currMemberCart = await membersCollection.findOne({
+              const currMemberCart = await shoppingCartCollection.findOne({
                 email: email,
-                "cart.purchaseTime": null,
+                purchaseTime: null,
               });
 
               // If no cart returned, this user is not registered!
@@ -230,8 +221,6 @@ async function changeProductQuantityFromCart(req, res) {
                     newProductList.push(product);
                   }
                 }
-                console.log(newProductList);
-                console.log(currCart._id + "");
 
                 await shoppingCartCollection.findOneAndUpdate(
                   { _id: currMemberCart._id.toString(), purchaseTime: null },
@@ -243,17 +232,12 @@ async function changeProductQuantityFromCart(req, res) {
 
               resCode = 200;
               resMsg = "Update Successful";
-              badRequest = true;
               resType = "text/plain";
             } catch (err) {
               console.log(err);
               resMsg =
-                "Unable to update product: " +
-                product_id +
-                " in cart: " +
-                parent_cart.id;
+                "Unable to update product";
               resCode = 500;
-              badRequest = true;
               resType = "text/plain";
             }
             resCode = 200;
@@ -265,7 +249,6 @@ async function changeProductQuantityFromCart(req, res) {
       resCode = 400;
       resMsg =
         "Bad Request: Please ensure request body is a singular JSON object";
-      badRequest = true;
     }
     res.writeHead(resCode, { "Content-Type": resType });
     res.end(resMsg);
@@ -340,7 +323,6 @@ async function addProductToCart(req, res) {
         resolve(resMsg);
         return;
       } else {
-        console.log("261");
         if (
           !reqBodyKeys.includes("quantity") ||
           !reqBodyKeys.includes("product_id") ||
@@ -360,7 +342,6 @@ async function addProductToCart(req, res) {
             typeof parsedRequestBody.product_id !== "string" ||
             typeof parsedRequestBody.email !== "string"
           ) {
-            console.log("280");
             resCode = 400;
             resMsg =
               "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String, email: String}";
@@ -375,7 +356,6 @@ async function addProductToCart(req, res) {
             parsedRequestBody.product_id == null ||
             parsedRequestBody.email == null
           ) {
-            console.log("294");
             resCode = 400;
             resMsg =
               "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String, email: String} that are not null";
@@ -386,7 +366,6 @@ async function addProductToCart(req, res) {
             return;
           } // Reaching this else means the request body is good to go
           else {
-            console.log("304");
             const currMemberCart = await shoppingCartCollection.findOne({
               email: parsedRequestBody.email,
               "cart.purchaseTime": null,
@@ -395,15 +374,12 @@ async function addProductToCart(req, res) {
             const quantity = parsedRequestBody.quantity;
             const product_id = parsedRequestBody.product_id;
             const email = parsedRequestBody.email;
-            console.log(currMemberCart);
             const existingProduct = await cartProductCollection.findOne({
               product_id: product_id,
               parent_cart: currMemberCart._id.toString(),
             });
             // If product exists, we want to increase its quantity in the shopping cart, so call PATCH method to return the proper response
             if (existingProduct) {
-              console.log("319");
-              console.log(currMemberCart);
               resMsg = await changeProductQuantityFromCatalog(
                 parsedRequestBody,
                 res,
@@ -416,7 +392,6 @@ async function addProductToCart(req, res) {
               resolve(resMsg);
               return;
             } else {
-              console.log("331");
               // Add to shopping cart collection
 
               const newProduct = new cartProductCollection({
@@ -442,8 +417,6 @@ async function addProductToCart(req, res) {
                 // });
 
                 const savedNewProduct = await newProduct.save();
-                console.log(currMemberCart);
-                console.log(364);
                 await shoppingCartCollection.updateOne(
                   { _id: currMemberCart._id.toString(), purchaseTime: null },
                   { $push: { products: newProduct } }
@@ -485,22 +458,39 @@ async function addProductToCart(req, res) {
 }
 
 async function getProducts(req, res) {
-  console.log("Hello World!");
+  
   return new Promise(async (resolve) => {
     let resMsg = "";
     let resCode, resType;
 
     const parsedUrl = url.parse(req.url, true);
-    let currUser = parsedUrl.search;
-    currUser = currUser.substring(9, currUser.length);
-    currUser = currUser
-    console.log(currUser);
+    const queryParams = parsedUrl.query;
+    
+    // ensure that only one query parameter (the user_id)
+    if (Object.keys(queryParams).length !== 1) {
+      resCode = 400;
+      resMsg = "Bad Request: Please Ensure exactly one query params for user_id is specified";
+      resType = "text/plain";
+      res.writeHead(resCode, { "Content-Type": resType });
+      res.end(resMsg);
+      resolve(resMsg);
+      return;
+    }
+    if (!('user_id' in queryParams)) {
+      resCode = 400;
+      resMsg = "Bad Request: Must have exactly one query param with key 'user_id'";
+      res.writeHead(resCode, { "Content-Type": resType });
+      res.end(resMsg);
+      resolve(resMsg);
+      return;
+    }
+    const currUser = queryParams['user_id'];
     let currMemberCart;
+    
     try {
       const currMember = await membersCollection.findOne({
         _id: currUser.toString(),
       });
-      console.log(currMember);
       const currMemberCart = await shoppingCartCollection.findOne({
         email: currMember.email,
         purchaseTime: null,
@@ -553,57 +543,89 @@ async function removeProductFromCart(req, res) {
     // ...REMOVE/cart/{user_id}/cartProduct/{cartProduct_id}
   
     try {
-      // get email from userId
-      // WIP
-      /*
 
-      const memberEmail = membersCollection.findById(userId).email; // might be usersCollection, not members collection;
-      */
+      let resMsg = "";
+      let resCode, resType;
+      let requestBody ="";
+      let parsedRequestBody;
+
+      const parsedUrl = url.parse(req.url, true);
+      const queryParams = parsedUrl.query;
       
+      // ensure that only one query parameter (the user_id)
+      if (Object.keys(queryParams).length !== 2) {
+        resCode = 400;
+        resMsg = "Bad Request: Please Ensure exactly two query params for user_id and product_id are specified";
+        resType = "text/plain";
+        res.writeHead(resCode, { "Content-Type": resType });
+        res.end(resMsg);
+        resolve(resMsg);
+        return;
+      }
+      if (!('user_id' in queryParams) || !('product_id' in queryParams)) {
+        resCode = 400;
+        resMsg = "Bad Request: Must have exactly two query params with keys 'user_id' and 'product_id'";
+        res.writeHead(resCode, { "Content-Type": resType });
+        res.end(resMsg);
+        resolve(resMsg);
+        return;
+      }
+      const user_id = queryParams['user_id'];
+      const product_id = queryParams['product_id'];
 
-      // get current Cart of email
-      
-      // const grabCart = await shoppingCart.findOne({email: email, purchaseTime: null});
-
-      // delete product from cartProduct
-      const grabCartProduct = await cartProductCollection.findOneAndDelete({
-        parent_cart: grabCart._id.toString(),
-        product_id: productId,
+      const currMember = await membersCollection.findOne({
+        _id: user_id,
       });
+      const currMemberCart = await shoppingCartCollection.findOne({
+        email: currMember.email,
+        purchaseTime: null,
+      });
+      if (!currMemberCart) {
+        resCode = 401;
+        resMsg = "Unauthorized Access: Email <" + email + "> is not currently registered!";
+        res.writeHead(resCode, { "Content-Type": resType });
+        res.end(resMsg);
+        resolve(resMsg);
+        return;
+      }
+      const removedCartProduct = await cartProductCollection.findOneAndDelete({
+         product_id: product_id, parent_cart: currMemberCart._id.toString() 
+      });
+      if (!removedCartProduct) {
+        resCode = 404;
+        resMsg = "Not Found: Product with ID <" + product_id + "> not found in current cart";
+        resType = "text/plain";
+        res.writeHead(resCode, { "Content-Type": resType });
+        res.end(resMsg);
+        resolve(resMsg);
+        return;        
+      }
 
-      // cart product is also deleted from cart array on cascade?
-      // WIP
-      // grabCart.products
-      /*
-      
-      const myArray = [1, 2, 3, 4, 5];
+      const newProductList = [];
+      for (const product of currMemberCart.products) {
+        if (product.product_id !== removedCartProduct.product_id) {
+          newProductList.push(product);
+        }
+      }
 
-      const index = grabCart.products.indexOf({product_id: productId});
-
-      const x = grabCart.splice(index, 1);
-
-      grabCart.save();
-      // console.log(`myArray values: ${myArray}`);
-      // console.log(`variable x value: ${x}`);
-      
-      */
-
-
-
-
-      console.log(grabCartProduct);
-
-      // const index = grabCart.products.indexOf({ productId: `${productId}` });
-      // grabCart.products = grabCart.products.indexOf.splice(index, 1);
-      // console.log("item deleted" + grabCart);
-      // grabCart.save();
-      res.writeHead(200, { "Content-Type": "application/json" });
-      const message = "Item " + grabCartProduct.product_id + "Deleted";
-      res.end(JSON.stringify({ message: message }));
-      resolve(message);
+      await shoppingCartCollection.findOneAndUpdate(
+        { _id: currMemberCart._id.toString(), purchaseTime: null },
+        { $set: { 
+          products: newProductList
+        }},
+        { new: true }
+        );
+        resCode = 200;
+        resMsg = "Successfully removed product <" + product_id + "> from current cart.";
+        resType = "text/plain";
+        res.writeHead(resCode, { "Content-Type": resType });
+        res.end(resMsg);
+        resolve(resMsg);
+        return; 
     } catch (error) {
+      console.log(error);
       res.writeHead(400);
-      response.end("bad request");
+      res.end("bad request");
       resolve("bad request");
     }
   });
