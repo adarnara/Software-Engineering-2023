@@ -5,6 +5,7 @@ const PORT = process.env.PORT || 3000;
 const userRouter = require("./routes/userRoute");
 const adminRouter = require("./routes/adminRoute");
 const landingRouter = require('./routes/landingRoute');
+const paymentRouter = require("./routes/paymentRoute");
 
 connectDB();
 
