@@ -51,13 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     const productsContainer = document.getElementById("products-container");
-    const subtotalHTML  = createSubTotalHTML();
-    const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = subtotalHTML.trim();
-
-    const subtotalSection = tempDiv.firstChild;
-    subtotalSection.id = "subtotal-section";
-    productsContainer.parentNode.appendChild(subtotalSection);
     const products = [];
   const continueShoppingBtn = document.querySelector('.continue-shopping');
   if (continueShoppingBtn) {
@@ -94,6 +87,13 @@ document.addEventListener("DOMContentLoaded", () => {
             productsContainer.innerHTML += productHTML;
           });
       });
+      const subtotalHTML  = createSubTotalHTML(data);
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = subtotalHTML.trim();
+  
+      const subtotalSection = tempDiv.firstChild;
+      subtotalSection.id = "subtotal-section";
+      productsContainer.parentNode.appendChild(subtotalSection);
 
 
 
@@ -190,13 +190,13 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("ooga")
       return productHTML;
     }
-    function createSubTotalHTML() {
+    function createSubTotalHTML(data) {
       // Check if variant_data is empty
       console.log("subtotal")
       const subtotalHTML = `<div class="subtotal">
       <h1>Subtotal</h1>
       <br>
-      <h2>Price: $93.45</h2>
+      <h2>Price: $${data.totalPrice}</h2>
       <div>
       <button class="checkout" onclick="proceedToCheckout()">Proceed to Checkout</button>
     </div>
