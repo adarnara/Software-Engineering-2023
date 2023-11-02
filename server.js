@@ -16,7 +16,7 @@ const server = http.createServer(async (request, response) => {
 
     // Set the CORS headers to allow all origins (you can restrict it as needed)
     response.setHeader('Access-Control-Allow-Origin', '*');
-    response.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS'); // Add the necessary HTTP methods you want to support
+    response.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS'); // Add the necessary HTTP methods you want to support
     response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Add the necessary headers
 
     if (request.method === 'OPTIONS') {

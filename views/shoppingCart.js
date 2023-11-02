@@ -13,18 +13,31 @@ const getCurrMemberCart = async () => {
     console.log(err)
   }
 };
-function changeNumber() {
-  const displayNumber = document.querySelector('.display-number'); // Change to querySelector for class
-  console.log(displayNumber.value);
+function changeNumber(productId) {
+  const displayNumber = document.querySelector('.display-number');
+  console.log(productId);
   if (isNaN(parseInt(displayNumber.value)) || parseInt(displayNumber.value) < 0) {
     displayNumber.value = 0;
+  } else {
+    fetch(`http://localhost:3000/cart?user_id=6532fa735eac7cbb50adc268`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        quantity: parseInt(displayNumber.value),
+        email: currMemberEmail,
+        product_id: productId
+      })
+    }).then(res => console.log(res))
+  // location.reload();
   }
 }
 function deleteProduct(productId){
 
   console.log(productId)
 
-  fetch(`http://localhost:3000/cart/remove?user_id=${currMemberEmail}&product_id=${productId}`, 
+  fetch(`http://localhost:3000/cart/remove?user_id=6532fa735eac7cbb50adc268&product_id=${productId}`, 
     {
       method: 'DELETE'
     }
@@ -68,15 +81,16 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("Response from /:", JSON.stringify(data, null, 2));
 
       data.products.forEach(async (product) => {
+        console.log(product.product_id);
         await fetch(`http://localhost:3000/search?productId=${product.product_id}`)
           .then(async (response) => {
-            // console.log(response.json());
+            // console.log(response);
             response = await response.json();
             console.log(response);
             console.log(product);
             products.push(response);
             console.log(products);
-            const productHTML = createProductHTML(response);
+            const productHTML = createProductHTML(response, product);
             productsContainer.innerHTML += productHTML;
           });
       });
@@ -124,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error fetching product data:", error);
     });
 
-    function createProductHTML(product) {
+    function createProductHTML(product, currCartProduct) {
       // Check if variant_data is empty
       let colorsHTML = "";
       console.log(product.name);
@@ -166,13 +180,14 @@ document.addEventListener("DOMContentLoaded", () => {
                   <!-- Number Control -->
                   <div class="number-control">
                   <p style="display: inline-block; margin-right: 10px;">Quantity: </p>
-                      <input type="number" class="display-number" value="0" oninput="changeNumber()"> 
+                      <input type="number" class="display-number" value="${currCartProduct.quantity}" oninput="changeNumber('${product._id}')"> 
                       <button class= "delete-button" onclick="deleteProduct('${product._id}')">Remove Item From Cart</button>
                   </div>
               </div>
           </div>
       `;
-  
+      console.log(product._id)
+      console.log("ooga")
       return productHTML;
     }
     function createSubTotalHTML() {
