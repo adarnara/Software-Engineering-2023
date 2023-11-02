@@ -5,7 +5,6 @@ const PORT = process.env.PORT || 3000;
 const userRouter = require("./routes/userRoute");
 const adminRouter = require("./routes/adminRoute");
 const landingRouter = require('./routes/landingRoute');
-const paymentRouter = require('./routes/paymentRoute');
 
 connectDB();
 
@@ -69,8 +68,39 @@ const server = http.createServer(async (request, response) => {
     } catch (error) {
         console.log(error);
     }
-});
 
+    //payments
+    if (request.url === '/checkout' && request.method === "GET") {
+        fs.readFile(path_m.join(__dirname, 'public', 'checkout', 'checkoutPage.html'), (error, content) => {
+            if (error) {
+                response.writeHead(500, {'Content-Type': 'text/plain'});
+                response.end('Server error');
+                return;
+            }
+            response.writeHead(200, {'Content-Type': 'text/html'});
+            response.end(content);
+        });
+    }
+    if (request.url === "/public/checkout/create-checkout-session" && request.method === 'POST') {
+        let body = '';
+        request.on('data', chunk => {
+        body += chunk.toString();
+        });
+        request.on('end', async () => {
+        try {
+            const items = JSON.parse(body).items;
+            // Make sure createCheckoutSession is an async function and handles the items properly
+            const session = await createCheckoutSession(items);
+            response.writeHead(200, {'Content-Type': 'application/json'});
+            response.end(JSON.stringify({ url: session.url }));
+        } catch (e) {
+            console.error(e); // Log error for server-side debugging
+            response.writeHead(500, {'Content-Type': 'application/json'});
+            response.end(JSON.stringify({ error: "Internal Server Error" }));
+        }
+    });
+    }
+});
 server.listen(PORT, (error) => {
     if (error) {
         console.log('Error Occurred', error);
@@ -78,4 +108,3 @@ server.listen(PORT, (error) => {
         console.log(`Server is running on ${PORT}`);
     }
 });
-
