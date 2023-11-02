@@ -644,7 +644,7 @@ async function removeProductFromCart(req, res) {
         { _id: currMemberCart._id.toString(), purchaseTime: null },
         { $set: { 
           products: newProductList,
-          totalPrice: (currMemberCart.price - (productPrice * removedCartProduct.quantity)).toFixed(2);
+          totalPrice: (currMemberCart.price - (productPrice * removedCartProduct.quantity)).toFixed(2)
         }},
         { new: true }
         );
