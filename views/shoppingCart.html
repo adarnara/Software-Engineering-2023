@@ -122,10 +122,6 @@
     .product-info ul {
       padding-left: 20px;
     }
-
-    .hidden {
-      display: none;
-    }
   </style>
 </head>
 <body>
@@ -135,13 +131,9 @@
     <img src="../public/Images/logo.png" alt="Logo" />
     <span style="font-weight: bold; font-size: 20px;">Reprua</span>
   </div>
-  <div>
-    <button class="hidden previous-button" onclick="previousPage()">Previous</button>
-    <button class="hidden next-button" onclick="nextPage()">Next</button>
-  </div>
   <div class="search-bar">
     <input type="text" placeholder="Search Bar" />
-    <button class="search-button">Search</button>
+    <button>Search</button>
   </div>
   <div id = "shopping-icon" class="navbar-logo">
     <a href = "http://127.0.0.1:5500/views/shoppingCart.html">
@@ -149,10 +141,6 @@
     <span style="font-weight: bold; font-size: 20px;"></span>
   </a>
   </div>
-</div>
-
-<div 
-  id="error-message" class="hidden">Failed to load products. Please try again later.
 </div>
 
 
@@ -174,6 +162,7 @@
   </div>
 </section>
 
-<script src="landingPageApp.js"></script>
+
+<script src="shoppingCart.js"></script>
 </body>
 </html>
