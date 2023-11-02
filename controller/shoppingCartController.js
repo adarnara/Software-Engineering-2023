@@ -80,8 +80,6 @@ async function changeProductQuantityFromCatalog(
       let productPrice = productInfo.price;
       productPrice = parseFloat(productPrice.match(parseProductPrice)[1]);
 
-      console.log(productPrice);
-
       await cartRepo.updateProductsAndPriceInCurrCart(currCart._id, newProductList, (currCart.totalPrice + (productPrice * parseFloat(parsedRequestBody.quantity))).toFixed(2));
 
       resolve(
@@ -90,7 +88,6 @@ async function changeProductQuantityFromCatalog(
           " to cart: " +
           currCart._id.toString()
       );
-      console.log("Success")
       return;
     } catch (err) {
       console.log(err);
@@ -235,7 +232,7 @@ async function changeProductQuantityFromCart(req, res) {
                   }
                 }
 
-                const productInfo = await productCollection.findById(parsedRequestBody.product_id);
+                const productInfo = await productRepo.getProductById(parsedRequestBody.product_id);
                 let productPrice = productInfo.price;
                 productPrice = parseFloat(productPrice.match(parseProductPrice)[1]);
                 
@@ -377,18 +374,14 @@ async function addProductToCart(req, res) {
             return;
           } // Reaching this else means the request body is good to go
           else {
-            const currMemberCart = await shoppingCartCollection.findOne({
-              email: parsedRequestBody.email,
-              "cart.purchaseTime": null,
-            });
+            const currMemberCart = await cartRepo.getCurrCart(parsedRequestBody.email);
 
             const quantity = parsedRequestBody.quantity;
             const product_id = parsedRequestBody.product_id;
             const email = parsedRequestBody.email;
-            const existingProduct = await cartProductCollection.findOne({
-              product_id: product_id,
-              parent_cart: currMemberCart._id.toString(),
-            });
+
+            const existingProduct = await cartRepo.getCurrProduct(product_id, currMemberCart._id);
+
             // If product exists, we want to increase its quantity in the shopping cart, so call PATCH method to return the proper response
             if (existingProduct) {
               resMsg = await changeProductQuantityFromCatalog(
@@ -427,19 +420,12 @@ async function addProductToCart(req, res) {
                 //   product_id: productId,
                 // });
 
-                const productInfo = await productCollection.findById(product_id);
+                const productInfo = await productRepo.getProductById(product_id);
                 let productPrice = productInfo.price;
                 productPrice = parseFloat(productPrice.match(parseProductPrice)[1]);
 
                 const savedNewProduct = await newProduct.save();
-                await shoppingCartCollection.updateOne(
-                  { _id: currMemberCart._id.toString(), purchaseTime: null },
-                  { $push: { products: newProduct },
-                    $set: {
-                      totalPrice: (currMemberCart.totalPrice + (productPrice) * parseFloat(quantity)).toFixed(2)
-                  }
-                }
-                );
+                await cartRepo.pushProductToCart(currMemberCart._id, newProduct, (currMemberCart.totalPrice + (productPrice) * parseFloat(quantity)).toFixed(2));
 
                 resCode = 200;
                 resMsg = JSON.stringify(savedNewProduct);
@@ -447,7 +433,6 @@ async function addProductToCart(req, res) {
                 res.writeHead(resCode, { "Content-Type": resType });
                 res.end(resMsg);
                 resolve(resMsg);
-                console.log("Success");
                 return;
               } catch (e) {
                 console.log("Error adding to cart: " + e);
@@ -507,14 +492,10 @@ async function getProducts(req, res) {
     let currMemberCart;
     
     try {
-      const currMember = await membersCollection.findOne({
-        _id: currUser.toString(),
-      });
-      const currMemberCart = await shoppingCartCollection.findOne({
-        email: currMember.email,
-        purchaseTime: null,
-      });
-      console.log("Curr Member Cart: ", JSON.stringify(currMemberCart));
+
+      const currMember = await cartRepo.getMember(currUser);
+
+      const currMemberCart = await cartRepo.getCurrCart(currMember.email);
 
       if (currMemberCart == null) {
         resCode = 200;
@@ -526,15 +507,13 @@ async function getProducts(req, res) {
         resMsg = JSON.stringify(currMemberCart);
       }
     } catch (err) {
+      console.log(err);
       console.log("You are not a registered member!");
       resCode = 401;
       resType = "text/plain";
       resMsg = "You are not a registered member!";
     }
     
-
-    console.log("Status: " + resCode);
-
     res.writeHead(resCode, { "Content-Type": resType });
     res.end(resMsg);
     console.log("Request Complete");
@@ -596,34 +575,25 @@ async function removeProductFromCart(req, res) {
       const user_id = queryParams['user_id'];
       const product_id = queryParams['product_id'];
 
-      console.log(user_id);
       // console.log(queryParams);
 
-      const currMember = await usersCollection.findOne({
-        // _id: user_id,
-        _id: user_id
-      });
+      const currMember = await cartRepo.getMember(user_id);
 
       // console.log(currMember)
 
-      const currMemberCart = await shoppingCartCollection.findOne({
-        email: currMember.email,
-        purchaseTime: null,
-      });
-
+      const currMemberCart = await cartRepo.getCurrCart(currMember.email);
       
       if (!currMemberCart) {
         resCode = 401;
-        resMsg = "Unauthorized Access: Email <" + email + "> is not currently registered!";
+        resMsg = "Unauthorized Access: Email <" + currMember.email + "> is not currently registered!";
+        resType = "text/plain";
         res.writeHead(resCode, { "Content-Type": resType });
         res.end(resMsg);
         resolve(resMsg);
         return;
       }
 
-      const removedCartProduct = await cartProductCollection.findOneAndDelete({
-         product_id: product_id, parent_cart: currMemberCart._id.toString() 
-      });
+      const removedCartProduct = await cartRepo.deleteProductFromCart(product_id, currMemberCart._id);
 
       if (!removedCartProduct) {
         resCode = 404;
@@ -642,18 +612,13 @@ async function removeProductFromCart(req, res) {
         }
       }
 
-      const productInfo = await productCollection.findById(product_id);
+      const productInfo = await productRepo.getProductById(product_id);
+
       let productPrice = productInfo.price;
       productPrice = parseFloat(productPrice.match(parseProductPrice)[1]);
 
-      await shoppingCartCollection.findOneAndUpdate(
-        { _id: currMemberCart._id.toString(), purchaseTime: null },
-        { $set: { 
-          products: newProductList,
-          totalPrice: (currMemberCart.totalPrice - (productPrice * parseFloat(removedCartProduct.quantity))).toFixed(2)
-        }},
-        { new: true }
-        );
+      await cartRepo.updateProductsAndPriceInCurrCart(currMemberCart._id, newProductList, (currMemberCart.totalPrice - (productPrice * parseFloat(removedCartProduct.quantity))).toFixed(2));
+
         resCode = 200;
         resMsg = "Successfully removed product <" + product_id + "> from current cart.";
         resType = "text/plain";

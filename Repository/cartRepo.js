@@ -1,5 +1,5 @@
-// const shoppingCart = require('../models/shoppingCart');
-// const cartProduct = require('../models/cartProduct');
+const shoppingCart = require('../models/shoppingCart');
+const cartProduct = require('../models/cartProduct');
 const membersCollection = require("../models/memberModel");
 const shoppingCartCollection = require("../models/shoppingCart"); // dupliicate
 const cartProductCollection = require("../models/cartProduct");
@@ -82,7 +82,7 @@ class ShoppingCart {
     async updateProductsAndPriceInCurrCart(currCart_id, newProductList, newPrice) {
         return new Promise(async (resolve) => {
             await shoppingCartCollection.findOneAndUpdate(
-                { _id: currCart._id, purchaseTime: null },
+                { _id: currCart_id.toString(), purchaseTime: null },
                 { $set: { 
                   products: newProductList,
                   totalPrice: newPrice
@@ -101,6 +101,42 @@ class ShoppingCart {
                 purchaseTime: null
             });
             resolve(currMemberCart);
+            return;
+        });
+    }
+
+    async pushProductToCart(currCart_id, newProduct, newPrice) {
+        return new Promise(async (resolve) => {
+            await shoppingCartCollection.updateOne(
+                { _id: currCart_id.toString(), purchaseTime: null },
+                { $push: { products: newProduct },
+                  $set: {
+                    totalPrice: newPrice
+                }
+              }
+              );
+            resolve();
+            return;
+        });
+    }
+
+    async getMember(currUser) {
+        return new Promise(async (resolve) => {
+            console.log(currUser.toString());
+            const currMember = await membersCollection.findOne({
+                _id: currUser.toString(),
+              });
+            resolve(currMember);
+            return;
+        });
+    }
+
+    async deleteProductFromCart(product_id, currCart_id) {
+        return new Promise(async (resolve) => {
+            const removedCartProduct = await cartProductCollection.findOneAndDelete({
+                product_id: product_id, parent_cart: currCart_id.toString() 
+             });
+            resolve(removedCartProduct);
             return;
         });
     }
