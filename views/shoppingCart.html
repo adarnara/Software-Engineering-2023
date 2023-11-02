@@ -122,25 +122,44 @@
     .product-info ul {
       padding-left: 20px;
     }
+
+    .continue-shopping {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 19px;
+}
+
+.continue-shopping:hover {
+    background-color: #2980b9;
+}
   </style>
 </head>
 <body>
 
 <div class="navbar">
-  <div class="navbar-logo">
-    <img src="../public/Images/logo.png" alt="Logo" />
-    <span style="font-weight: bold; font-size: 20px;">Reprua</span>
-  </div>
-  <div class="search-bar">
-    <input type="text" placeholder="Search Bar" />
-    <button>Search</button>
+  <a href="http://127.0.0.1:5500/views/landingPage.html" style="text-decoration: none; color: inherit;">
+    <div class="navbar-logo">
+      <img src="../public/Images/logo.png" alt="Logo" />
+      <span style="font-weight: bold; font-size: 20px;">Reprua</span>
+    </div>
+  </a>
+  <div >
+    <button class="continue-shopping" onclick="continueShopping()">Continue Shopping</button>
   </div>
   <div id = "shopping-icon" class="navbar-logo">
-    <a href = "http://127.0.0.1:5500/views/shoppingCart.html">
+    <a href = "http://127.0.0.1:5500/views/landingPage.html">
     <img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />
     <span style="font-weight: bold; font-size: 20px;"></span>
   </a>
   </div>
+</div>
+
+<div 
+  id="error-message" class="hidden">Failed to load products. Please try again later.
 </div>
 
 

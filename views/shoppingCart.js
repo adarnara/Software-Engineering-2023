@@ -18,7 +18,13 @@ document.addEventListener("DOMContentLoaded", () => {
   
   const productsContainer = document.getElementById("products-container");
   const products = [];
-
+  const continueShoppingBtn = document.querySelector('.continue-shopping');
+  if (continueShoppingBtn) {
+    continueShoppingBtn.addEventListener('click', function() {
+        // Redirect the user to the landing page
+        window.location.href = 'http://127.0.0.1:5500/views/landingPage.html';
+    });
+}
   fetch("http://localhost:3000/cart?user_id=6532fa735eac7cbb50adc268")
     .then((response) => {
       console.log("***********************************************************************");
