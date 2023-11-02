@@ -7,6 +7,9 @@ const cartProductCollection = require("../models/cartProduct");
 const productCollection = require("../models/Product");
 const usersCollection = require("../models/users.js");
 
+const cartRepo = require("../Repository/cartRepo.js");
+const productRepo = require("../Repository/ProductRepo.js");
+
 const url = require("url");
 const { request } = require("http");
 const { parse } = require("path");
@@ -43,17 +46,10 @@ async function changeProductQuantityFromCatalog(
 ) {
   return new Promise(async (resolve) => {
     try {
-      const currProduct = await cartProductCollection.findOne({
-        product_id: parsedRequestBody.product_id,
-        parent_cart: currCart._id.toString(),
-      });
+      const currProduct = await cartRepo.getCurrProduct(parsedRequestBody.product_id, currCart._id);
       const newQuantity = parsedRequestBody.quantity + currProduct.quantity;
 
-      const updatedProduct = await cartProductCollection.findOneAndUpdate(
-        { product_id: parsedRequestBody.product_id },
-        { $set: { quantity: newQuantity } },
-        { new: true }
-      );
+      const updatedProduct = await cartRepo.setProductQuantity(parsedRequestBody.product_id, newQuantity);
       
       const newProductList = [];
       for (const product of currCart.products) {
@@ -78,22 +74,16 @@ async function changeProductQuantityFromCatalog(
       // });
 
       // get current price of product and update totalPrice of cart as well
-      const productInfo = await productCollection.findById(parsedRequestBody.product_id);
+      // const productInfo = await productCollection.findById(parsedRequestBody.product_id);
+      const productInfo = await productRepo.getProductById(parsedRequestBody.product_id);
+
       let productPrice = productInfo.price;
       productPrice = parseFloat(productPrice.match(parseProductPrice)[1]);
 
       console.log(productPrice);
 
-
-      await shoppingCartCollection.findOneAndUpdate(
-        { _id: currCart._id, purchaseTime: null },
-        { $set: { 
-          products: newProductList,
-          totalPrice: (currCart.totalPrice + (productPrice * parseFloat(parsedRequestBody.quantity))).toFixed(2)
-         }},
-        { new: true }
-        );
-            
+      await cartRepo.updateProductsAndPriceInCurrCart(currCart._id, newProductList, (currCart.totalPrice + (productPrice * parseFloat(parsedRequestBody.quantity))).toFixed(2));
+              
       resolve(
         "Successfully added product: " +
         parsedRequestBody.product_id +
