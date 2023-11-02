@@ -13,6 +13,12 @@ const getCurrMemberCart = async () => {
     console.log(err)
   }
 };
+
+function continueShopping()
+{
+  window.location.href = 'http://127.0.0.1:5500/views/landingPage.html';
+
+}
 function changeNumber(productId) {
   const displayNumber = document.querySelector('.display-number');
   console.log(productId);
@@ -30,14 +36,14 @@ function changeNumber(productId) {
         product_id: productId
       })
     }).then(res => console.log(res))
-  // location.reload();
+    // location.reload();
   }
 }
-function deleteProduct(productId){
+function deleteProduct(productId) {
 
   console.log(productId)
 
-  fetch(`http://localhost:3000/cart/remove?user_id=6532fa735eac7cbb50adc268&product_id=${productId}`, 
+  fetch(`http://localhost:3000/cart/remove?user_id=6532fa735eac7cbb50adc268&product_id=${productId}`,
     {
       method: 'DELETE'
     }
@@ -50,16 +56,9 @@ function deleteProduct(productId){
 document.addEventListener("DOMContentLoaded", () => {
 
 
-    const productsContainer = document.getElementById("products-container");
-    const products = [];
-  const continueShoppingBtn = document.querySelector('.continue-shopping');
-  if (continueShoppingBtn) {
-    continueShoppingBtn.addEventListener('click', function () {
-      // Redirect the user to the landing page
-      window.location.href = 'http://127.0.0.1:5500/views/landingPage.html';
-    });
-  }
-  
+  const productsContainer = document.getElementById("products-container");
+  const products = [];
+
   fetch("http://localhost:3000/cart?user_id=6532fa735eac7cbb50adc268")
     .then((response) => {
       console.log("***********************************************************************");
@@ -87,10 +86,10 @@ document.addEventListener("DOMContentLoaded", () => {
             productsContainer.innerHTML += productHTML;
           });
       });
-      const subtotalHTML  = createSubTotalHTML(data);
+      const subtotalHTML = createSubTotalHTML(data);
       const tempDiv = document.createElement("div");
       tempDiv.innerHTML = subtotalHTML.trim();
-  
+
       const subtotalSection = tempDiv.firstChild;
       subtotalSection.id = "subtotal-section";
       productsContainer.parentNode.appendChild(subtotalSection);
@@ -137,33 +136,34 @@ document.addEventListener("DOMContentLoaded", () => {
     .catch((error) => {
       console.error("Error fetching product data:", error);
     });
+  
 
-    function createProductHTML(product, currCartProduct) {
-      // Check if variant_data is empty
-      let colorsHTML = "";
-      console.log(product.name);
-      console.log(typeof product);
-      console.log(product.variant_data);
-      if (product.variant_data !== undefined && product.variant_data.length > 0) {
-        const variantData = JSON.parse(product.variant_data[0]);
-        const colors = Object.values(variantData).flat();
-        colorsHTML = `
+  function createProductHTML(product, currCartProduct) {
+    // Check if variant_data is empty
+    let colorsHTML = "";
+    console.log(product.name);
+    console.log(typeof product);
+    console.log(product.variant_data);
+    if (product.variant_data !== undefined && product.variant_data.length > 0) {
+      const variantData = JSON.parse(product.variant_data[0]);
+      const colors = Object.values(variantData).flat();
+      colorsHTML = `
                   <p>Variants:</p>
                   <ul>
                       ${colors.map((color) => `<li>${color}</li>`).join("")}
                   </ul>
               `;
-      }
-      console.log(product.images);
-      const productHTML = `
+    }
+    console.log(product.images);
+    const productHTML = `
           <div class="product-container">
               <div class="product-image">
                   <img src="${product.images[0].large}" alt="${product.name}" />
                   <div class="image-navigation">
                       <button onclick="changeImage('${product._id
-        }', -1, this)">Previous</button>
+      }', -1, this)">Previous</button>
                       <button onclick="changeImage('${product._id
-        }', 1, this)">Next</button>
+      }', 1, this)">Next</button>
                   </div>
               </div>
               <div class="product-info">
@@ -173,8 +173,8 @@ document.addEventListener("DOMContentLoaded", () => {
                   <p>Features: ${product.rating_count}</p>
                   <ul>
                       ${product.feature_bullets
-          .map((bullet) => `<li>${bullet}</li>`)
-          .join("")}
+        .map((bullet) => `<li>${bullet}</li>`)
+        .join("")}
                   </ul>
                   ${colorsHTML}
                   <!-- Number Control -->
@@ -186,14 +186,23 @@ document.addEventListener("DOMContentLoaded", () => {
               </div>
           </div>
       `;
-      console.log(product._id)
-      console.log("ooga")
-      return productHTML;
-    }
-    function createSubTotalHTML(data) {
-      // Check if variant_data is empty
-      console.log("subtotal")
-      const subtotalHTML = `<div class="subtotal">
+    console.log(product._id)
+    console.log("ooga")
+    return productHTML;
+  }
+  function createSubTotalHTML(data) {
+    // Check if variant_data is empty
+    console.log("subtotal")
+    const emptyCart = `<div class="empty-cart">
+      <h1>Your cart is empty!</h1>
+      
+      <div>
+      <button class= "continue-shopping-main" onclick="continueShopping()">Continue Shopping</button>
+    </div>
+  </div>
+      `
+
+    const subtotalHTML = `<div class="subtotal">
       <h1>Subtotal</h1>
       <br>
       <h2>Price: $${data.totalPrice}</h2>
@@ -202,9 +211,11 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>
   </div>
       `;
-  
-      return subtotalHTML;
+    if (data.totalPrice == 0) {
+      return emptyCart;
     }
+    return subtotalHTML;
+  }
 
 
 
