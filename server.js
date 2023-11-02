@@ -5,6 +5,7 @@ const PORT = process.env.PORT || 3000;
 const userRouter = require("./routes/userRoute");
 const adminRouter = require("./routes/adminRoute");
 const landingRouter = require('./routes/landingRoute');
+const paymentRouter = require('./routes/paymentRoute');
 
 connectDB();
 
@@ -49,10 +50,13 @@ const server = http.createServer(async (request, response) => {
     try {
         const userRouteHandler = userRouter[routeKey];
         const adminRouteHandler = adminRouter[routeKey];
+        const paymentRouteHandler = paymentRouter[routeKey];
         if (userRouteHandler) {
             userRouteHandler(request, response);
         } else if(adminRouteHandler) {
-            adminRouteHandler(request,response)
+            adminRouteHandler(request,response);
+        } else if(paymentRouteHandler){
+            paymentRouteHandler(request,response);
         }
     } catch (error) {
         console.log(error);

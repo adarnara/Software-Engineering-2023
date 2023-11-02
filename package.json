@@ -5,5 +5,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.2.0",
     "mongoose": "^7.5.2"
+  },
+  "devDependencies": {
+    "stripe": "^14.2.0"
   }
 }
