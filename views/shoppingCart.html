@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>CSS Animation Effect</title>
   <link rel="stylesheet" href="landingPage.css">
   <style>
-
     body {
       margin: 0;
       padding: 0;
@@ -87,6 +87,25 @@
       background-color: #f8f8f8;
       width: 100%;
     }
+    .subtotal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #f8f8f8;
+    width: 70%;
+    max-width: 600px; /* Set maximum width */
+    margin-bottom: 400px;
+    margin-top: 10px;
+    margin-left: 20px; /* Add padding on the left side */
+}
+
+.subtotal h2 {
+    margin-top: 0;
+}
 
     .product-image {
       flex: 1;
@@ -103,7 +122,9 @@
       flex: 2;
     }
 
-    .product-info h2, .product-info p, .product-info ul {
+    .product-info h2,
+    .product-info p,
+    .product-info ul {
       font-size: 14px;
     }
 
@@ -124,64 +145,138 @@
     }
 
     .continue-shopping {
-    padding: 10px 20px;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 19px;
-}
+      padding: 10px 20px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 19px;
+    }
 
-.continue-shopping:hover {
-    background-color: #2980b9;
+    .continue-shopping:hover {
+      background-color: #2980b9;
+    }
+    .checkout {
+      padding: 10px 20px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 19px;
+    }
+
+    .checkout{
+      background-color: #2980b9;
+    }
+
+    /* CSS */
+    .product-container {
+      display: flex;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .product-image img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .product-info {
+      margin-left: 20px;
+    }
+
+    .number-control {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .control-btn {
+      padding: 10px 12px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 0 5px;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    .control-btn:hover {
+      background-color: #2980b9;
+    }
+
+    input[type="number"] {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 60px;
+      text-align: center;
+      font-size: 14px;
+
+    }
+    .flex-container {
+    display: flex;
+    justify-content: space-between; /* Adjust as needed for spacing */
 }
   </style>
 </head>
+
 <body>
 
-<div class="navbar">
-  <a href="http://127.0.0.1:5500/views/landingPage.html" style="text-decoration: none; color: inherit;">
-    <div class="navbar-logo">
-      <img src="../public/Images/logo.png" alt="Logo" />
-      <span style="font-weight: bold; font-size: 20px;">Reprua</span>
+  <div class="navbar">
+    <a href="http://127.0.0.1:5500/views/landingPage.html" style="text-decoration: none; color: inherit;">
+      <div class="navbar-logo">
+        <img src="../public/Images/logo.png" alt="Logo" />
+        <span style="font-weight: bold; font-size: 20px;">Reprua</span>
+      </div>
+    </a>
+    <div>
+      <button class="continue-shopping" onclick="continueShopping()">Continue Shopping</button>
     </div>
-  </a>
-  <div >
-    <button class="continue-shopping" onclick="continueShopping()">Continue Shopping</button>
+    <div id="shopping-icon" class="navbar-logo">
+      <a href="http://127.0.0.1:5500/views/landingPage.html">
+        <img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />
+        <span style="font-weight: bold; font-size: 20px;"></span>
+      </a>
+    </div>
   </div>
-  <div id = "shopping-icon" class="navbar-logo">
-    <a href = "http://127.0.0.1:5500/views/landingPage.html">
-    <img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />
-    <span style="font-weight: bold; font-size: 20px;"></span>
-  </a>
+
+  <div id="error-message" class="hidden">Failed to load products. Please try again later.
   </div>
-</div>
-
-<div 
-  id="error-message" class="hidden">Failed to load products. Please try again later.
-</div>
 
 
-<div class="content-container">
+  <div class="content-container">
+    <div class="flex-container">
 
-  <div id="products-container">
+      <div id="products-container">
 
+      </div>
+      <div id="subtotal-section">
+      </div>
+    </div>
   </div>
-</div>
 
-<section>
-  <div class="waves">
-    <div class="wave" id="wave1"></div>
-    <div class="wave" id="wave2"></div>
-    <div class="wave" id="wave3"></div>
-    <div class="wave" id="wave4"></div>
-    <img src="../public/Images/stars.jpg" class="stars">
-    <img src="../public/Images/island.png" class="island">
-  </div>
-</section>
+  <section>
+    <div class="waves">
+      <div class="wave" id="wave1"></div>
+      <div class="wave" id="wave2"></div>
+      <div class="wave" id="wave3"></div>
+      <div class="wave" id="wave4"></div>
+      <img src="../public/Images/stars.jpg" class="stars">
+      <img src="../public/Images/island.png" class="island">
+    </div>
+  </section>
 
 
-<script src="shoppingCart.js"></script>
+  <script src="shoppingCart.js"></script>
 </body>
+
 </html>
