@@ -628,7 +628,7 @@ async function removeProductFromCart(req, res) {
 
       const currMember = await usersCollection.findOne({
         // _id: user_id,
-        email: user_id
+        _id: user_id
       });
 
       // console.log(currMember)
