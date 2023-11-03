@@ -3,7 +3,7 @@ const db = require("./mockDB.js")
 
 
 const request = require('supertest');
-const server = require('../server.js');
+const server = require('./testserver.js');
 const cartRepo = require('../Repository/cartRepo.js');
 const cartModel = require('../models/shoppingCart.js');
 
@@ -21,7 +21,7 @@ afterAll(async () => {
   await new Promise(resolve => server.close(resolve));
 });
 
-describe('Cart operatens', () => {
+describe('Cart operations', () => {
   const email = "twc44@scarletmail.rutgers.edu"
 
   it('new cart for user', async () => {
@@ -40,9 +40,9 @@ describe('Cart operatens', () => {
 
   it("add product", async () => {
     const cart = await cartRepo.createEmptyCart(email);
-
     const item = await cartRepo.addProductToCart(email, product_id, 13)
     const cartProducts = await cartRepo.getProductsFromCartObject(cart);
+    console.log(cartProducts)
     expect(cartProducts[0].parent_cart.toString()).toBe(cart._id.toString())
     expect(cartProducts[0].product_id).toBe(product_id)
     expect(cartProducts[0].quantity).toBe(13)

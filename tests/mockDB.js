@@ -10,6 +10,7 @@ module.exports.connect = async() => {
         useUnifiedTopology: true, 
     }
     await mongoose.connect(uri, mongooseOpts);
+    console.log("connected to virtual DB")
 }
 
 module.exports.closeDatabase = async() => {
