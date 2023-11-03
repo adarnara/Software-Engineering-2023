@@ -80,13 +80,10 @@ async function changeProductQuantityFromCatalog(
       let productPrice = productInfo.price;
       productPrice = parseFloat(productPrice.match(parseProductPrice)[1]);
 
-      await cartRepo.updateProductsAndPriceInCurrCart(currCart._id, newProductList, (currCart.totalPrice + (productPrice * parseFloat(parsedRequestBody.quantity))).toFixed(2));
+      const updatedPOSTproduct = await cartRepo.updateProductsAndPriceInCurrCart(currCart._id, newProductList, (currCart.totalPrice + (productPrice * parseFloat(parsedRequestBody.quantity))).toFixed(2));
 
       resolve(
-        "Successfully added product: " +
-        parsedRequestBody.product_id +
-          " to cart: " +
-          currCart._id.toString()
+        updatedPOSTproduct
       );
       return;
     } catch (err) {
@@ -132,6 +129,7 @@ async function changeProductQuantityFromCart(req, res) {
     }
     if (!('user_id' in queryParams)) {
       resCode = 400;
+      resType = "text/plain";
       resMsg = "Bad Request: Single query param must have the key 'user_id'";
       res.writeHead(resCode, { "Content-Type": resType });
       res.end(resMsg);
@@ -210,6 +208,7 @@ async function changeProductQuantityFromCart(req, res) {
               // If no cart returned, this user is not registered!
               if (!currMemberCart) {
                 resCode = 401;
+                resType = "text/plain";
                 resMsg = "Unauthorized Access: Email <" + email + "> is not currently registered!";
                 res.writeHead(resCode, { "Content-Type": resType });
                 res.end(resMsg);
@@ -254,6 +253,7 @@ async function changeProductQuantityFromCart(req, res) {
         }
       }
     } else {
+      resType = "text/plain";
       resCode = 400;
       resMsg =
         "Bad Request: Please ensure request body is a singular JSON object";
@@ -384,13 +384,18 @@ async function addProductToCart(req, res) {
 
             // If product exists, we want to increase its quantity in the shopping cart, so call PATCH method to return the proper response
             if (existingProduct) {
-              resMsg = await changeProductQuantityFromCatalog(
+              const changedProduct = await changeProductQuantityFromCatalog(
                 parsedRequestBody,
                 res,
                 currMemberCart
               );
+              if (typeof resMsg !== 'string') {
+                resMsg = JSON.stringify(changedProduct);
+                resType = "application/json";
+              } else {
+                resType = "text/plain";
+              }
               resCode = 200;
-              resType = "text/plain";
               res.writeHead(resCode, { "Content-Type": resType });
               res.end(resMsg);
               resolve(resMsg);
@@ -483,6 +488,7 @@ async function getProducts(req, res) {
     if (!('user_id' in queryParams)) {
       resCode = 400;
       resMsg = "Bad Request: Must have exactly one query param with key 'user_id'";
+      resType = "text/plain";
       res.writeHead(resCode, { "Content-Type": resType });
       res.end(resMsg);
       resolve(resMsg);
@@ -567,6 +573,7 @@ async function removeProductFromCart(req, res) {
       if (!('user_id' in queryParams) || !('product_id' in queryParams)) {
         resCode = 400;
         resMsg = "Bad Request: Must have exactly two query params with keys 'user_id' and 'product_id'";
+        resType = "text/plain";
         res.writeHead(resCode, { "Content-Type": resType });
         res.end(resMsg);
         resolve(resMsg);
@@ -620,8 +627,8 @@ async function removeProductFromCart(req, res) {
       await cartRepo.updateProductsAndPriceInCurrCart(currMemberCart._id, newProductList, (currMemberCart.totalPrice - (productPrice * parseFloat(removedCartProduct.quantity))).toFixed(2));
 
         resCode = 200;
-        resMsg = "Successfully removed product <" + product_id + "> from current cart.";
-        resType = "text/plain";
+        resMsg = JSON.stringify(removedCartProduct);
+        resType = "application/json";
         res.writeHead(resCode, { "Content-Type": resType });
         res.end(resMsg);
         resolve(resMsg);
@@ -629,7 +636,7 @@ async function removeProductFromCart(req, res) {
     } catch (error) {
       console.log(error);
       res.writeHead(400);
-      res.end("bad request");
+      res.end("Bad Request: " + error);
       resolve("bad request");
     }
   });

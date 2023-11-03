@@ -1,14 +1,26 @@
 const mongoose = require('mongoose');
-const db = require("./mockDB.js")
+const db = require("./mockDB.js");
+const http = require("http");
 
 
 const request = require('supertest');
 const server = require('./testserver.js');
 const cartRepo = require('../Repository/cartRepo.js');
 const cartModel = require('../models/shoppingCart.js');
+let webServer;
+
+// webServer = http.createServer(server);
+server.listen(3000, (error) => {
+  if (error) {
+      console.log('Error Occurred', error);
+  } else {
+      console.log(`Server is running on 3000`);
+  }
+});
 
 beforeAll(async () => {
   await db.connect();
+
 });
 
 afterEach(async () => {
@@ -64,6 +76,42 @@ describe('Cart operations', () => {
     expect(cartProducts[0]).toBe(undefined)
   })
 
+});
+
+describe("Adding products to cart", () => {
+  it("should add products not already in the cart correctly", async (done) => {
+    const email = "test6@gmail.com";
+    const cart = await cartRepo.createEmptyCart(email);
+    console.log(cart.email)
+    expect(cart.email).toBe(email)
+    expect(cart.purchaseTime).toBe(null)
+    expect(cart.products).toStrictEqual([])
+    expect(cart.numShipped).toBe(null)
+    expect(cart.totalPrice).toBe(0)
+
+    request(server)
+      .post("/cart/add?user_id=65452b7ef6a81c9363e57985")
+      .set("Content-Type", /json/)
+      .send({
+        quantity: 5,
+        product_id: "ipad1",
+        email: "test6@gmail.com"
+      })
+      .end((err, res) => {
+        console.log("\n\n\n\n\n" + 87)
+        console.log(res)
+        if (err) {
+          console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n\n\n\n");
+          done.fail(err);
+          return;
+        }
+        console.log("\n\n\n\n\n" + 87)
+        console.log(res)
+        expect(res).toEqual("");
+
+        done();
+      });
+  });
 });
 
 
