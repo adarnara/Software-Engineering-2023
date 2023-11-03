@@ -25,8 +25,8 @@ async function getStripePaymentRedirect(req, res){
             payment_method_types: ["card"],
             mode: "payment",
             line_items: items,
-            success_url: "http://localhost:3000",
-            cancel_url: "http://localhost:3000"
+            success_url: "http://127.0.0.1:5500/views/shoppingCart.html",
+            cancel_url: "http://127.0.0.1:5500/views/shoppingCart.html"
         });
         res.writeHead(200);
         res.end(JSON.stringify(session));
@@ -79,12 +79,13 @@ async function getFormatedStripeJSON(array){
 function strToCents(str){
     number = -1;
     try{
+        // number = parseFloat(str.substring(1)).toFixed(2);
         number = Math.floor(Number(str.substring(1)) * 100);
         if(isNaN(number))
             return -1;
         return number;
     } catch(err) {
-        //console.log(err);
+        console.log(err);
         return -1;
     }
 }

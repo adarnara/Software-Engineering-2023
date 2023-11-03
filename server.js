@@ -114,21 +114,22 @@ const server = http.createServer(async (request, response) => {
     });
     }
     */
+    // });
+
+    // const routes = {
+    //     'PATCH/cart/<id>': (request, response) => shoppingCartController.changeProductQuantityFromCart(request,response),
+    //     'GET/cart/6532fb96e94f77fda92b8bc0': (request, response) => shoppingCartController.getProducts(request,response),
+    //     'POST/cart/<id>/add': (request, response) => shoppingCartController.addProductToCart(request,response),
+    //     'DELETE/cart/remove': (request, response) => shoppingCartController.removeProductFromCart(request,response),
+    // };
 });
 
-// const routes = {
-//     'PATCH/cart/<id>': (request, response) => shoppingCartController.changeProductQuantityFromCart(request,response),
-//     'GET/cart/6532fb96e94f77fda92b8bc0': (request, response) => shoppingCartController.getProducts(request,response),
-//     'POST/cart/<id>/add': (request, response) => shoppingCartController.addProductToCart(request,response),
-//     'DELETE/cart/remove': (request, response) => shoppingCartController.removeProductFromCart(request,response),
-// };
+    server.listen(PORT, (error) => {
+        if (error) {
+            console.log('Error Occurred', error);
+        } else {
+            console.log(`Server is running on ${PORT}`);
+        }
+    });
 
-server.listen(PORT, (error) => {
-    if (error) {
-        console.log('Error Occurred', error);
-    } else {
-        console.log(`Server is running on ${PORT}`);
-    }
-});
-
-module.exports = server;
+    module.exports = server;
