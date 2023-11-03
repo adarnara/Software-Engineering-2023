@@ -74,6 +74,9 @@ class ShoppingCart {
                 { $set: { quantity: newQuantity } },
                 { new: true }
             );
+            console.log(product_id)
+            console.log("\n\n\n\n\n\n")
+            console.log(updatedProduct)
             resolve(updatedProduct);
             return;
         });
@@ -81,7 +84,7 @@ class ShoppingCart {
 
     async updateProductsAndPriceInCurrCart(currCart_id, newProductList, newPrice) {
         return new Promise(async (resolve) => {
-            await shoppingCartCollection.findOneAndUpdate(
+            const updatedProduct = await shoppingCartCollection.findOneAndUpdate(
                 { _id: currCart_id.toString(), purchaseTime: null },
                 { $set: { 
                   products: newProductList,
@@ -89,6 +92,8 @@ class ShoppingCart {
                  }},
                 { new: true }
             );
+            console.log(updatedProduct)
+
             resolve();
             return;            
         });

@@ -28,9 +28,16 @@ function continueShopping()
   window.location.href = 'http://127.0.0.1:5500/views/landingPage.html';
 
 }
-async function changeNumber(productId) {
-  const displayNumber = document.querySelector('.display-number');
+function handleKeyPress(event, productId, inputElement) {
+  if (event.key === "Enter") {
+    event.preventDefault(); // Prevent the default form submission
+    changeNumber(productId, inputElement);
+  }
+}
+
+async function changeNumber(productId, displayNumber) {
   console.log(productId);
+  console.log(parseInt(displayNumber.value))
   if (isNaN(parseInt(displayNumber.value)) || parseInt(displayNumber.value) < 0) {
     displayNumber.value = 0;
   } else {
@@ -205,8 +212,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                   <!-- Number Control -->
                   <div class="number-control">
                   <p style="display: inline-block; margin-right: 10px;">Quantity: </p>
-                      <input type="number" class="display-number" value="${currCartProduct.quantity}" onclick="changeNumber('${product._id}')"> 
-                      <button class= "delete-button" onclick="deleteProduct('${product._id}')">Remove Item From Cart</button>
+                  <input type="number" class="display-number" value="${currCartProduct.quantity}" oninput="changeNumber('${product._id}', this)" onkeyup="handleKeyPress(event, '${product._id}', this)">
+                  <button class= "delete-button" onclick="deleteProduct('${product._id}')">Remove Item From Cart</button>
                   </div>
               </div>
           </div>
