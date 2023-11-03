@@ -359,12 +359,13 @@ async function addProductToCart(req, res) {
 
             // If product exists, we want to increase its quantity in the shopping cart, so call PATCH method to return the proper response
             if (existingProduct) {
-              const changedProduct = await changeProductQuantityFromCatalog(
+              const changedCart = await changeProductQuantityFromCatalog(
                 parsedRequestBody,
                 res,
                 currMemberCart
               );
-              if (typeof resMsg !== 'string') {
+              if (typeof changedProduct !== 'string') {
+                const changedProduct = await cartRepo.getCurrProduct(product_id, currMemberCart._id);
                 resMsg = JSON.stringify(changedProduct);
                 resType = "application/json";
               } else {
