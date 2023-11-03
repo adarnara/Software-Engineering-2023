@@ -5,8 +5,11 @@ const PORT = process.env.PORT || 3000;
 const userRouter = require("./routes/userRoute");
 const adminRouter = require("./routes/adminRoute");
 const landingRouter = require('./routes/landingRoute');
+
 const fs = require('fs')
 const path_m = require('path')
+
+const paymentRouter = require("./routes/paymentRoute");
 
 
 connectDB();
@@ -112,5 +115,4 @@ server.listen(PORT, (error) => {
     } else {
         console.log(`Server is running on ${PORT}`);
     }
-    
 });
