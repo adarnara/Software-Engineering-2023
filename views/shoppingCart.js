@@ -1,5 +1,6 @@
-const currMemberEmail = "johndoes@gmail.com";
+const currMemberEmail = "no@gmail.com";
 
+let subtotal;
 // Get the current Member's cart
 const getCurrMemberCart = async () => {
   try {
@@ -55,9 +56,25 @@ async function changeNumber(productId, displayNumber) {
     displayNumber.value = 0;
   } else {
     await fetch(
-      `http://localhost:3000/cart?user_id=6532fa735eac7cbb50adc268`,
+      `http://localhost:3000/cart?user_id=65450de97eff4356f889c95d`,
       req
     ).then((res) => console.log(res));
+    await fetch("http://localhost:3000/cart?user_id=65450de97eff4356f889c95d")
+    .then((response) => {
+      console.log(
+        "***********************************************************************"
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      // console.log(response.json());
+      return response.json();
+    })
+    .then(async (data) => {
+      subtotal = data.totalPrice;
+      const subtotalElement = document.getElementById("subtotal-value");
+    subtotalElement.textContent = `Price: $${subtotal}`;
+    });
     // location.reload();
   }
 }
@@ -67,7 +84,7 @@ async function deleteProduct(productId) {
   console.log(productId);
 
   await fetch(
-    `http://localhost:3000/cart/remove?user_id=6532fa735eac7cbb50adc268&product_id=${productId}`,
+    `http://localhost:3000/cart/remove?user_id=65450de97eff4356f889c95d&product_id=${productId}`,
     {
       method: "DELETE",
     }
@@ -80,7 +97,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const productsContainer = document.getElementById("products-container");
   const products = [];
 
-  await fetch("http://localhost:3000/cart?user_id=6532fa735eac7cbb50adc268")
+  await fetch("http://localhost:3000/cart?user_id=65450de97eff4356f889c95d")
     .then((response) => {
       console.log(
         "***********************************************************************"
@@ -185,14 +202,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       <button class= "continue-shopping-main" onclick="continueShopping()">Continue Shopping</button>
       </div>
      </div>`;
-
+    subtotal = data.totalPrice.toFixed(2);
     const subtotalHTML = 
     `<div class="subtotal">
       <h1>Subtotal</h1>
       <br>
-      <h2>Price: $${data.totalPrice.toFixed(2)}</h2>
+      <h2 id = "subtotal-value">Price: $${subtotal}</h2>
       <div>
-        <button class="checkout" onclick="proceedToCheckout()">Proceed to Checkout</button>
+        <button class="checkout"  onclick="proceedToCheckout()">Proceed to Checkout</button>
       </div>
      </div>
       `;
