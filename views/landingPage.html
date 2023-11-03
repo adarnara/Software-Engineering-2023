@@ -117,6 +117,33 @@
       border-radius: 5px;
       cursor: pointer;
     }
+    .search-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .search-bar input[type="text"] {
+      width: 60%;
+      padding: 5px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .search-bar button {
+      background-color: #fff;
+      color: #007BFF;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin-left: 5px;
+      cursor: pointer;
+    }
+
+    .go-to-page-button {
+      margin-left: auto; /* Pushes the button to the right */
+      white-space: nowrap; /* Prevents line breaks */
+    }
 
 
     .product-info ul {
@@ -134,6 +161,7 @@
   <div class="search-bar">
     <input type="text" placeholder="Search Bar" />
     <button>Search</button>
+    <button class="go-to-page-button" onclick="navigateToPage('registerAndLoginPage.html')">Register/Sign In</button>
   </div>
 </div>
 
@@ -156,6 +184,13 @@
   </div>
 </section>
 
+<script>
+  // JavaScript function to navigate to another page
+  function navigateToPage(route) {
+    // Use window.location to navigate to the desired page
+    window.location.href = route;
+  }
+</script>
 
 <script src="landingPageApp.js"></script>
 </body>

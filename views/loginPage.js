@@ -1,56 +1,79 @@
-// Ideally, the client is able to either:
-// 1. Access a 3rd-party API to generate the requisite data to send to the server
-// 2. Generate the data to send to the server
-//   a. Encryption (Don't send plaintext passwords over internet)
+document.addEventListener("DOMContentLoaded", function () {
+    const container = document.querySelector(".container");
+    const loginForm = document.querySelector('.login-form');
+    const registerForm = document.querySelector('.Register-form');
+    const RegiBtn = document.querySelector('.RegiBtn');
+    const LoginBtn = document.querySelector('.LoginBtn');
+    const loginButton = document.getElementById('loginButton');
 
-// Notes
-// 1. Notice that we use emails as the key to login
-
-// Implementation Notes
-// 1. Uses the Fetch API
-// 2. Currently sends the data in json
-
-// Sends a request to register the user simply by sending the form
-// data in JSON format.
-function login() {
-    const formElement = document.getElementById("login-form");
-    const formData = new FormData(formElement);
-
-    let formJson = {};
-    formData.forEach(function(val, key) {
-        formJson[key] = val;
+    RegiBtn.addEventListener('click', () => {
+        registerForm.classList.add('active');
+        loginForm.classList.add('active');
+        container.classList.remove('login-active');
+        container.classList.add('register-active');
     });
 
-    let headers = new Headers();
-    headers.append("Content-Type", "application/json");
+    LoginBtn.addEventListener('click', () => {
+        registerForm.classList.remove('active');
+        loginForm.classList.remove('active');
+        container.classList.remove('register-active');
+        container.classList.add('login-active');
+    });
 
-    // Fetch API
-    const request = new Request(
-        "/member/login", {
-            headers: headers,
-            method: "POST",
-            body: JSON.stringify(formJson),
+    const handleLoginResult = async (response) => {
+        if (response.status === 201) {
+            // Successful login, redirect to landing page
+            window.location.href = "landingPage.html";
+        } else {
+            const data = await response.json();
+            console.log(data.message);
+            document.getElementById("message").innerText = data.message;
+            loginButton.textContent = 'Invalid login';
         }
-    );
+    };
 
-    fetch(request)
-        .then(function(res) {
-            if (!res.ok) {
-                throw new Error(`HTTP Error! Status: ${res.status}`);
-            }
-            return res.blob();
-        })
-        .then(function(_) {
-            console.log("Request Succeeded!")
-        });
-}
+    // Handle form submission
+    const loginFormElement = document.getElementById('login-form');
+    loginFormElement.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-// Attach an event listener to the form, which is set to `method="dialog"`.
-// The form will not submit by itself since this is the case.
-addEventListener("submit", function(evt) {
-    if (evt.target === document.getElementById("login-form")) {
-        // Send the register request, which will automatically retrieve all the
-        // information from the form.
-        login();
-    }
-})
+        const email = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+        const role = document.getElementById("role").value;
+
+        const loginData = {
+            email: email,
+            password: password
+        };
+
+        let loginRoute = "";
+
+        if (role === "seller") {
+            loginRoute = "/seller/login";
+        } else if (role === "member") {
+            loginRoute = "/member/login";
+        } else if (role === "admin") {
+            loginRoute = "/admin/login";
+        } else {
+            document.getElementById("message").innerText = "Invalid role selection.";
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:3000${loginRoute}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(loginData),
+            });
+
+            handleLoginResult(response);
+        } catch (error) {
+            console.error(error);
+            document.getElementById("message").innerText = "Internal Server Error";
+            loginButton.textContent = 'Invalid login';
+        }
+    });
+});
+

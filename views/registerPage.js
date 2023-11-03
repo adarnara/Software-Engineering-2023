@@ -1,74 +1,80 @@
-// Register copy of login
+document.getElementById("registration-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-/**
- * @returns {boolean} `true` if all fields are valid.
- */
-function checkForm() {
-    const formElement = document.getElementById("register-form");
-    const formData = new FormData(formElement);
-    // TODO: Check valid/available username
-    // TODO: Check valid/available email address
-    // Check passwords match (TODO: check strength?)
-    if (formData.get("password") !== formData.get("confirm")) {
-        alert("Passwords do not match!");
-        return false;
+    const firstName = document.getElementById("reg-first-name").value;
+    const lastName = document.getElementById("reg-last-name").value;
+    const email = document.getElementById("reg-username").value;
+    const password = document.getElementById("reg-password").value;
+    const confirmPassword = document.getElementById("reg-confirm-password").value;
+    const role = document.getElementById("reg-role").value;
+
+    const registerButton = document.getElementById("registerButton");
+
+    const updateRegisterButtonText = (text, delay = 1000) => {
+        registerButton.textContent = text;
+        setTimeout(() => {
+            registerButton.textContent = "Register";
+        }, delay);
+    };
+
+    if (password !== confirmPassword) {
+        updateRegisterButtonText("Passwords do not match");
+        return;
     }
-    return true;
-}
 
-function checkName() {
+    const registrationData = {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        password: password,
+        role: role.charAt(0).toUpperCase() + role.slice(1).toLowerCase(),
+    };
 
-}
+    let registrationRoute = "";
 
-function checkEmail() {
-    
-}
+    if (role === "seller") {
+        registrationRoute = "/seller/register";
+    } else if (role === "member") {
+        registrationRoute = "/member/register";
+    } else {
+        updateRegisterButtonText("Invalid role selection");
+        return;
+    }
 
-function checkPassword() {
-    
-}
-
-function register() {
-    const formElement = document.getElementById("register-form");
-    const formData = new FormData(formElement);
-
-    let formJson = {};
-    formData.forEach(function(val, key) {
-        formJson[key] = val;
-    });
-
-    let headers = new Headers();
-    headers.append("Content-Type", "application/json");
-
-    // Fetch API
-    const request = new Request(
-        "/member/register", {
-            headers: headers,
+    try {
+        const response = await fetch(`http://localhost:3000${registrationRoute}`, {
             method: "POST",
-            body: JSON.stringify(formJson),
-        }
-    );
-
-    fetch(request)
-        .then(function(res) {
-            if (!res.ok) {
-                throw new Error(`HTTP Error! Status: ${res.status}`);
-            }
-            return res.blob();
-        })
-        .then(function(_) {
-            console.log("Request Succeeded!")
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(registrationData),
         });
-}
 
-// Attach an event listener to the form, which is set to `method="dialog"`.
-// The form will not submit by itself since this is the case.
-addEventListener("submit", function(evt) {
-    if (evt.target === document.getElementById("register-form")) {
-        // Send the register request, which will automatically retrieve all the
-        // information from the form.
-        if (checkForm()) {
-            register();
+        if (response.status === 201) {
+            updateRegisterButtonText("Registration successful");
+
+            document.getElementById("reg-username").value = "";
+            document.getElementById("reg-password").value = "";
+
+            document.getElementById("username").value = email;
+
+            registerForm.classList.remove('active');
+            loginForm.classList.remove('active');
+            container.classList.remove('register-active');
+            container.classList.add('login-active');
+        } else {
+            const data = await response.json();
+
+            if (data.message) {
+                updateRegisterButtonText(data.message);
+            } else {
+                updateRegisterButtonText("Invalid registration");
+            }
         }
+    } catch (error) {
+        console.error(error);
+        updateRegisterButtonText("Internal Server Error");
     }
-})
+});
+
+
