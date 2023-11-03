@@ -29,7 +29,7 @@ function continueShopping() {
 
 // Update product quantity in database upon text input
 function handleKeyPress(event, productId, inputElement) {
-  if (event.key === "Enter") {
+  if (event.key === "Enter" || event.key === "Backspace") {
     event.preventDefault(); // Prevent the default form submission
     changeNumber(productId, inputElement);
   }
