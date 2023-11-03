@@ -74,9 +74,6 @@ class ShoppingCart {
                 { $set: { quantity: newQuantity } },
                 { new: true }
             );
-            console.log(product_id)
-            console.log("\n\n\n\n\n\n")
-            console.log(updatedProduct)
             resolve(updatedProduct);
             return;
         });
@@ -92,7 +89,6 @@ class ShoppingCart {
                  }},
                 { new: true }
             );
-            console.log(updatedProduct)
 
             resolve();
             return;            
