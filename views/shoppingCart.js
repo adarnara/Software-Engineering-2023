@@ -45,7 +45,7 @@ async function changeNumber(productId) {
         product_id: productId
       })
     }).then(res => console.log(res))
-    location.reload();
+    // location.reload();
   }
 }
 async function deleteProduct(productId) {
@@ -62,13 +62,13 @@ async function deleteProduct(productId) {
 
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
 
 
   const productsContainer = document.getElementById("products-container");
   const products = [];
 
-  fetch("http://localhost:3000/cart?user_id=6532fa735eac7cbb50adc268")
+  await fetch("http://localhost:3000/cart?user_id=6532fa735eac7cbb50adc268")
     .then((response) => {
       console.log("***********************************************************************");
       if (!response.ok) {
@@ -80,9 +80,10 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(async (data) => {
       console.log('hi');
       console.log("Response from /:", JSON.stringify(data, null, 2));
+      data.products.sort((product1, product2) => product1.product_id - product2.product_id);
 
-      data.products.forEach(async (product) => {
-        console.log(product.product_id);
+      for (let i = 0; i < data.products.length; i++) {
+        const product = data.products[i];
         await fetch(`http://localhost:3000/search?productId=${product.product_id}`)
           .then(async (response) => {
             // console.log(response);
@@ -94,7 +95,22 @@ document.addEventListener("DOMContentLoaded", () => {
             const productHTML = createProductHTML(response, product);
             productsContainer.innerHTML += productHTML;
           });
-      });
+      }
+
+      // data.products.forEach(async (product) => {
+      //   console.log(product.product_id);
+      //   await fetch(`http://localhost:3000/search?productId=${product.product_id}`)
+      //     .then(async (response) => {
+      //       // console.log(response);
+      //       response = await response.json();
+      //       console.log(response);
+      //       console.log(product);
+      //       products.push(response);
+      //       console.log(products);
+      //       const productHTML = createProductHTML(response, product);
+      //       productsContainer.innerHTML += productHTML;
+      //     });
+      // });
       const subtotalHTML = createSubTotalHTML(data);
       const tempDiv = document.createElement("div");
       tempDiv.innerHTML = subtotalHTML.trim();
@@ -189,7 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   <!-- Number Control -->
                   <div class="number-control">
                   <p style="display: inline-block; margin-right: 10px;">Quantity: </p>
-                      <input type="number" class="display-number" value="${currCartProduct.quantity}" onblur="changeNumber('${product._id}')"> 
+                      <input type="number" class="display-number" value="${currCartProduct.quantity}" onclick="changeNumber('${product._id}')"> 
                       <button class= "delete-button" onclick="deleteProduct('${product._id}')">Remove Item From Cart</button>
                   </div>
               </div>

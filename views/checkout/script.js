@@ -30,7 +30,8 @@ button.addEventListener("click", async () => {
       })
       .then(({ url }) => {
         // Redirect to the URL from the response
-        window.location = url;
+        // handle fixing shopping carts
+        window.location.href = url;
       })
       .catch(e => {
         // Log the error to the console
