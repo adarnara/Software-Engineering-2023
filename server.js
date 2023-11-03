@@ -58,6 +58,8 @@ const server = http.createServer(async (request, response) => {
         const userRouteHandler = userRouter[routeKey];
         const adminRouteHandler = adminRouter[routeKey];
         const paymentRouteHandler = paymentRouter[routeKey];
+        const shoppingCartRouteHandler = shoppingCartRouter[routeKey];
+
         if (userRouteHandler) {
             userRouteHandler(request, response);
         } else if (adminRouteHandler) {

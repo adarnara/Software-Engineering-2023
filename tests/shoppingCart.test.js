@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const db = require("./mockDB.js")
 
 
-// const request = require('supertest');
+const request = require('supertest');
 const server = require('../server.js');
 const cartRepo = require('../Repository/cartRepo.js');
 const cartModel = require('../models/shoppingCart.js');
@@ -18,7 +18,6 @@ afterEach(async () => {
 
 afterAll(async () => {
   await db.closeDatabase()
-  // await mongoose.connection.close();
   await new Promise(resolve => server.close(resolve));
 });
 
@@ -63,19 +62,49 @@ describe('Cart operatens', () => {
     cartProducts = await cartRepo.getProductsFromCartObject(cart);
 
     expect(cartProducts[0]).toBe(undefined)
-
-
-
   })
 
-
-
-
-
-
-
-
-
 });
+
+
+
+
+
+// describe('Client operations', () => {
+//   const email = "twc44@scarletmail.rutgers.edu"
+
+//   it('client product add to cart', async () => {
+
+//     await cartRepo.createEmptyCart(email);
+
+
+//     // typeof parsedRequestBody.quantity !== "number" ||
+//     //             typeof parsedRequestBody.product_id !== "string" ||
+//     //             typeof parsedRequestBody.email !== "string"
+//     productToAdd = {
+//       quantity: 4,
+//       product_id: "3290",
+//       email: email
+//     }
+    
+//     const response = await request(server)
+//           .post('/cart/add')
+//           .set ("Content-Type", "application/json")
+//           .send(productToAdd);
+
+
+
+//     expect(response.status).toBe(200);
+//     expect(response.body).toEqual(productToAdd);
+//   }, 2000)
+
+    
+
+
+    // const response = await request(server)
+    // .get('/cart/')
+    // .set("Content-Type", "application/json")
+
+// });
 
 
