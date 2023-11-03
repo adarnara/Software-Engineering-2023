@@ -5,6 +5,7 @@ const PORT = process.env.PORT || 3000;
 const userRouter = require("./routes/userRoute");
 const adminRouter = require("./routes/adminRoute");
 const landingRouter = require('./routes/landingRoute');
+const shoppingCartRouter = require('./routes/shoppingCartRoute');
 
 const fs = require('fs')
 const path_m = require('path')
@@ -21,7 +22,7 @@ const server = http.createServer(async (request, response) => {
 
     // Set the CORS headers to allow all origins (you can restrict it as needed)
     response.setHeader('Access-Control-Allow-Origin', '*');
-    response.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS'); // Add the necessary HTTP methods you want to support
+    response.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS'); // Add the necessary HTTP methods you want to support
     response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Add the necessary headers
 
     // TODO make all the routers consistent with each other
@@ -63,6 +64,10 @@ const server = http.createServer(async (request, response) => {
             adminRouteHandler(request, response);
         } else if(paymentRouteHandler){
             paymentRouteHandler(request, response);
+        } else if(shoppingCartRouteHandler) {
+                // console.log(path);
+                // const user_id = path.split("/")[2];
+                shoppingCartRouteHandler(request,response);
         } else {
             // Might as well return something than
             // let the client get stuck fetching
@@ -70,7 +75,6 @@ const server = http.createServer(async (request, response) => {
                 response.writeHead(404);
                 response.end("Could not find resource!");
             }
-        }
     } catch (error) {
         console.log(error);
     }
@@ -108,6 +112,13 @@ const server = http.createServer(async (request, response) => {
     }
     */
 });
+
+// const routes = {
+//     'PATCH/cart/<id>': (request, response) => shoppingCartController.changeProductQuantityFromCart(request,response),
+//     'GET/cart/6532fb96e94f77fda92b8bc0': (request, response) => shoppingCartController.getProducts(request,response),
+//     'POST/cart/<id>/add': (request, response) => shoppingCartController.addProductToCart(request,response),
+//     'DELETE/cart/remove': (request, response) => shoppingCartController.removeProductFromCart(request,response),
+// };
 
 server.listen(PORT, (error) => {
     if (error) {

@@ -19,6 +19,28 @@ class ProductController {
       res.status(500).json({ message: "Failed to fetch products for the landing page." });
     }
   }
+
+  async getExactProduct(req,res) {
+    try {
+      const productId = req.query.productId;
+      const product = await ProductRepository.getProductById(productId);
+      res.status(200).json(product);
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to fetch specified product.' });
+    }
+  }
+
+  async getProductsByCategory(req, res) {
+    try {
+      const category = req.query.name;
+      const page = parseInt(req.query.page) || 1;
+      const pageSize = parseInt(req.query.pageSize) || 5;
+      const products = await ProductRepository.getProductsByCategory(category, page, pageSize);
+      res.status(200).json(products);
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to fetch category.' });
+    }
+  }
 }
 
 module.exports = new ProductController();
