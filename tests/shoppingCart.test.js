@@ -50,7 +50,7 @@ describe('Cart operations', () => {
 
   it("change product quantity and delete from cart", async () => {
     const cart = await cartRepo.createEmptyCart(email);
-    const item = await cartRepo.addProductToCart(email, product_id, 13)
+    await cartRepo.addProductToCart(email, product_id, 13)
     await cartRepo.changeProductQuantity(email, product_id, 12)
     let cartProducts = await cartRepo.getProductsFromCartObject(cart);
 
