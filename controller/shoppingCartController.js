@@ -235,11 +235,13 @@ async function changeProductQuantityFromCart(req, res) {
                 let productPrice = productInfo.price;
                 productPrice = parseFloat(productPrice.match(parseProductPrice)[1]);
                 
-                await cartRepo.updateProductsAndPriceInCurrCart(currMemberCart._id, newProductList, (currMemberCart.totalPrice - (productPrice * parseFloat(oldProductQuantity)) + (productPrice * parseFloat(quantity))).toFixed(2));
+              const newUpdatedProduct = await cartRepo.updateProductsAndPriceInCurrCart(currMemberCart._id, newProductList, (currMemberCart.totalPrice - (productPrice * parseFloat(oldProductQuantity)) + (productPrice * parseFloat(quantity))).toFixed(2), productInfo);
+
+              const updatedProductInfo = await cartRepo.getCurrProduct(parsedRequestBody.product_id, currMemberCart._id);
 
               resCode = 200;
-              resMsg = "Update Successful";
-              resType = "text/plain";
+              resMsg = JSON.stringify(updatedProductInfo);
+              resType = "application/json";
             } catch (err) {
               console.log(err);
               resMsg =
@@ -248,7 +250,7 @@ async function changeProductQuantityFromCart(req, res) {
               resType = "text/plain";
             }
             resCode = 200;
-            resType = "text/plain";
+            resType = "application/json";
           }
         }
       }
