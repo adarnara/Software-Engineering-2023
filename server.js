@@ -75,6 +75,7 @@ const server = http.createServer(async (request, response) => {
                 response.writeHead(404);
                 response.end("Could not find resource!");
             }
+        }
     } catch (error) {
         console.log(error);
     }

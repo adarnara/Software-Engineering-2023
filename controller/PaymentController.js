@@ -79,7 +79,7 @@ async function getFormatedStripeJSON(array){
 function strToCents(str){
     number = -1;
     try{
-        number = Math.floor(Number(str.substring(1)) * 100);
+        number = Number(str.substring(1).split(".").reduce((acc, cur) => acc.concat(cur), ""));
         if(isNaN(number))
             return -1;
         return number;
