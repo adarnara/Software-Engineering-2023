@@ -13,7 +13,8 @@ class ShoppingCart {
 
     async createEmptyCart(email) {
         const newCart = shoppingCart({email: email});
-        return await newCart.save();
+        const savedCart = await newCart.save();
+        return savedCart;
     }
     
     // returns array of cart objects

@@ -13,7 +13,7 @@ const path_m = require('path')
 const paymentRouter = require("./routes/paymentRoute");
 
 
-connectDB();
+// connectDB();
 
 const server = http.createServer(async (request, response) => {
     const parsedUrl = url.parse(request.url, true);
@@ -60,21 +60,22 @@ const server = http.createServer(async (request, response) => {
         const paymentRouteHandler = paymentRouter[routeKey];
         if (userRouteHandler) {
             userRouteHandler(request, response);
-        } else if(adminRouteHandler) {
+        } else if (adminRouteHandler) {
             adminRouteHandler(request, response);
-        } else if(paymentRouteHandler){
+        } else if (paymentRouteHandler) {
             paymentRouteHandler(request, response);
-        } else if(shoppingCartRouteHandler) {
-                // console.log(path);
-                // const user_id = path.split("/")[2];
-                shoppingCartRouteHandler(request,response);
+        } else if (shoppingCartRouteHandler) {
+            // console.log(path);
+            // const user_id = path.split("/")[2];
+            shoppingCartRouteHandler(request, response);
         } else {
             // Might as well return something than
             // let the client get stuck fetching
-            if(!landingRouter[routeKey]){
+            if (!landingRouter[routeKey]) {
                 response.writeHead(404);
                 response.end("Could not find resource!");
             }
+        }
     } catch (error) {
         console.log(error);
     }
@@ -127,3 +128,5 @@ server.listen(PORT, (error) => {
         console.log(`Server is running on ${PORT}`);
     }
 });
+
+module.exports = server;
