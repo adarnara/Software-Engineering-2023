@@ -53,10 +53,12 @@ const memberLogin = async (req, res) =>{
             token: generateToken(findUser?._id)
         }));
     } else {
-        res.writeHead(409, { 'Content-Type': 'application/json' });
+        res.writeHead(401, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: 'invalid credentials please try again', success: false }));
     }}catch(error){
         console.log(error);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ message: 'Internal server error', success: false }));
     }
 }
 const sellerLogin = async (req, res) =>{
@@ -72,10 +74,12 @@ const sellerLogin = async (req, res) =>{
             token: generateToken(findUser?._id)
         }));
     } else {
-        res.writeHead(409, { 'Content-Type': 'application/json' });
+        res.writeHead(401, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: 'invalid credentials please try again', success: false }));
     }}catch(error){
         console.log(error);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ message: 'Internal server error', success: false }));
     }
 }
 
