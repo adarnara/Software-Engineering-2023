@@ -58,6 +58,8 @@ const server = http.createServer(async (request, response) => {
         const userRouteHandler = userRouter[routeKey];
         const adminRouteHandler = adminRouter[routeKey];
         const paymentRouteHandler = paymentRouter[routeKey];
+        const shoppingCartRouteHandler = shoppingCartRouter[routeKey];
+
         if (userRouteHandler) {
             userRouteHandler(request, response);
         } else if(adminRouteHandler) {
@@ -75,9 +77,10 @@ const server = http.createServer(async (request, response) => {
                 response.writeHead(404);
                 response.end("Could not find resource!");
             }
-    } catch (error) {
-        console.log(error);
-    }
+            }
+        } catch (error) {
+            console.log(error);
+        }
     /*
     //payments
     if (request.url === '/checkout' && request.method === "GET") {

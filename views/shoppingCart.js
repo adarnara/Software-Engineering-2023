@@ -14,6 +14,15 @@ const getCurrMemberCart = async () => {
   }
 };
 
+function proceedToCheckout() {
+  console.log("hi");
+  const confirmation = confirm("Are you sure you want to proceed to checkout?");
+
+  if (confirmation) {
+    window.location.href = "checkout/checkoutPage.html";
+  }
+}
+
 function continueShopping()
 {
   window.location.href = 'http://127.0.0.1:5500/views/landingPage.html';
@@ -190,6 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("ooga")
     return productHTML;
   }
+
   function createSubTotalHTML(data) {
     // Check if variant_data is empty
     console.log("subtotal")
@@ -216,7 +226,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     return subtotalHTML;
   }
-
 
 
 
