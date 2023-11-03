@@ -5,11 +5,17 @@
     "dotenv": "^16.3.1",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.2.0",
+    "mongodb-memory-server": "^7.6.3",
     "mongoose": "^7.5.2"
   },
+  "scripts": {
+    "test": "jest --testEnvironment=node -- runInBand ./tests"
+  },
   "devDependencies": {
+    "jest": "^29.7.0",
     "mongoose": "^7.5.2",
     "path": "^0.12.7",
-    "stripe": "^14.3.0"
+    "stripe": "^14.2.0",
+    "supertest": "^6.3.3"
   }
 }
