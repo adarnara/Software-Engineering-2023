@@ -4,6 +4,7 @@
     "dotenv": "^16.3.1",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.2.0",
-    "mongoose": "^7.5.2"
+    "mongoose": "^7.5.2",
+    "node-nlp": "^4.27.0"
   }
 }
