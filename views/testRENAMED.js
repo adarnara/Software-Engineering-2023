@@ -15,3 +15,4 @@ fetch(`http://localhost:3000/`)
     });
 
 
+// NOTICE: i renamed this file since jest was reading it as a test file.

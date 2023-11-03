@@ -25,7 +25,7 @@ function changeNumber(productId) {
   if (isNaN(parseInt(displayNumber.value)) || parseInt(displayNumber.value) < 0) {
     displayNumber.value = 0;
   } else {
-    fetch(`http://localhost:3000/cart?user_id=6532fa735eac7cbb50adc268`, {
+    fetch(`http://localhost:3000/cart?user_id=65450de97eff4356f889c95d`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ function deleteProduct(productId) {
 
   console.log(productId)
 
-  fetch(`http://localhost:3000/cart/remove?user_id=6532fa735eac7cbb50adc268&product_id=${productId}`,
+  fetch(`http://localhost:3000/cart/remove?user_id=65450de97eff4356f889c95d&product_id=${productId}`,
     {
       method: 'DELETE'
     }
@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const productsContainer = document.getElementById("products-container");
   const products = [];
 
-  fetch("http://localhost:3000/cart?user_id=6532fa735eac7cbb50adc268")
+  fetch("http://localhost:3000/cart?user_id=65450de97eff4356f889c95d")
     .then((response) => {
       console.log("***********************************************************************");
       if (!response.ok) {
