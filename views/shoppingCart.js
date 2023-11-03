@@ -19,13 +19,13 @@ function continueShopping()
   window.location.href = 'http://127.0.0.1:5500/views/landingPage.html';
 
 }
-function changeNumber(productId) {
+async function changeNumber(productId) {
   const displayNumber = document.querySelector('.display-number');
   console.log(productId);
   if (isNaN(parseInt(displayNumber.value)) || parseInt(displayNumber.value) < 0) {
     displayNumber.value = 0;
   } else {
-    fetch(`http://localhost:3000/cart?user_id=6532fa735eac7cbb50adc268`, {
+    await fetch(`http://localhost:3000/cart?user_id=6532fa735eac7cbb50adc268`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ function changeNumber(productId) {
         product_id: productId
       })
     }).then(res => console.log(res))
-    // location.reload();
+    location.reload();
   }
 }
 async function deleteProduct(productId) {
@@ -180,7 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   <!-- Number Control -->
                   <div class="number-control">
                   <p style="display: inline-block; margin-right: 10px;">Quantity: </p>
-                      <input type="number" class="display-number" value="${currCartProduct.quantity}" oninput="changeNumber('${product._id}')"> 
+                      <input type="number" class="display-number" value="${currCartProduct.quantity}" onblur="changeNumber('${product._id}')"> 
                       <button class= "delete-button" onclick="deleteProduct('${product._id}')">Remove Item From Cart</button>
                   </div>
               </div>
@@ -205,7 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const subtotalHTML = `<div class="subtotal">
       <h1>Subtotal</h1>
       <br>
-      <h2>Price: $${data.totalPrice}</h2>
+      <h2>Price: $${data.totalPrice.toFixed(2)}</h2>
       <div>
       <button class="checkout" onclick="proceedToCheckout()">Proceed to Checkout</button>
     </div>
