@@ -1,19 +1,18 @@
-const connectDB = require('./config/db');
+const connectDB = require('../config/db');
 const http = require('http');
 const url = require('url');
 const PORT = process.env.PORT || 3000;
-const userRouter = require("./routes/userRoute");
-const adminRouter = require("./routes/adminRoute");
-const landingRouter = require('./routes/landingRoute');
-const shoppingCartRouter = require('./routes/shoppingCartRoute');
+const userRouter = require("../routes/userRoute");
+const adminRouter = require("../routes/adminRoute");
+const landingRouter = require('../routes/landingRoute');
+const shoppingCartRouter = require('../routes/shoppingCartRoute');
 
 const fs = require('fs')
 const path_m = require('path')
 
-const paymentRouter = require("./routes/paymentRoute");
+const paymentRouter = require("../routes/paymentRoute");
 
-
-connectDB();
+// only creates server, no connection to real DB
 
 const server = http.createServer(async (request, response) => {
     const parsedUrl = url.parse(request.url, true);
@@ -114,22 +113,21 @@ const server = http.createServer(async (request, response) => {
     });
     }
     */
-    // });
-
-    // const routes = {
-    //     'PATCH/cart/<id>': (request, response) => shoppingCartController.changeProductQuantityFromCart(request,response),
-    //     'GET/cart/6532fb96e94f77fda92b8bc0': (request, response) => shoppingCartController.getProducts(request,response),
-    //     'POST/cart/<id>/add': (request, response) => shoppingCartController.addProductToCart(request,response),
-    //     'DELETE/cart/remove': (request, response) => shoppingCartController.removeProductFromCart(request,response),
-    // };
 });
 
-    server.listen(PORT, (error) => {
-        if (error) {
-            console.log('Error Occurred', error);
-        } else {
-            console.log(`Server is running on ${PORT}`);
-        }
-    });
+// const routes = {
+//     'PATCH/cart/<id>': (request, response) => shoppingCartController.changeProductQuantityFromCart(request,response),
+//     'GET/cart/6532fb96e94f77fda92b8bc0': (request, response) => shoppingCartController.getProducts(request,response),
+//     'POST/cart/<id>/add': (request, response) => shoppingCartController.addProductToCart(request,response),
+//     'DELETE/cart/remove': (request, response) => shoppingCartController.removeProductFromCart(request,response),
+// };
 
-    module.exports = server;
+// server.listen(PORT, (error) => {
+//     if (error) {
+//         console.log('Error Occurred', error);
+//     } else {
+//         console.log(`Server is running on ${PORT}`);
+//     }
+// });
+
+module.exports = server;
