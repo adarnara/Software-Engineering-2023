@@ -123,7 +123,6 @@ class ShoppingCart {
 
     async getMember(currUser) {
         return new Promise(async (resolve) => {
-            console.log(currUser.toString());
             const currMember = await membersCollection.findOne({
                 _id: currUser.toString(),
               });

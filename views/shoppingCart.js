@@ -14,7 +14,6 @@ const getCurrMemberCart = async () => {
 
 // Go to checkout page when 'Proceed to Checkout' button is clicked
 function proceedToCheckout() {
-  console.log("hi");
   const confirmation = confirm("Are you sure you want to proceed to checkout?");
 
   if (confirmation) {
@@ -93,7 +92,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       return response.json();
     })
     .then(async (data) => {
-      console.log("hi");
       console.log("Response from /:", JSON.stringify(data, null, 2));
       data.products.sort(
         (product1, product2) => product1.product_id - product2.product_id
@@ -106,10 +104,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         ).then(async (response) => {
           // console.log(response);
           response = await response.json();
-          console.log(response);
-          console.log(product);
           products.push(response);
-          console.log(products);
           const productHTML = createProductHTML(response, product);
           productsContainer.innerHTML += productHTML;
         });
@@ -130,9 +125,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   function createProductHTML(product, currCartProduct) {
     // Check if variant_data is empty
     let colorsHTML = "";
-    console.log(product.name);
-    console.log(typeof product);
-    console.log(product.variant_data);
     if (product.variant_data !== undefined && product.variant_data.length > 0) {
       const variantData = JSON.parse(product.variant_data[0]);
       const colors = Object.values(variantData).flat();
@@ -143,7 +135,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                   </ul>
               `;
     }
-    console.log(product.images);
     const productHTML = `
           <div class="product-container">
               <div class="product-image">
