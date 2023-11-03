@@ -9,10 +9,12 @@ const createAdmin = async (req, res) => {
         const findAdmin = await adminRepo.findByName(name);
         console.log(findAdmin)
         if (!findAdmin) {
+            console.log(adminCount)
             // Create a new admin and save to DB ...( no more than 10 admins)
             if (adminCount>= 10) {
               res.writeHead(409, { 'Content-Type': 'application/json' });
               res.end(JSON.stringify({ message: 'we have reached the maximum number of admins', success: false }));
+              return;
             }
           const newAdmin = await adminRepo.createAdmin(req.body);
           res.writeHead(201, { 'Content-Type': 'application/json' });
@@ -84,15 +86,10 @@ function getPostData(request) {
   }
   
   async function adminRegister(request, response) {
-    try {
-      const postData = await getPostData(request);
-      const adminData = JSON.parse(postData);
-      const result = await createAdmin({ body: adminData }, response);
-    } catch (error) {
-      console.log(error)
-      response.writeHead(500, { 'Content-Type': 'application/json' });
-      response.end(JSON.stringify({ message: 'Internal Server Error' }));
-    }
+    
+    const postData = await getPostData(request);
+    const adminData = JSON.parse(postData);
+    const result = await createAdmin({ body: adminData }, response);
   }
   async function adminLogin(request, response){
     try {
