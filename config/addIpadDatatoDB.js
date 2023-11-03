@@ -1,6 +1,7 @@
 const fs = require('fs');
 const mongoose = require('mongoose');
 const Product = require('../models/Product');
+// const dataJSONs = require('../data/*');
 require('dotenv').config();
 
 const mongoURI = process.env.MONGO_URI;
@@ -9,8 +10,8 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.connection.on('open', async () => {
     try {
         const jsonFiles = ['books.json', 'laptop.json', 'tshirts.json', 'ipad.json'];
-
         for (const jsonFile of jsonFiles) {
+            console.log(`../data/${jsonFile}\n\n\n\n\n\n\n`);
             const data = fs.readFileSync(`../data/${jsonFile}`, 'utf8');
             const jsonData = JSON.parse(data);
 
