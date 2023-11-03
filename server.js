@@ -5,6 +5,9 @@ const PORT = process.env.PORT || 3000;
 const userRouter = require("./routes/userRoute");
 const adminRouter = require("./routes/adminRoute");
 const landingRouter = require('./routes/landingRoute');
+const fs = require('fs')
+const path_m = require('path')
+
 
 connectDB();
 
@@ -68,7 +71,7 @@ const server = http.createServer(async (request, response) => {
     } catch (error) {
         console.log(error);
     }
-
+    /*
     //payments
     if (request.url === '/checkout' && request.method === "GET") {
         fs.readFile(path_m.join(__dirname, 'public', 'checkout', 'checkoutPage.html'), (error, content) => {
@@ -100,11 +103,14 @@ const server = http.createServer(async (request, response) => {
         }
     });
     }
+    */
 });
+
 server.listen(PORT, (error) => {
     if (error) {
         console.log('Error Occurred', error);
     } else {
         console.log(`Server is running on ${PORT}`);
     }
+    
 });

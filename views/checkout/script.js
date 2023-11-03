@@ -9,17 +9,12 @@ button.addEventListener("click", () => {
   console.log('Button clicked');
 
   // Perform the fetch operation inside the event listener
-  fetch("public/checkout/create-checkout-session", {
+  fetch("http://localhost:3000/checkout", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      items: [
-        { id: 1, quantity: 3 },
-        { id: 2, quantity: 1 },
-      ],
-    }),
+    body: JSON.stringify({"_id":"6542e4986a75960d68dd0ba2","email":"johndoes@gmail.com","purchaseTime":null,"numShipped":null,"products":[{"parent_cart":"6542e4986a75960d68dd0ba2","product_id":"books9","quantity":6,"from":null,"to":null,"date_shipped":null,"date_arrival":null,"shipping_id":null,"_id":"6543dac070f00ad572f83f92","__v":0}],"__v":0,"totalPrice":47.94}),
   })
   .then(res => {
     // Check if the response is ok (status in the range 200-299)
