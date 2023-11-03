@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 const request = require('supertest');
-const server = require('../server');
-const adminRepo = require('../Repository/adminRepo');
-const adminCtrl = require('../controller/adminCtrl');
+const server = require('../../server');
+const adminRepo = require('../../Repository/adminRepo');
+const adminCtrl = require('../../controller/adminCtrl');
 
 // Mock the specific function in that module
 adminCtrl.getAdminCount = jest.fn();
  
 
-jest.mock('../Repository/adminRepo.js',()=>({
+jest.mock('../../Repository/adminRepo',()=>({
   findByName: jest.fn(),
   createAdmin: jest.fn(),
   findAllAdmins: jest.fn(),
@@ -23,11 +23,11 @@ mongoose.connection = {
 
 describe('test for admin APIs', () => {
 
-  jest.mock('../controller/adminCtrl.js',()=>({
+  jest.mock('../../controller/adminCtrl',()=>({
     getAdminCount: jest.fn(),
     adminRegister: jest.fn()
   }));
-  jest.mock('../models/adminModel', () => {
+  jest.mock('../../models/adminModel', () => {
     return {
       countDocuments: jest.fn()
     };
@@ -46,7 +46,7 @@ describe('test for admin APIs', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
-  const admin = require('../models/adminModel');
+  const admin = require('../../models/adminModel');
   describe('POST method for admin registration via route  /admin/register', () => {
     it('should register a new admin successfully', async () => {
       const newAdmin = {

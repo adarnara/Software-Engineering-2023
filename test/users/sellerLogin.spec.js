@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const request = require('supertest');
-const server = require('../server');
+const server = require('../../server');
 
-jest.mock('../Repository/userRepo.js', () => {
+jest.mock('../../Repository/userRepo.js', () => {
   return {
     findSellerByEmail: jest.fn().mockImplementation((email) => {
       if (email === 'test@example.com') {
@@ -16,7 +16,7 @@ jest.mock('../Repository/userRepo.js', () => {
   };
 });
 
-jest.mock('../models/sellerModel', () => {
+jest.mock('../../models/sellerModel', () => {
   return {
     findOne: jest.fn().mockImplementation(() => ({
       isPasswordMatched: jest.fn().mockResolvedValue(true),
@@ -27,8 +27,8 @@ jest.mock('../models/sellerModel', () => {
 const bcrypt = require('bcrypt');
 jest.mock('bcrypt');
 
-const seller = require('../models/sellerModel');
-const userRepo = require('../Repository/userRepo');
+const seller = require('../../models/sellerModel');
+const userRepo = require('../../Repository/userRepo');
 mongoose.connect = jest.fn();
 mongoose.connection = {
   close: jest.fn(),

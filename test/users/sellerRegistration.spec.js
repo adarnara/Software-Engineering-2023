@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const request = require('supertest');
-const server = require('../server');
-const userRepo = require('../Repository/userRepo');
+const server = require('../../server');
+const userRepo = require('../../Repository/userRepo');
 
-jest.mock('../Repository/userRepo', () => ({
+jest.mock('../../Repository/userRepo', () => ({
   findSellerByEmail: jest.fn(),
   createSeller: jest.fn()
 }));
