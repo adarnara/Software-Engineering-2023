@@ -1,3 +1,11 @@
+
+function checkPos(quantity)
+{
+    console.log(quantity.value)
+    if (quantity.value<0)
+        quantity.value = 0;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     
     const productsContainer = document.getElementById("products-container");
@@ -26,7 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
-
     //Searches for and displays requested products
     function searchProducts(searchText) {
         currentSearchText = searchText; //stores in global variable so that it can be accessed in next and previous method
@@ -145,11 +152,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 ${colorsHTML}
             </div>
             <div class="add-to-cart-button">
-                <button onclick="addProductToCart('${product._id}')">Add to Cart</button>
+                <button class= "add-button" onclick="addProductToCart('${product._id}')">Add Quantity</br> to Cart</button>
             </div>
             <div class="number-control">
-                <p style="display: inline-block; margin-right: 10px;">Quantity: </p>
-                <input type="number" id="quantity" class="display-number" value="1">
+                <input type="number" id='${product._id}' onclick="checkPos(this)" class="display-number" value="1">
             </div>
         </div>
     `;
@@ -177,9 +183,17 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addProductToCart = addProductToCart;
 
     const currMemberEmail = "no@gmail.com";
-    function addProductToCart(product, quantity){
-        var quantity = document.getElementById('quantity').value;
+    function addProductToCart(product){
+        let quantity = document.getElementById(product).value;
+
         console.log(quantity);
+        if (
+            isNaN(parseInt(quantity)) ||
+            parseInt(quantity) < 0
+          ) {
+            quantity = 0;
+          } else {
+            console.log("Sending")
         fetch(`http://localhost:3000/cart/add?user_id=65450de97eff4356f889c95d`, {
             method: 'POST',
             headers: {
@@ -192,4 +206,5 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             }).then(res => console.log(res))
     }
+}
 });
