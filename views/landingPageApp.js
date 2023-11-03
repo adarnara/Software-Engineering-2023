@@ -12,11 +12,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchButton = document.querySelector('.search-bar .search-button');
     if (searchButton) {
         searchButton.addEventListener('click', function() {
+            currentPage = 1
             const searchText = document.querySelector('.search-bar input[type="text"]').value;
             const pattern = /^(books|ipad|tshirts|laptop)\d*$/;
             if(pattern.test(searchText)){ //only continues if the search was valid
                 currentSearchText = searchText; // Store the current search text
                 searchProducts(searchText);
+            } else {
+                var errorMessage = document.getElementById('error-message');
+                errorMessage.classList.remove('hidden');   
+                productsContainer.innerHTML = ''; //Clear the products container
+                products.length = 0; //Reset the products array
             }
         });
     }
@@ -138,9 +144,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 </ul>
                 ${colorsHTML}
             </div>
+            <div class="add-to-cart-button">
+                <button onclick="addProductToCart('${product._id}')">Add to Cart</button>
+            </div>
+            <div class="number-control">
+                <p style="display: inline-block; margin-right: 10px;">Quantity: </p>
+                <input type="number" id="quantity" class="display-number" value="1">
+            </div>
         </div>
     `;
-
         return productHTML;
     }
 
@@ -162,6 +174,22 @@ document.addEventListener("DOMContentLoaded", () => {
         productImage.src = product.images[currentImageIndex].large;
     }
     window.changeImage = changeImage;
+    window.addProductToCart = addProductToCart;
+
+    const currMemberEmail = "no@gmail.com";
+    function addProductToCart(product, quantity){
+        var quantity = document.getElementById('quantity').value;
+        console.log(quantity);
+        fetch(`http://localhost:3000/cart/add?user_id=65450de97eff4356f889c95d`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                quantity: parseInt(quantity),
+                email: currMemberEmail,
+                product_id: product
+            })
+            }).then(res => console.log(res))
+    }
 });
-
-
