@@ -109,6 +109,7 @@ const url = `http://localhost:3000/cart/add`
 
 // fetch(url, request).then(res => console.log("fetch: ",  res)).then(data => console.log("fetch: ",  data));
 // cartRepo.addProductToCart("johndoes23@gmail.com", 11111, 69).then(res => console.log(res))
+
 cartRepo.createEmptyCart("no@gmail.com").then((res) => console.log(res))
 // cartRepo.getUserCartHistory("johndoes23@gmail.com").then((res) => console.log(res))
 // cartRepo.getProductsFromUser("johndoes23@gmail.com").then(res => console.log(res));

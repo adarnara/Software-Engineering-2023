@@ -122,12 +122,12 @@ const server = http.createServer(async (request, response) => {
 //     'DELETE/cart/remove': (request, response) => shoppingCartController.removeProductFromCart(request,response),
 // };
 
-server.listen(PORT, (error) => {
-    if (error) {
-        console.log('Error Occurred', error);
-    } else {
-        console.log(`Server is running on ${PORT}`);
-    }
-});
+// server.listen(PORT, (error) => {
+//     if (error) {
+//         console.log('Error Occurred', error);
+//     } else {
+//         console.log(`Server is running on ${PORT}`);
+//     }
+// });
 
 module.exports = server;
