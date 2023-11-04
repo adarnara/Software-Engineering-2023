@@ -11,8 +11,36 @@
       padding: 0;
       overflow: hidden;
     }
+    .number-control {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
+    input[type="number"] {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 60px;
+      text-align: center;
+      font-size: 14px;
 
+    }
+    .add-button {
+      padding: 5px 10px;
+      background-color: #2fc5d3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-left: 20px;
+      margin-right: 10px;
+      font-size: 15px;
+      /* Additional styles for the delete button */
+  }
 
+  .add-button:hover {
+      background-color: #2ab289; /* Change color on hover */
+  }
     .navbar {
       position: fixed;
       top: 0;
@@ -36,12 +64,14 @@
     }
 
     .navbar-logo img {
-      max-width: 40px;
+      max-width: 60px;
       margin-right: 10px;
     }
 
     .search-bar {
       text-align: center;
+      position: relative;
+      transform: translate(-103%, 0%);
     }
 
     .search-bar input[type="text"] {
@@ -87,7 +117,15 @@
       background-color: #f8f8f8;
       width: 100%;
     }
+    .navbar-cart {
+      display: flex;
+      align-items: center;
+    }
 
+    .navbar-cart img {
+      max-width: 40px;
+      margin-right: 10px;
+    }
     .product-image {
       flex: 1;
       margin-right: 20px;
@@ -117,24 +155,72 @@
       border-radius: 5px;
       cursor: pointer;
     }
+    .search-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .search-bar input[type="text"] {
+      width: 60%;
+      padding: 5px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .search-bar button {
+      background-color: #fff;
+      color: #007BFF;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin-left: 5px;
+      cursor: pointer;
+    }
+
+    .go-to-page-button {
+      margin-left: auto; /* Pushes the button to the right */
+      white-space: nowrap; /* Prevents line breaks */
+    }
 
 
     .product-info ul {
       padding-left: 20px;
+    }
+
+    .hidden {
+      display: none;
     }
   </style>
 </head>
 <body>
 
 <div class="navbar">
-  <div class="navbar-logo">
-    <img src="../public/Images/logo.png" alt="Logo" />
-    <span style="font-weight: bold; font-size: 20px;">Reprua</span>
+  <a href="http://127.0.0.1:5500/views/landingPage.html" style="text-decoration: none; color: inherit;">
+    <div class="navbar-logo">
+      <img src="../public/Images/logo.png" alt="Logo" />
+      <span style="font-weight: bold; font-size: 20px;">Reprua</span>
+    </div>
+  </a>
+  <div>
+    <button class="hidden previous-button" onclick="previousPage()">Previous</button>
+    <button class="hidden next-button" onclick="nextPage()">Next</button>
   </div>
   <div class="search-bar">
     <input type="text" placeholder="Search Bar" />
-    <button>Search</button>
+    <button class="search-button">Search</button>
   </div>
+  <div id="shopping-icon" class="navbar-cart">
+    <a href = "http://127.0.0.1:5500/views/shoppingCart.html">
+    <img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />
+    <span style="font-weight: bold; font-size: 20px;"></span>
+  </a>
+    <button class="go-to-page-button" onclick="navigateToPage('registerAndLoginPage.html')">Register/Sign In</button>
+  </div>
+</div>
+
+<div
+  id="error-message" class="hidden">Failed to load products. Please try again later.
 </div>
 
 
@@ -156,6 +242,13 @@
   </div>
 </section>
 
+<script>
+  // JavaScript function to navigate to another page
+  function navigateToPage(route) {
+    // Use window.location to navigate to the desired page
+    window.location.href = route;
+  }
+</script>
 
 <script src="landingPageApp.js"></script>
 </body>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form Page</title>
+    <link rel="stylesheet" href="registerAndLoginPage.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(0, 135, 255, 0.7);
+            color: #fff;
+            padding: 5px 20px;
+            height: 50px;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+            z-index: 2;
+        }
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+        }
+        .navbar-logo a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .navbar-logo img {
+            max-width: 40px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .search-bar {
+            text-align: center;
+        }
+
+        .search-bar input[type="text"] {
+            width: 60%;
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .search-bar button {
+            background-color: #fff;
+            color: #007BFF;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
+        .product-image img {
+            max-width: 100%;
+            height: auto;
+        }
+
+
+        .product-info h2, .product-info p, .product-info ul {
+            font-size: 14px;
+        }
+
+        .image-navigation button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-bar input[type="text"] {
+            width: 60%;
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .search-bar button {
+            background-color: #fff;
+            color: #007BFF;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
+        .product-info ul {
+            padding-left: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-logo">
+        <a href="landingPage.html">
+        <img src="../public/Images/logo.png" alt="Logo">
+        <span style="font-weight: bold; font-size: 20px;">Reprua</span>
+        </a>
+    </div>
+    <div class="search-bar">
+        <input type="text" placeholder="Search...">
+        <button>Search</button>
+    </div>
+</div>
+
+
+<section>
+    <div class="container">
+        <div class="Form login-form">
+            <h2>Login</h2>
+            <form id="login-form" action="#">
+                <div class="input-box">
+                    <i class='bx bxs-envelope'></i>
+                    <label for="username">Email</label>
+                    <input type="text" id="username" placeholder="Enter Your Email*">
+                </div>
+                <div class="input-box">
+                    <i class='bx bxs-key'></i>
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter Your Password*">
+                    <div id="password-toggle-container">
+                        <i class='bx bx-hide' id="password-toggle"></i>
+                    </div>
+                </div>
+                <div class="input-box">
+                    <label for="role">Role</label>
+                    <select id="role">
+                        <option value="member">Member</option>
+                        <option value="seller">Seller</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="forgot-section">
+                    <span><input type="checkbox" name="" id="checked">Remember Me</span>
+                    <span><a href="#">Forgot Password ?</a></span>
+                </div>
+
+                <button class="btn" id="loginButton">Login</button>
+            </form>
+            <p class="RegisteBtn RegiBtn"><a href="#">Register Now</a></p>
+        </div>
+        <div class="Form Register-form">
+            <h2>Register</h2>
+            <form id="registration-form" action="#">
+                <div class="input-box">
+                    <i class='bx bxs-user'></i>
+                    <label for="reg-first-name">First Name</label>
+                    <input type="text" id="reg-first-name" placeholder="Enter Your First Name*">
+                </div>
+                <div class="input-box">
+                    <i class='bx bxs-user'></i>
+                    <label for="reg-last-name">Last Name</label>
+                    <input type="text" id="reg-last-name" placeholder="Enter Your Last Name*">
+                </div>
+                <div class="input-box">
+                    <i class='bx bxs-envelope'></i>
+                    <label for="reg-username">Email</label>
+                    <input type="text" id="reg-username" placeholder="Enter Your Email*">
+                </div>
+                <div class="input-box">
+                    <i class='bx bxs-key'></i>
+                    <label for="reg-password">Password</label>
+                    <input type="password" id="reg-password" placeholder="Enter Your Password*">
+                    <div id="password-toggle-container1">
+                        <i class='bx bx-hide' id="password1-toggle"></i>
+                    </div>
+                </div>
+
+                <div class="input-box">
+                    <i class='bx bxs-key'></i>
+                    <label for="reg-confirm-password">Confirm Password</label>
+                    <input type="password" id="reg-confirm-password" placeholder="Confirm Your Password*">
+                    <div id="password-toggle-container2">
+                        <i class='bx bx-hide' id="password2-toggle"></i>
+                    </div>
+                </div>
+                <div class="input-box">
+                    <label for="reg-role">Role</label>
+                    <select id="reg-role">
+                        <option value="member">Member</option>
+                        <option value="seller">Seller</option>
+                    </select>
+                </div>
+
+                <div class="forgot-section">
+                    <span><input type="checkbox" name="" id="reg-checked">Remember Me</span>
+                    <span><a href="#">Forgot Password ?</a></span>
+                </div>
+                <button class="btn" id="registerButton">Register</button>
+            </form>
+            <p class="LoginBtn"><a href="#">Login Now</a></p>
+        </div>
+    </div>
+    <div class="waves">
+        <div class="wave" id="wave1"></div>
+        <div class="wave" id="wave2"></div>
+        <div class="wave" id="wave3"></div>
+        <div class="wave" id="wave4"></div>
+        <img src="../public/Images/stars.jpg" class="stars">
+        <img src="../public/Images/island.png" class="island">
+    </div>
+
+</section>
+
+<script src="loginPage.js"></script>
+<script src="registerPage.js"></script>
+<script>
+    const container = document.querySelector(".container");
+    const loginForm = document.querySelector('.login-form');
+    const registerForm = document.querySelector('.Register-form');
+    const RegiBtn = document.querySelector('.RegiBtn');
+    const LoginBtn = document.querySelector('.LoginBtn');
+
+    RegiBtn.addEventListener('click', () => {
+        registerForm.classList.add('active');
+        loginForm.classList.add('active');
+        container.classList.remove('login-active');
+        container.classList.add('register-active');
+    });
+
+    LoginBtn.addEventListener('click', () => {
+        registerForm.classList.remove('active');
+        loginForm.classList.remove('active');
+        container.classList.remove('register-active');
+        container.classList.add('login-active');
+    });
+</script>
+
+    <script>
+        const passwordInput = document.getElementById("password");
+        const passwordToggle = document.getElementById("password-toggle-container");
+
+        passwordToggle.addEventListener("click", () => {
+        togglePasswordVisibility(passwordInput, passwordToggle);
+    });
+
+        function togglePasswordVisibility(input, toggle) {
+        if (input.type === "password") {
+        input.type = "text";
+        toggle.querySelector('i').classList.remove("bx-hide");
+        toggle.querySelector('i').classList.add("bx-show");
+    } else {
+        input.type = "password";
+        toggle.querySelector('i').classList.remove("bx-show");
+        toggle.querySelector('i').classList.add("bx-hide");
+    }
+    }
+</script>
+
+<script>
+    const password1Input = document.getElementById("reg-password");
+    const password1Toggle = document.getElementById("password-toggle-container1");
+
+    password1Toggle.addEventListener("click", () => {
+        togglePasswordVisibility(password1Input, password1Toggle);
+    });
+</script>
+
+<script>
+    const password2Input = document.getElementById("reg-confirm-password");
+    const password2Toggle = document.getElementById("password-toggle-container2");
+
+    password2Toggle.addEventListener("click", () => {
+        togglePasswordVisibility(password2Input, password2Toggle);
+    });
+</script>
+
+
+</body>
+</html>
