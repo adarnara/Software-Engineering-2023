@@ -39,22 +39,33 @@ const server = http.createServer(async (request, response) => {
             },
         };
 
-        let body = '';
-        request.on('data', (chunk) => {
-            body += chunk;
-        });
+        if (method === 'POST') {
+            let body = '';
+            request.on('data', (chunk) => {
+                body += chunk;
+            });
 
-        request.on('end', async () => {
-            req.body = JSON.parse(body);
-
+            request.on('end', async () => {
+                try {
+                    if (body) {
+                        req.body = JSON.parse(body);
+                    }
+                    await routeHandler(req, res);
+                } catch (error) {
+                    console.error('Route Handler Error:', error);
+                    res.status(500).json({ message: 'Internal Server Error' });
+                }
+            });
+        } else if (method === 'GET') {
             try {
                 await routeHandler(req, res);
             } catch (error) {
                 console.error('Route Handler Error:', error);
                 res.status(500).json({ message: 'Internal Server Error' });
             }
-        });
+        }
     }
+
 
     try {
         const userRouteHandler = userRouter[routeKey];
