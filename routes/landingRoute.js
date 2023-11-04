@@ -1,5 +1,6 @@
 const ProductController = require('../controller/ProductController');
 const ChatbotController = require('../controller/chatbotCtrl');
+const ShoppingCartController = require('../controller/shoppingCartController');
 
 module.exports = {
     'GET/': ProductController.getAllProductsForLanding,
@@ -17,4 +18,6 @@ module.exports = {
             res.status(500).json({ message: 'Internal Server Error' });
         }
     },
+    'GET/search': ProductController.getExactProduct,
+    'GET/search/category': ProductController.getProductsByCategory
 };

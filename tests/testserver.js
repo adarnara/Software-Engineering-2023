@@ -1,20 +1,18 @@
-const connectDB = require('./config/db');
+const connectDB = require('../config/db');
 const http = require('http');
 const url = require('url');
 const PORT = process.env.PORT || 3000;
-const userRouter = require("./routes/userRoute");
-const adminRouter = require("./routes/adminRoute");
-const landingRouter = require('./routes/landingRoute');
-const shoppingCartRouter = require('./routes/shoppingCartRoute');
-const routes = require('./routes/landingRoute');
+const userRouter = require("../routes/userRoute");
+const adminRouter = require("../routes/adminRoute");
+const landingRouter = require('../routes/landingRoute');
+const shoppingCartRouter = require('../routes/shoppingCartRoute');
 
 const fs = require('fs')
 const path_m = require('path')
 
-const paymentRouter = require("./routes/paymentRoute");
+const paymentRouter = require("../routes/paymentRoute");
 
-
-connectDB();
+// only creates server, no connection to real DB
 
 const server = http.createServer(async (request, response) => {
     const parsedUrl = url.parse(request.url, true);
@@ -26,6 +24,7 @@ const server = http.createServer(async (request, response) => {
     response.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS'); // Add the necessary HTTP methods you want to support
     response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Add the necessary headers
 
+    // TODO make all the routers consistent with each other
     if (request.method === 'OPTIONS') {
         // Respond to preflight requests
         response.writeHead(200);
@@ -34,8 +33,8 @@ const server = http.createServer(async (request, response) => {
     }
 
     const routeKey = `${method}${path}`;
-    if (routes[routeKey]) {
-        const routeHandler = routes[routeKey];
+    if (landingRouter[routeKey]) {
+        const routeHandler = landingRouter[routeKey];
         const req = { query: parsedUrl.query };
         const res = {
             status(code) {
@@ -48,30 +47,10 @@ const server = http.createServer(async (request, response) => {
             },
         };
 
-        if (method === 'POST') {
-            let body = '';
-            request.on('data', (chunk) => {
-                body += chunk;
-            });
-
-            request.on('end', async () => {
-                try {
-                    if (body) {
-                        req.body = JSON.parse(body);
-                    }
-                    await routeHandler(req, res);
-                } catch (error) {
-                    console.error('Route Handler Error:', error);
-                    res.status(500).json({ message: 'Internal Server Error' });
-                }
-            });
-        } else if (method === 'GET') {
-            try {
-                await routeHandler(req, res);
-            } catch (error) {
-                console.error('Route Handler Error:', error);
-                res.status(500).json({ message: 'Internal Server Error' });
-            }
+        try {
+            await routeHandler(req, res);
+        } catch (error) {
+            res.status(500).json({ message: "Internal Server Error" });
         }
     }
     try {
@@ -99,7 +78,7 @@ const server = http.createServer(async (request, response) => {
             }
         }
     } catch (error) {
-        console.error('Request Handling Error:', error);
+        console.log(error);
     }
     /*
     //payments
@@ -134,22 +113,21 @@ const server = http.createServer(async (request, response) => {
     });
     }
     */
-    // });
-
-    // const routes = {
-    //     'PATCH/cart/<id>': (request, response) => shoppingCartController.changeProductQuantityFromCart(request,response),
-    //     'GET/cart/6532fb96e94f77fda92b8bc0': (request, response) => shoppingCartController.getProducts(request,response),
-    //     'POST/cart/<id>/add': (request, response) => shoppingCartController.addProductToCart(request,response),
-    //     'DELETE/cart/remove': (request, response) => shoppingCartController.removeProductFromCart(request,response),
-    // };
 });
 
-server.listen(PORT, (error) => {
-    if (error) {
-        console.log('Error Occurred', error);
-    } else {
-        console.log(`Server is running on ${PORT}`);
-    }
-});
+// const routes = {
+//     'PATCH/cart/<id>': (request, response) => shoppingCartController.changeProductQuantityFromCart(request,response),
+//     'GET/cart/6532fb96e94f77fda92b8bc0': (request, response) => shoppingCartController.getProducts(request,response),
+//     'POST/cart/<id>/add': (request, response) => shoppingCartController.addProductToCart(request,response),
+//     'DELETE/cart/remove': (request, response) => shoppingCartController.removeProductFromCart(request,response),
+// };
 
-    module.exports = server;
+// server.listen(PORT, (error) => {
+//     if (error) {
+//         console.log('Error Occurred', error);
+//     } else {
+//         console.log(`Server is running on ${PORT}`);
+//     }
+// });
+
+module.exports = server;
