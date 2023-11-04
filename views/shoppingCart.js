@@ -1,4 +1,4 @@
-const currMemberEmail = "no@gmail.com";
+const currMemberEmail = "ooga@gmail.com";
 
 let subtotal;
 // Get the current Member's cart
@@ -56,10 +56,10 @@ async function changeNumber(productId, displayNumber) {
     displayNumber.value = 0;
   } else {
     await fetch(
-      `http://localhost:3000/cart?user_id=65450de97eff4356f889c95d`,
+      `http://localhost:3000/cart?user_id=6545a86825de71eac175dfc7`,
       req
     ).then((res) => console.log(res));
-    await fetch("http://localhost:3000/cart?user_id=65450de97eff4356f889c95d")
+    await fetch("http://localhost:3000/cart?user_id=6545a86825de71eac175dfc7")
     .then((response) => {
       console.log(
         "***********************************************************************"
@@ -84,7 +84,7 @@ async function deleteProduct(productId) {
   console.log(productId);
 
   await fetch(
-    `http://localhost:3000/cart/remove?user_id=65450de97eff4356f889c95d&product_id=${productId}`,
+    `http://localhost:3000/cart/remove?user_id=6545a86825de71eac175dfc7&product_id=${productId}`,
     {
       method: "DELETE",
     }
@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const productsContainer = document.getElementById("products-container");
   const products = [];
 
-  await fetch("http://localhost:3000/cart?user_id=65450de97eff4356f889c95d")
+  await fetch("http://localhost:3000/cart?user_id=6545a86825de71eac175dfc7")
     .then((response) => {
       console.log(
         "***********************************************************************"

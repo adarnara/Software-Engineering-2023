@@ -10,13 +10,13 @@ const cartModel = require('../models/shoppingCart.js');
 let webServer;
 
 // webServer = http.createServer(server);
-server.listen(3000, (error) => {
-  if (error) {
-      console.log('Error Occurred', error);
-  } else {
-      console.log(`Server is running on 3000`);
-  }
-});
+// server.listen(3000, (error) => {
+//   if (error) {
+//       console.log('Error Occurred', error);
+//   } else {
+//       console.log(`Server is running on 3000`);
+//   }
+// });
 
 beforeAll(async () => {
   await db.connect();
