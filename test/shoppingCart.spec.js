@@ -87,28 +87,197 @@ describe("Accessing user current cart", () => {
       expect(response.body).toEqual(currMemberCart);
     });
 
-    // it("should return an empty cart for the current user", async () => {
-    //   const currMemberCart = {
-    //     _id: "6547e31db2320ac36290d801",
-    //     email: memberEmail,
-    //     purchaseTime: null,
-    //     numShipped: null,
-    //     totalPrice: "0.0",
-    //     products: [{
-    //       "parent_cart":,
+    it("should return a filled cart with 1 item for the current user", async () => {
+      const mockProduct1 = {
+        parent_cart: "6547e31db2320ac36290d801",
+        product_id: "books7",
+        quantity: 36,
+        from: null,
+        to: null,
+        date_shipped: null,
+        date_arrival: null,
+        shipping_id: null,
+        _id: "6547e4639622c407517c4a8f",
+        __v: 0
+      }
 
-    //     }],
-    //     __v: "0",
-    //   };
+      currMemberCart = {
+        _id: "6547e31db2320ac36290d801",
+        email: memberEmail,
+        purchaseTime: null,
+        numShipped: null,
+        totalPrice: "0.0",
+        products: [mockProduct1],
+        __v: "0",
+      };
 
-    //   cartRepo.getCurrCart.mockResolvedValue(currMemberCart);
-    //   cartRepo.getMember.mockResolvedValue(mockedUser);
-    //   const response = await request(server)
-    //     .get("/cart?user_id=6547e31db2320ac36290d802")
-    //     .set("Content-Type", "application/json");
-    //   expect(response.status).toBe(200);
-    //   expect(response.body).toEqual(currMemberCart);
-    // });
+      cartRepo.getCurrCart.mockResolvedValue(currMemberCart);
+      cartRepo.getMember.mockResolvedValue(mockedUser);
+      const response = await request(server)
+        .get("/cart?user_id=6547e31db2320ac36290d802")
+        .set("Content-Type", "application/json");
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(currMemberCart);
+    });
+
+    it("should return a filled cart with 2+ items for the current user", async () => {
+      const mockProduct1 = {
+        parent_cart: "6547e31db2320ac36290d801",
+        product_id: "books7",
+        quantity: 36,
+        from: null,
+        to: null,
+        date_shipped: null,
+        date_arrival: null,
+        shipping_id: null,
+        _id: "6547e4639622c407517c4a8f",
+        __v: 0
+      }
+
+      const mockProduct2 = {
+        parent_cart: "6547e31db2320ac36290d801",
+        product_id: "ipad1",
+        quantity: 3,
+        from: null,
+        to: null,
+        date_shipped: null,
+        date_arrival: null,
+        shipping_id: null,
+        _id: "6547e4639622c407517c4a8f",
+        __v: 0
+      }
+
+      const mockProduct3 = {
+        parent_cart: "6547e31db2320ac36290d801",
+        product_id: "laptop12",
+        quantity: 1,
+        from: null,
+        to: null,
+        date_shipped: null,
+        date_arrival: null,
+        shipping_id: null,
+        _id: "6547e4639622c407517c4a8f",
+        __v: 0
+      }
+
+      currMemberCart = {
+        _id: "6547e31db2320ac36290d801",
+        email: memberEmail,
+        purchaseTime: null,
+        numShipped: null,
+        totalPrice: "0.0",
+        products: [mockProduct1, mockProduct2, mockProduct3],
+        __v: "0",
+      };
+
+      cartRepo.getCurrCart.mockResolvedValue(currMemberCart);
+      cartRepo.getMember.mockResolvedValue(mockedUser);
+      const response = await request(server)
+        .get("/cart?user_id=6547e31db2320ac36290d802")
+        .set("Content-Type", "application/json");
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(currMemberCart);
+    });
+
+    it("should return Error 400 if more than one query parameter is specified in request URL", async () => {
+      const mockProduct1 = {
+        parent_cart: "6547e31db2320ac36290d801",
+        product_id: "books7",
+        quantity: 36,
+        from: null,
+        to: null,
+        date_shipped: null,
+        date_arrival: null,
+        shipping_id: null,
+        _id: "6547e4639622c407517c4a8f",
+        __v: 0
+      }
+
+      currMemberCart = {
+        _id: "6547e31db2320ac36290d801",
+        email: memberEmail,
+        purchaseTime: null,
+        numShipped: null,
+        totalPrice: "0.0",
+        products: [mockProduct1],
+        __v: "0",
+      };
+
+      cartRepo.getCurrCart.mockResolvedValueOnce(currMemberCart);
+      cartRepo.getMember.mockResolvedValueOnce(mockedUser);
+      const response = await request(server)
+        .get("/cart?user_id=6547e31db2320ac36290d802&product_id=123456789")
+        .set("Content-Type", "application/json");
+      expect(response.status).toBe(400);
+      expect(response.text).toEqual("Bad Request: Please Ensure exactly one query params for user_id is specified");
+    });
+
+    it("should return Error 400 if the one query parameter is not a user_id", async () => {
+      const mockProduct1 = {
+        parent_cart: "6547e31db2320ac36290d801",
+        product_id: "books7",
+        quantity: 36,
+        from: null,
+        to: null,
+        date_shipped: null,
+        date_arrival: null,
+        shipping_id: null,
+        _id: "6547e4639622c407517c4a8f",
+        __v: 0
+      }
+
+      currMemberCart = {
+        _id: "6547e31db2320ac36290d801",
+        email: memberEmail,
+        purchaseTime: null,
+        numShipped: null,
+        totalPrice: "0.0",
+        products: [mockProduct1],
+        __v: "0",
+      };
+
+      cartRepo.getCurrCart.mockResolvedValue(currMemberCart);
+      cartRepo.getMember.mockResolvedValue(mockedUser);
+      const response = await request(server)
+        .get("/cart?product_id=6547e31db2320ac36290d802")
+        .set("Content-Type", "application/json");
+      expect(response.status).toBe(400);
+      expect(response.text).toEqual("Bad Request: Must have exactly one query param with key 'user_id'");
+    });
+
+    it("should return Error 400 if the one query parameter is not a user_id", async () => {
+      const mockProduct1 = {
+        parent_cart: "6547e31db2320ac36290d801",
+        product_id: "books7",
+        quantity: 36,
+        from: null,
+        to: null,
+        date_shipped: null,
+        date_arrival: null,
+        shipping_id: null,
+        _id: "6547e4639622c407517c4a8f",
+        __v: 0
+      }
+
+      currMemberCart = {
+        _id: "123456789abcdefghijklmno",
+        email: memberEmail,
+        purchaseTime: null,
+        numShipped: null,
+        totalPrice: "0.0",
+        products: [mockProduct1],
+        __v: "0",
+      };
+
+      cartRepo.getCurrCart.mockResolvedValue(currMemberCart);
+      cartRepo.getMember.mockResolvedValue(mockedUser);
+      const response = await request(server)
+        .get("/cart?product_id=6547e31db2320ac36290d802")
+        .set("Content-Type", "application/json");
+      expect(response.status).toBe(400);
+      expect(response.text).toEqual("Bad Request: Must have exactly one query param with key 'user_id'");
+    });
+
   });
 
   describe("POST /cart/add?user_id=6547e31db2320ac36290d802", () => {
@@ -174,7 +343,7 @@ describe("Accessing user current cart", () => {
         from: null,
         parent_cart: "6547e31db2320ac36290d801",
         product_id: "books1",
-        quantity: 9,
+        quantity: 5,
         shipping_id: null,
         to: null,
       });
