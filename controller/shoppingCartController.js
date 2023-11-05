@@ -246,6 +246,7 @@ async function changeProductQuantityFromCart(req, res) {
 
 const regExpURIAddProduct = /^\/cart\/add\/[^/]+$/;
 async function addProductToCart(req, res) {
+  console.log("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHello\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
   return new Promise(async (resolve) => {
     if (req.method !== "POST") {
       let resMsg =
@@ -378,7 +379,6 @@ async function addProductToCart(req, res) {
               return;
             } else {
               // Add to shopping cart collection
-
               const newProduct = new cartProductCollection({
                 quantity: quantity,
                 product_id: product_id,
@@ -399,7 +399,6 @@ async function addProductToCart(req, res) {
                 productPrice = parseFloat(
                   productPrice.match(parseProductPrice)[1]
                 );
-
                 const savedNewProduct = await newProduct.save();
                 await cartRepo.pushProductToCart(
                   currMemberCart._id,
@@ -407,7 +406,7 @@ async function addProductToCart(req, res) {
                   (
                     currMemberCart.totalPrice +
                     productPrice * parseFloat(quantity)
-                  ).toFixed(2)
+                  )
                 );
 
                 resCode = 200;
