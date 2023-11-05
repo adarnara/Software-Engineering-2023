@@ -28,7 +28,6 @@ async function changeProductQuantityFromCatalog(
         currCart._id
       );
       const newQuantity = parsedRequestBody.quantity + currProduct.quantity;
-
       const updatedProduct = await cartRepo.setProductQuantity(
         parsedRequestBody.product_id,
         currCart._id,
@@ -52,7 +51,7 @@ async function changeProductQuantityFromCatalog(
       let productPrice = productInfo.price;
       productPrice = parseFloat(productPrice.match(parseProductPrice)[1]);
 
-      const updatedPOSTproduct = await cartRepo.updateProductsAndPriceInCurrCart(currCart._id, newProductList, (currCart.totalPrice + (productPrice * parseFloat(parsedRequestBody.quantity))).toFixed(2));
+      const updatedPOSTproduct = await cartRepo.updateProductsAndPriceInCurrCart(currCart._id, newProductList, (currCart.totalPrice + (productPrice * parseFloat(parsedRequestBody.quantity))));
       resolve(updatedPOSTproduct);
       return;
     } catch (err) {
@@ -246,7 +245,6 @@ async function changeProductQuantityFromCart(req, res) {
 
 const regExpURIAddProduct = /^\/cart\/add\/[^/]+$/;
 async function addProductToCart(req, res) {
-  console.log("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHello\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
   return new Promise(async (resolve) => {
     if (req.method !== "POST") {
       let resMsg =

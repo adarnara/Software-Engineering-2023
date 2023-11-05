@@ -122,7 +122,7 @@ describe("Accessing user current cart", () => {
       cartRepo.pushProductToCart.mockResolvedValue();
       cartRepo.getCurrProduct.mockResolvedValue(null);
       const response = await request(server)
-        .post("/cart/add")
+        .post("/cart/add?user_id=6547e31db2320ac36290d802")
         .set("Content-Type", "application/json")
         .send(addbooks1);
       expect(response.status).toBe(200);
@@ -159,16 +159,9 @@ describe("Accessing user current cart", () => {
         shipping_id: null,
         to: null,
       };
-
-      cartRepo.getCurrProduct.mockResolvedValue(existingProd);
-      const response = await request(server)
-        .post("/cart/add")
-        .set("Content-Type", "application/json")
-        .send(addbooks1);
-      expect(response.status).toBe(200);
-      expect(response.body).toEqual({
+      const output = {
         __v: 0,
-        _id: response.body._id,
+        _id: idResponse,
         date_arrival: null,
         date_shipped: null,
         from: null,
@@ -177,6 +170,100 @@ describe("Accessing user current cart", () => {
         quantity: 9,
         shipping_id: null,
         to: null,
+      };
+
+      cartRepo.getCurrProduct
+        .mockResolvedValueOnce(existingProd)
+        .mockResolvedValueOnce(existingProd)
+        .mockResolvedValueOnce(output);
+
+      cartRepo.updateProductsAndPriceInCurrCart.mockResolvedValue(output);
+
+      const response = await request(server)
+        .post("/cart/add?user_id=6547e31db2320ac36290d802")
+        .set("Content-Type", "application/json")
+        .send(addbooks1);
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(output);
+    });
+
+    it("should return error 400 that not all 3 body items have been entered correctly", async () => {
+      const addbooks1 = {
+        quantity: 4,
+        email: memberEmail,
+      };
+
+      const response = await request(server)
+        .post("/cart/add?user_id=6547e31db2320ac36290d802")
+        .set("Content-Type", "application/json")
+        .send(addbooks1);
+      expect(response.status).toBe(400);
+      expect(response.text).toEqual(
+        "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String, email: String}"
+      );
+    });
+    it("should return error 400 that not all 3 body items have been entered correctly", async () => {
+      const addbooks2 = {
+        quantity: "4",
+        email: memberEmail,
+        product_id: "books1",
+      };
+
+      const response1 = await request(server)
+        .post("/cart/add?user_id=6547e31db2320ac36290d802")
+        .set("Content-Type", "application/json")
+        .send(addbooks2);
+      expect(response1.status).toBe(400);
+      expect(response1.text).toEqual(
+        "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String, email: String}"
+      );
+    });
+  });
+
+  describe("DELETE /cart/add?user_id=6547e31db2320ac36290d802", () => {
+    it("should return the product deleted from the cart", async () => {
+      cartRepo.deleteProductFromCart.mockResolvedValueOnce({
+        id: "books1",
+        name: "Test Book 1",
+        price: "$5.00",
+      });
+      const response = await request(server)
+        .delete(
+          "/cart/remove?user_id=6547e31db2320ac36290d802&product_id=books1"
+        )
+        .set("Content-Type", "application/json");
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({
+        id: "books1",
+        name: "Test Book 1",
+        price: "$5.00",
+      });
+    });
+    it("should return product never existed in cart", async () => {
+      cartRepo.deleteProductFromCart.mockResolvedValueOnce(null);
+      const response = await request(server)
+        .delete(
+          "/cart/remove?user_id=6547e31db2320ac36290d802&product_id=books1"
+        )
+        .set("Content-Type", "application/json");
+      expect(response.status).toBe(404);
+      expect(response.text).toEqual(
+        "Not Found: Product with ID <books1> not found in current cart"
+      );
+    });
+    it("should return error from invalid query string", async () => {
+      cartRepo.deleteProductFromCart.mockResolvedValueOnce({
+        id: "books1",
+        name: "Test Book 1",
+        price: "$5.00",
+      });
+      const response = await request(server)
+        .delete("/cart/remove?user_id=6547e31db2320ac36290d802")
+        .set("Content-Type", "application/json");
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({
+        message:
+          "Bad Request: Please Ensure exactly two query params for user_id and product_id are specified",
       });
     });
   });
