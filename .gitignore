@@ -6,3 +6,5 @@ node_modules/
 
 # Ignore data folder and .json files
 data/*.json
+
+tests/*
