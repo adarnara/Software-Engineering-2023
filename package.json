@@ -9,7 +9,7 @@
     "mongoose": "^7.5.2"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest --forceExit --detectOpenHandles  --watchAll --maxWorkers=1"
   },
   "devDependencies": {
     "jest": "^29.7.0",
