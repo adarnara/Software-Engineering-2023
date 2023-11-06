@@ -2,13 +2,12 @@ const mongoose = require('mongoose');
 const request = require('supertest');
 const server = require('../../server');
 const productRepo = require('../../Repository/ProductRepo.js');
-const ProductController = require('../../controller/ProductController');
+const ProductController = require('../../controller/ProductController.js');
 
-
-jest.mock('../../Repository/ProductRepo.js',()=>({
+jest.mock('../../Repository/ProductRepo',()=>({
   shuffle: jest.fn(),
   getRandomItems: jest.fn(),
-  getAll:jest.fn()
+  getAll:jest.fn(),
 }));
 
 mongoose.connect = jest.fn();

@@ -43,8 +43,6 @@ class ProductController {
   }
 }
 
-module.exports = new ProductController();
-
 // Fisher-Yates shuffle algorithm
 function shuffle(arr) {
   var i = arr.length, j, temp;
@@ -71,3 +69,5 @@ function getRandomItems(arr, count) {
 
   return shuffled.slice(0, count);
 }
+
+module.exports = new ProductController;
