@@ -1,3 +1,11 @@
+
+function checkPos(quantity)
+{
+    console.log(quantity.value)
+    if (quantity.value<0)
+        quantity.value = 0;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     
     const productsContainer = document.getElementById("products-container");
@@ -12,15 +20,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchButton = document.querySelector('.search-bar .search-button');
     if (searchButton) {
         searchButton.addEventListener('click', function() {
+            currentPage = 1
             const searchText = document.querySelector('.search-bar input[type="text"]').value;
             const pattern = /^(books|ipad|tshirts|laptop)\d*$/;
             if(pattern.test(searchText)){ //only continues if the search was valid
                 currentSearchText = searchText; // Store the current search text
                 searchProducts(searchText);
+            } else {
+                var errorMessage = document.getElementById('error-message');
+                errorMessage.classList.remove('hidden');   
+                productsContainer.innerHTML = ''; //Clear the products container
+                products.length = 0; //Reset the products array
             }
         });
     }
-
     //Searches for and displays requested products
     function searchProducts(searchText) {
         currentSearchText = searchText; //stores in global variable so that it can be accessed in next and previous method
@@ -138,9 +151,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 </ul>
                 ${colorsHTML}
             </div>
+            <div class="add-to-cart-button">
+                <button class= "add-button" onclick="addProductToCart('${product._id}')">Add Quantity</br> to Cart</button>
+            </div>
+            <div class="number-control">
+                <input type="number" id='${product._id}' onclick="checkPos(this)" class="display-number" value="1">
+            </div>
         </div>
     `;
-
         return productHTML;
     }
 
@@ -162,6 +180,31 @@ document.addEventListener("DOMContentLoaded", () => {
         productImage.src = product.images[currentImageIndex].large;
     }
     window.changeImage = changeImage;
+    window.addProductToCart = addProductToCart;
+
+    const currMemberEmail = "ooga@gmail.com";
+    function addProductToCart(product){
+        let quantity = document.getElementById(product).value;
+
+        console.log(quantity);
+        if (
+            isNaN(parseInt(quantity)) ||
+            parseInt(quantity) < 0
+          ) {
+            quantity = 0;
+          } else {
+            console.log("Sending")
+        fetch(`http://localhost:3000/cart/add?user_id=6545a86825de71eac175dfc7`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                quantity: parseInt(quantity),
+                email: currMemberEmail,
+                product_id: product
+            })
+            }).then(res => console.log(res))
+    }
+}
 });
-
-

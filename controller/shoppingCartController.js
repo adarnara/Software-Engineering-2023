@@ -16,29 +16,6 @@ const { parse } = require("path");
 
 const parseProductPrice = /\$([\d.]+)/;
 
-// connectDB();
-
-// 'GET/': (request, response) => shoppingCartController.getProducts(request,response),
-// 'POST/': (request, response) => shoppingCartController.addProductToCart(request,response),
-// 'PATCH/': (request, response) => shoppingCartController.changeProductQuantity(request,response),
-// 'DELETE/': (request, response) => shoppingCartController.removeProductFromCart(request,response),
-
-// .../users/{id}/cart/
-
-// const updateProductQuantity = async (productId, email, newQuantity) => {
-//     try {
-//       const updatedProduct = await ShoppingCart.findOneAndUpdate(
-//         { product_id: productId, email: email },
-//         { $set: { quantity: newQuantity } },
-//         { new: true }
-//       );
-
-//       return updatedProduct;
-//     } catch (error) {
-//       throw error;
-//     }
-//   };
-
 async function changeProductQuantityFromCatalog(
   parsedRequestBody,
   res,
@@ -46,11 +23,17 @@ async function changeProductQuantityFromCatalog(
 ) {
   return new Promise(async (resolve) => {
     try {
-      const currProduct = await cartRepo.getCurrProduct(parsedRequestBody.product_id, currCart._id);
+      const currProduct = await cartRepo.getCurrProduct(
+        parsedRequestBody.product_id,
+        currCart._id
+      );
       const newQuantity = parsedRequestBody.quantity + currProduct.quantity;
+      const updatedProduct = await cartRepo.setProductQuantity(
+        parsedRequestBody.product_id,
+        currCart._id,
+        newQuantity
+      );
 
-      const updatedProduct = await cartRepo.setProductQuantity(parsedRequestBody.product_id, currCart._id, newQuantity);
-      
       const newProductList = [];
       for (const product of currCart.products) {
         if (product.product_id === updatedProduct.product_id) {
@@ -59,40 +42,27 @@ async function changeProductQuantityFromCatalog(
           newProductList.push(product);
         }
       }
-      // data.products.forEach(async (product) => {
-      //   await fetch(`http://localhost:3000/search?productId=${product.product_id}`)
-      //   .then(async (response) => {
-      //     // console.log(response.json());
-      //     response = await response.json();
-      //     console.log(response);
-      //     console.log(product);
-      //     products.push(response);
-      //     console.log(products);
-      //     const productHTML = createProductHTML(response);
-      //     productsContainer.innerHTML += productHTML;
-      //   });
-      // });
 
       // get current price of product and update totalPrice of cart as well
-      // const productInfo = await productCollection.findById(parsedRequestBody.product_id);
-      const productInfo = await productRepo.getProductById(parsedRequestBody.product_id);
+      const productInfo = await productRepo.getProductById(
+        parsedRequestBody.product_id
+      );
 
       let productPrice = productInfo.price;
       productPrice = parseFloat(productPrice.match(parseProductPrice)[1]);
 
-      await cartRepo.updateProductsAndPriceInCurrCart(currCart._id, newProductList, (currCart.totalPrice + (productPrice * parseFloat(parsedRequestBody.quantity))).toFixed(2));
-
-      resolve(
-        "Successfully added product: " +
-        parsedRequestBody.product_id +
-          " to cart: " +
-          currCart._id.toString()
-      );
+      const updatedPOSTproduct = await cartRepo.updateProductsAndPriceInCurrCart(currCart._id, newProductList, (currCart.totalPrice + (productPrice * parseFloat(parsedRequestBody.quantity))));
+      resolve(updatedPOSTproduct);
       return;
     } catch (err) {
       console.log(err);
       resolve(
-        "Unable to add product: " + parsedRequestBody.product_id + " to cart: " + currCart._id.toString() + "\n" + err
+        "Unable to add product: " +
+          parsedRequestBody.product_id +
+          " to cart: " +
+          currCart._id.toString() +
+          "\n" +
+          err
       );
       return;
     }
@@ -114,32 +84,33 @@ async function changeProductQuantityFromCart(req, res) {
 
     let resMsg = "";
     let resCode, resType;
-    let requestBody ="";
+    let requestBody = "";
     let parsedRequestBody;
 
     const parsedUrl = url.parse(req.url, true);
     const queryParams = parsedUrl.query;
-    
+
     // ensure that only one query parameter (the user_id)
     if (Object.keys(queryParams).length !== 1) {
       resCode = 400;
-      resMsg = "Bad Request: Please Ensure only one query param for user_id is specified";
+      resMsg =
+        "Bad Request: Please Ensure only one query param for user_id is specified";
       resType = "text/plain";
       res.writeHead(resCode, { "Content-Type": resType });
       res.end(resMsg);
       resolve(resMsg);
       return;
     }
-    if (!('user_id' in queryParams)) {
+    if (!("user_id" in queryParams)) {
       resCode = 400;
+      resType = "text/plain";
       resMsg = "Bad Request: Single query param must have the key 'user_id'";
       res.writeHead(resCode, { "Content-Type": resType });
       res.end(resMsg);
       resolve(resMsg);
       return;
     }
-    const user_id = queryParams['user_id'];
-
+    const user_id = queryParams["user_id"];
 
     try {
       await req.on("data", (chunk) => {
@@ -200,8 +171,6 @@ async function changeProductQuantityFromCart(req, res) {
 
             // Get query params in the URI (should just be user_id)
 
-
-
             // If product exists, we want to increase its quantity in the shopping cart, so call PATCH method to return the proper response
 
             try {
@@ -210,6 +179,7 @@ async function changeProductQuantityFromCart(req, res) {
               // If no cart returned, this user is not registered!
               if (!currMemberCart) {
                 resCode = 401;
+                resType = "text/plain";
                 resMsg = "Unauthorized Access: Email <" + email + "> is not currently registered!";
                 res.writeHead(resCode, { "Content-Type": resType });
                 res.end(resMsg);
@@ -217,43 +187,51 @@ async function changeProductQuantityFromCart(req, res) {
                 return;
               }
 
-              const oldProduct = await cartRepo.getCurrProduct(product_id, currMemberCart._id);
+              const oldProduct = await cartRepo.getCurrProduct(
+                product_id,
+                currMemberCart._id
+              );
 
               const oldProductQuantity = oldProduct.quantity;
 
-              const updatedProduct = await cartRepo.setProductQuantity(product_id, currMemberCart._id, quantity);
+              const updatedProduct = await cartRepo.setProductQuantity(
+                product_id,
+                currMemberCart._id,
+                quantity
+              );
 
-                const newProductList = [];
-                for (const product of currMemberCart.products) {
-                  if (product.product_id === updatedProduct.product_id) {
-                    newProductList.push(updatedProduct);
-                  } else {
-                    newProductList.push(product);
-                  }
+              const newProductList = [];
+              for (const product of currMemberCart.products) {
+                if (product.product_id === updatedProduct.product_id) {
+                  newProductList.push(updatedProduct);
+                } else {
+                  newProductList.push(product);
                 }
+              }
 
                 const productInfo = await productRepo.getProductById(parsedRequestBody.product_id);
                 let productPrice = productInfo.price;
                 productPrice = parseFloat(productPrice.match(parseProductPrice)[1]);
                 
-                await cartRepo.updateProductsAndPriceInCurrCart(currMemberCart._id, newProductList, (currMemberCart.totalPrice - (productPrice * parseFloat(oldProductQuantity)) + (productPrice * parseFloat(quantity))).toFixed(2));
+              const newUpdatedProduct = await cartRepo.updateProductsAndPriceInCurrCart(currMemberCart._id, newProductList, (currMemberCart.totalPrice - (productPrice * parseFloat(oldProductQuantity)) + (productPrice * parseFloat(quantity))).toFixed(2), productInfo);
 
+              const updatedProductInfo = await cartRepo.getCurrProduct(parsedRequestBody.product_id, currMemberCart._id);
               resCode = 200;
-              resMsg = "Update Successful";
-              resType = "text/plain";
+              resMsg = JSON.stringify(updatedProductInfo);
+              resType = "application/json";
             } catch (err) {
               console.log(err);
-              resMsg =
-                "Unable to update product";
+              resMsg = "Unable to update product";
               resCode = 500;
               resType = "text/plain";
             }
             resCode = 200;
-            resType = "text/plain";
+            resType = "application/json";
           }
         }
       }
     } else {
+      resType = "text/plain";
       resCode = 400;
       resMsg =
         "Bad Request: Please ensure request body is a singular JSON object";
@@ -294,15 +272,6 @@ async function addProductToCart(req, res) {
      */
 
     // Reg Exp test for URI to correct resource *
-    // if (!regExpURIAddProduct.test(req.url)) {
-    //   let resMsg = "Bad Request: URL must be accessing '.../cart/{_id}";
-    //   let resCode = 400;
-    //   let resType = "text/plain";
-    //   res.writeHead(resCode, { "Content-Type": resType });
-    //   res.end(resMsg);
-    //   resolve(resMsg);
-    //   return;
-    // }
 
     try {
       await req.on("data", (chunk) => {
@@ -374,30 +343,40 @@ async function addProductToCart(req, res) {
             return;
           } // Reaching this else means the request body is good to go
           else {
-            const currMemberCart = await cartRepo.getCurrCart(parsedRequestBody.email);
+            const currMemberCart = await cartRepo.getCurrCart(
+              parsedRequestBody.email
+            );
 
             const quantity = parsedRequestBody.quantity;
             const product_id = parsedRequestBody.product_id;
             const email = parsedRequestBody.email;
 
-            const existingProduct = await cartRepo.getCurrProduct(product_id, currMemberCart._id);
+            const existingProduct = await cartRepo.getCurrProduct(
+              product_id,
+              currMemberCart._id
+            );
 
             // If product exists, we want to increase its quantity in the shopping cart, so call PATCH method to return the proper response
             if (existingProduct) {
-              resMsg = await changeProductQuantityFromCatalog(
+              const changedCart = await changeProductQuantityFromCatalog(
                 parsedRequestBody,
                 res,
                 currMemberCart
               );
+              if (typeof changedProduct !== 'string') {
+                const changedProduct = await cartRepo.getCurrProduct(product_id, currMemberCart._id);
+                resMsg = JSON.stringify(changedProduct);
+                resType = "application/json";
+              } else {
+                resType = "text/plain";
+              }
               resCode = 200;
-              resType = "text/plain";
               res.writeHead(resCode, { "Content-Type": resType });
               res.end(resMsg);
               resolve(resMsg);
               return;
             } else {
               // Add to shopping cart collection
-
               const newProduct = new cartProductCollection({
                 quantity: quantity,
                 product_id: product_id,
@@ -411,21 +390,22 @@ async function addProductToCart(req, res) {
               });
 
               try {
-                // const grabCart = await membersCollection.findOne({ email: `${user}` })[
-                //   "cart"
-                // ];
-
-                // const grabCartProduct = await cartProductCollection.findOneAndDelete({
-                //   parent_cart: grabCart._id,
-                //   product_id: productId,
-                // });
-
-                const productInfo = await productRepo.getProductById(product_id);
+                const productInfo = await productRepo.getProductById(
+                  product_id
+                );
                 let productPrice = productInfo.price;
-                productPrice = parseFloat(productPrice.match(parseProductPrice)[1]);
-
+                productPrice = parseFloat(
+                  productPrice.match(parseProductPrice)[1]
+                );
                 const savedNewProduct = await newProduct.save();
-                await cartRepo.pushProductToCart(currMemberCart._id, newProduct, (currMemberCart.totalPrice + (productPrice) * parseFloat(quantity)).toFixed(2));
+                await cartRepo.pushProductToCart(
+                  currMemberCart._id,
+                  newProduct,
+                  (
+                    currMemberCart.totalPrice +
+                    productPrice * parseFloat(quantity)
+                  )
+                );
 
                 resCode = 200;
                 resMsg = JSON.stringify(savedNewProduct);
@@ -462,42 +442,44 @@ async function addProductToCart(req, res) {
 }
 
 async function getProducts(req, res) {
-  
+  // take a get request with uri of /cart?userId=___
   return new Promise(async (resolve) => {
     let resMsg = "";
     let resCode, resType;
 
     const parsedUrl = url.parse(req.url, true);
     const queryParams = parsedUrl.query;
-    
+
     // ensure that only one query parameter (the user_id)
     if (Object.keys(queryParams).length !== 1) {
       resCode = 400;
-      resMsg = "Bad Request: Please Ensure exactly one query params for user_id is specified";
+      resMsg =
+        "Bad Request: Please Ensure exactly one query params for user_id is specified";
       resType = "text/plain";
       res.writeHead(resCode, { "Content-Type": resType });
       res.end(resMsg);
       resolve(resMsg);
       return;
     }
-    if (!('user_id' in queryParams)) {
+    if (!("user_id" in queryParams)) {
       resCode = 400;
       resMsg = "Bad Request: Must have exactly one query param with key 'user_id'";
+      resType = "text/plain";
       res.writeHead(resCode, { "Content-Type": resType });
       res.end(resMsg);
       resolve(resMsg);
       return;
     }
-    const currUser = queryParams['user_id'];
+    const currUser = queryParams["user_id"];
     let currMemberCart;
-    
-    try {
 
+    try {
       const currMember = await cartRepo.getMember(currUser);
 
       const currMemberCart = await cartRepo.getCurrCart(currMember.email);
 
       if (currMemberCart == null) {
+        //No items found in shopping cart
         resCode = 200;
         resType = "text/plain";
         resMsg = "There are no items in your shopping cart!";
@@ -507,13 +489,14 @@ async function getProducts(req, res) {
         resMsg = JSON.stringify(currMemberCart);
       }
     } catch (err) {
+      // User is not registered
       console.log(err);
       console.log("You are not a registered member!");
       resCode = 401;
       resType = "text/plain";
       resMsg = "You are not a registered member!";
     }
-    
+
     res.writeHead(resCode, { "Content-Type": resType });
     res.end(resMsg);
     console.log("Request Complete");
@@ -524,68 +507,53 @@ async function getProducts(req, res) {
 async function removeProductFromCart(req, res) {
   return new Promise(async (resolve) => {
     // take a delete request with uri of /cart/remove?userId=___&productId=____
-    
-    /*
-    const address = req.url; // request url
-    let urlObject = url.parse(address, true);
-    productId = urlObject["productId"];
-    userId = urlObject["userId"];
-    */
 
-
-
-    
     if (req.method != "DELETE") {
-      res.writeHead(405, { 'Content-Type': 'application/json' });
-		  res.end(JSON.stringify({ message: 'Method Not Allowed' }));
+      res.writeHead(405, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "Method Not Allowed" }));
       return;
     }
 
-    // ...REMOVE/cart/{user_id}/cartProduct/{cartProduct_id}
-  
     try {
-
       let resMsg = "";
       let resCode, resType;
-      // let requestBody = "";
-      // let parsedRequestBody;
-
       const parsedUrl = url.parse(req.url, true);
       const queryParams = parsedUrl.query;
-      // console.log(queryParams)
 
       // ensure that only one query parameter (the user_id)
       if (Object.keys(queryParams).length !== 2) {
         resCode = 400;
-        resMsg = JSON.stringify({message: "Bad Request: Please Ensure exactly two query params for user_id and product_id are specified"});
+        resMsg = JSON.stringify({
+          message:
+            "Bad Request: Please Ensure exactly two query params for user_id and product_id are specified",
+        });
         resType = "application/json";
         res.writeHead(resCode, { "Content-Type": resType });
         res.end(resMsg);
         resolve(resMsg);
         return;
       }
-      if (!('user_id' in queryParams) || !('product_id' in queryParams)) {
+      if (!("user_id" in queryParams) || !("product_id" in queryParams)) {
         resCode = 400;
         resMsg = "Bad Request: Must have exactly two query params with keys 'user_id' and 'product_id'";
+        resType = "text/plain";
         res.writeHead(resCode, { "Content-Type": resType });
         res.end(resMsg);
         resolve(resMsg);
         return;
       }
-      const user_id = queryParams['user_id'];
-      const product_id = queryParams['product_id'];
-
-      // console.log(queryParams);
-
+      const user_id = queryParams["user_id"];
+      const product_id = queryParams["product_id"];
       const currMember = await cartRepo.getMember(user_id);
-
-      // console.log(currMember)
-
       const currMemberCart = await cartRepo.getCurrCart(currMember.email);
-      
+
       if (!currMemberCart) {
+        // User ID is not in database
         resCode = 401;
-        resMsg = "Unauthorized Access: Email <" + currMember.email + "> is not currently registered!";
+        resMsg =
+          "Unauthorized Access: Email <" +
+          currMember.email +
+          "> is not currently registered!";
         resType = "text/plain";
         res.writeHead(resCode, { "Content-Type": resType });
         res.end(resMsg);
@@ -593,16 +561,23 @@ async function removeProductFromCart(req, res) {
         return;
       }
 
-      const removedCartProduct = await cartRepo.deleteProductFromCart(product_id, currMemberCart._id);
+      const removedCartProduct = await cartRepo.deleteProductFromCart(
+        product_id,
+        currMemberCart._id
+      );
 
       if (!removedCartProduct) {
+        //Product is not in cart
         resCode = 404;
-        resMsg = "Not Found: Product with ID <" + product_id + "> not found in current cart";
+        resMsg =
+          "Not Found: Product with ID <" +
+          product_id +
+          "> not found in current cart";
         resType = "text/plain";
         res.writeHead(resCode, { "Content-Type": resType });
         res.end(resMsg);
         resolve(resMsg);
-        return;        
+        return;
       }
 
       const newProductList = [];
@@ -617,11 +592,18 @@ async function removeProductFromCart(req, res) {
       let productPrice = productInfo.price;
       productPrice = parseFloat(productPrice.match(parseProductPrice)[1]);
 
-      await cartRepo.updateProductsAndPriceInCurrCart(currMemberCart._id, newProductList, (currMemberCart.totalPrice - (productPrice * parseFloat(removedCartProduct.quantity))).toFixed(2));
+      await cartRepo.updateProductsAndPriceInCurrCart(
+        currMemberCart._id,
+        newProductList,
+        (
+          currMemberCart.totalPrice -
+          productPrice * parseFloat(removedCartProduct.quantity)
+        ).toFixed(2)
+      );
 
         resCode = 200;
-        resMsg = "Successfully removed product <" + product_id + "> from current cart.";
-        resType = "text/plain";
+        resMsg = JSON.stringify(removedCartProduct);
+        resType = "application/json";
         res.writeHead(resCode, { "Content-Type": resType });
         res.end(resMsg);
         resolve(resMsg);
@@ -629,7 +611,7 @@ async function removeProductFromCart(req, res) {
     } catch (error) {
       console.log(error);
       res.writeHead(400);
-      res.end("bad request");
+      res.end("Bad Request: " + error);
       resolve("bad request");
     }
   });

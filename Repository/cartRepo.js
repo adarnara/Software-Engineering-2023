@@ -13,7 +13,8 @@ class ShoppingCart {
 
     async createEmptyCart(email) {
         const newCart = shoppingCart({email: email});
-        return await newCart.save();
+        const savedCart = await newCart.save();
+        return savedCart;
     }
     
     // returns array of cart objects
@@ -81,7 +82,7 @@ class ShoppingCart {
 
     async updateProductsAndPriceInCurrCart(currCart_id, newProductList, newPrice) {
         return new Promise(async (resolve) => {
-            await shoppingCartCollection.findOneAndUpdate(
+            const updatedProduct = await shoppingCartCollection.findOneAndUpdate(
                 { _id: currCart_id.toString(), purchaseTime: null },
                 { $set: { 
                   products: newProductList,
@@ -89,7 +90,7 @@ class ShoppingCart {
                  }},
                 { new: true }
             );
-            resolve();
+            resolve(updatedProduct);
             return;            
         });
     }
@@ -107,7 +108,7 @@ class ShoppingCart {
 
     async pushProductToCart(currCart_id, newProduct, newPrice) {
         return new Promise(async (resolve) => {
-            await shoppingCartCollection.updateOne(
+            const updateRes = await shoppingCartCollection.updateOne(
                 { _id: currCart_id.toString(), purchaseTime: null },
                 { $push: { products: newProduct },
                   $set: {
@@ -115,14 +116,13 @@ class ShoppingCart {
                 }
               }
               );
-            resolve();
+            resolve(updateRes);
             return;
         });
     }
 
     async getMember(currUser) {
         return new Promise(async (resolve) => {
-            console.log(currUser.toString());
             const currMember = await membersCollection.findOne({
                 _id: currUser.toString(),
               });

@@ -36,9 +36,20 @@
     }
 
     .navbar-logo img {
+      max-width: 60px;
+      margin-right: 10px;
+    }
+
+    .navbar-cart {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-cart img {
       max-width: 40px;
       margin-right: 10px;
     }
+    
 
     .search-bar {
       text-align: center;
@@ -85,8 +96,9 @@
       padding: 20px;
       border-radius: 5px;
       background-color: #f8f8f8;
-      width: 100%;
+      width: 1500px; /* Fixed width */
     }
+    
     .subtotal {
     display: flex;
     flex-direction: column;
@@ -100,6 +112,7 @@
     max-width: 600px; /* Set maximum width */
     margin-bottom: 400px;
     margin-top: 10px;
+    max-height: 250px;
     margin-left: 20px; /* Add padding on the left side */
 }
 
@@ -166,6 +179,7 @@
     }
 
     .continue-shopping {
+      position: fixed;
       padding: 10px 20px;
       background-color: #3498db;
       color: white;
@@ -173,6 +187,8 @@
       border-radius: 5px;
       cursor: pointer;
       font-size: 19px;
+      transform: translate(-60%, -55%);
+
     }
 
     .continue-shopping:hover {
@@ -204,6 +220,9 @@
 
     .checkout{
       background-color: #2980b9;
+    }
+    .checkout:hover{
+      background-color: rgb(41, 185, 87);
     }
 
     /* CSS */
@@ -290,8 +309,8 @@
     <div>
       <button class="continue-shopping" onclick="continueShopping()">Continue Shopping</button>
     </div>
-    <div id="shopping-icon" class="navbar-logo">
-      <a href="http://127.0.0.1:5500/views/landingPage.html">
+    <div id="shopping-icon" class="navbar-cart">
+      <a href="http://127.0.0.1:5500/views/shoppingCart.html">
         <img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />
         <span style="font-weight: bold; font-size: 20px;"></span>
       </a>

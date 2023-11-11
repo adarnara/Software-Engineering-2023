@@ -8,21 +8,19 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 mongoose.connection.on('open', async () => {
     try {
-        const data = fs.readFileSync('../data/ipad.json', 'utf8');
+        const data = fs.readFileSync('../data/tshits.json', 'utf8');
         const jsonData = JSON.parse(data);
         let nextCustomId = 1;
 
         for (let i = 0; i < jsonData.length; i++) {
-            const customId = `ipad${nextCustomId}`;
+            const customId = `tshirts${nextCustomId}`;
             const productData = jsonData[i];
 
             if (
                 typeof productData.price === 'string' &&
                 productData.price.match(/^\$\d+(\.\d+)?$/) &&
                 typeof productData.stars === 'string' &&
-                productData.stars.trim() !== '' &&
-                typeof productData.rating_count === 'string' &&
-                productData.rating_count.trim() !== ''
+                productData.stars.trim() !== ''
             ) {
                 await Product.createWithCustomId(customId, productData);
                 nextCustomId++;
