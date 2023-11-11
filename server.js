@@ -20,6 +20,34 @@ const server = http.createServer(async (request, response) => {
     const parsedUrl = url.parse(request.url, true);
     const path = parsedUrl.pathname;
     const method = request.method;
+    console.log(`Incoming request: ${request.method} ${request.url}`);
+
+    //handling dymanic routes like /user/{id}
+    for (const route in userRouter) {
+        console.log(`Checking route: ${route}`);
+        const methodPart = route.match(/^[A-Z]+/)[0]; // Match the HTTP method part
+        const pathPart = route.substring(methodPart.length); // Get the path part
+
+        console.log(methodPart)
+        console.log(pathPart)
+        if (methodPart !== method) continue;
+    
+        const params = matchDynamicRoute(pathPart, path);
+        if (params) {
+          // Found a matching dynamic route
+          request.params = params;
+          console.log(params)
+          try {
+            await userRouter[route](request, response);
+            return;
+          } catch (error) {
+            console.error('Route Handler Error:', error);
+            response.writeHead(500);
+            response.end(JSON.stringify({ message: 'Internal Server Error' }));
+            return;
+          }
+        }
+      }
 
     // Set the CORS headers to allow all origins (you can restrict it as needed)
     response.setHeader('Access-Control-Allow-Origin', '*');
@@ -32,7 +60,8 @@ const server = http.createServer(async (request, response) => {
         response.end();
         return;
     }
-
+  
+    
     const routeKey = `${method}${path}`;
     if (routes[routeKey]) {
         const routeHandler = routes[routeKey];
@@ -73,6 +102,11 @@ const server = http.createServer(async (request, response) => {
                 res.status(500).json({ message: 'Internal Server Error' });
             }
         }
+        else {
+            // Fallback if no route is matched
+            response.writeHead(404);
+            response.end("Could not find resource!");
+          } 
     }
     try {
         const userRouteHandler = userRouter[routeKey];
@@ -82,6 +116,7 @@ const server = http.createServer(async (request, response) => {
 
         if (userRouteHandler) {
             userRouteHandler(request, response);
+            
         } else if (adminRouteHandler) {
             adminRouteHandler(request, response);
         } else if (paymentRouteHandler) {
@@ -101,49 +136,24 @@ const server = http.createServer(async (request, response) => {
     } catch (error) {
         console.error('Request Handling Error:', error);
     }
-    /*
-    //payments
-    if (request.url === '/checkout' && request.method === "GET") {
-        fs.readFile(path_m.join(__dirname, 'public', 'checkout', 'checkoutPage.html'), (error, content) => {
-            if (error) {
-                response.writeHead(500, {'Content-Type': 'text/plain'});
-                response.end('Server error');
-                return;
-            }
-            response.writeHead(200, {'Content-Type': 'text/html'});
-            response.end(content);
-        });
-    }
-    if (request.url === "/public/checkout/create-checkout-session" && request.method === 'POST') {
-        let body = '';
-        request.on('data', chunk => {
-        body += chunk.toString();
-        });
-        request.on('end', async () => {
-        try {
-            const items = JSON.parse(body).items;
-            // Make sure createCheckoutSession is an async function and handles the items properly
-            const session = await createCheckoutSession(items);
-            response.writeHead(200, {'Content-Type': 'application/json'});
-            response.end(JSON.stringify({ url: session.url }));
-        } catch (e) {
-            console.error(e); // Log error for server-side debugging
-            response.writeHead(500, {'Content-Type': 'application/json'});
-            response.end(JSON.stringify({ error: "Internal Server Error" }));
-        }
-    });
-    }
-    */
-    // });
-
-    // const routes = {
-    //     'PATCH/cart/<id>': (request, response) => shoppingCartController.changeProductQuantityFromCart(request,response),
-    //     'GET/cart/6532fb96e94f77fda92b8bc0': (request, response) => shoppingCartController.getProducts(request,response),
-    //     'POST/cart/<id>/add': (request, response) => shoppingCartController.addProductToCart(request,response),
-    //     'DELETE/cart/remove': (request, response) => shoppingCartController.removeProductFromCart(request,response),
-    // };
+ 
 });
-
+// splitting : to get the id.
+function matchDynamicRoute(routePattern, path) {
+    const routeParts = routePattern.split('/').filter(Boolean);
+    const pathParts = path.split('/').filter(Boolean);
+    if (routeParts.length !== pathParts.length) return null;
+  
+    const params = {};
+    for (let i = 0; i < routeParts.length; i++) {
+      if (routeParts[i].startsWith(':')) {
+        params[routeParts[i].substring(1)] = pathParts[i];
+      } else if (routeParts[i] !== pathParts[i]) {
+        return null;
+      }
+    }
+    return params;
+  }
 server.listen(PORT, (error) => {
     if (error) {
         console.log('Error Occurred', error);

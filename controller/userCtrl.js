@@ -157,4 +157,58 @@ function getPostData(request) {
         response.end(JSON.stringify({ message: 'server error Unable to get all users' }))
       }
   }
-module.exports = { login,register,allUsers };
+
+const updateUser = async (request, response) => {
+  const {id} = request.params
+  const  putData = await getPostData(request);
+  const userUpdateData = JSON.parse(putData);
+  try {
+    const updatedUser = await userRepo.updateById(id,userUpdateData)
+    response.writeHead(200, { 'Content-Type': 'application/json' })
+    response.end(JSON.stringify(updatedUser))
+  } catch(error){
+    console.error('Update Error:', error);
+    response.writeHead(500, { 'Content-Type': 'application/json' })
+    response.end(JSON.stringify({ message: 'server error Unable to update user' }))
+  }
+};
+
+async function removeUser(request, response) {
+  const { id } = request.params;
+  console.log(id)
+  console.log("hello")
+  try {
+    const user = await userRepo.findUserById(id); 
+    if (!user) {
+      response.writeHead(404, { 'Content-Type': 'application/json' })
+      response.end(JSON.stringify({ message: 'User not found' }));
+    } else {
+      await userRepo.deleteUser(id);
+      response.writeHead(200, { 'Content-Type': 'application/json' })
+      response.end(JSON.stringify({ message: `User with id: ${id} removed` }));
+    }
+  } catch(error) {
+    response.writeHead(500, { 'Content-Type': 'application/json' })
+    response.end(JSON.stringify({ message: 'server error Unable to delete user' }));
+  }
+}
+
+const getAUser = async (request, response) => {
+  const { id } = request.params;
+  try {
+    const user = await userRepo.findUserById(id);
+    if (!user) {
+      response.writeHead(404, { 'Content-Type': 'application/json' });
+      response.end(JSON.stringify({ message: 'User not found' }));
+    } else {
+      response.writeHead(200, { 'Content-Type': 'application/json' });
+      response.end(JSON.stringify(user));
+    }
+  } catch (error) {
+    response.writeHead(500, { 'Content-Type': 'application/json' });
+    response.end(JSON.stringify({ message: 'Server error Unable to get user' }));
+  }
+};
+
+
+module.exports = { login,register,allUsers,updateUser,getAUser,removeUser};

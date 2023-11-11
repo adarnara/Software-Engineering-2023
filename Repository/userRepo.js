@@ -22,6 +22,15 @@ class UserRepository {
     async findAllUser(){
         return await user.find()
     }
+    async updateById(id,body){
+        return await user.findByIdAndUpdate(id,body,{new:true})
+    }
+    async deleteUser(id){
+        return await user.findByIdAndDelete(id)
+    }
+    async findUserById(id){
+        return await user.findById(id)
+    }
 }
 
 module.exports = new UserRepository();
