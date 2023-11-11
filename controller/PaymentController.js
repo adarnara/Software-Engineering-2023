@@ -1,7 +1,8 @@
  
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 const ProductRepo = require('../Repository/ProductRepo')
-//const Product = require('../models/Product');
+const cartRepo = require('../Repository/cartRepo')
+const { URL } = require('url')
 
 /*
  * Returns a JSON object from Stripe that redirects to
@@ -15,7 +16,7 @@ async function getStripePaymentRedirect(req, res){
             res.end();
             return;
         }
-        let json = await getJSON(req);
+        let json = await getJSONBody(req);
         if(!isValid(json)){
             res.writeHead(406);
             res.end();
@@ -38,13 +39,51 @@ async function getStripePaymentRedirect(req, res){
     }
 }
 
-module.exports = {getStripePaymentRedirect};
+/*
+ * Performs the same as getStripePaymentRedirect
+ * but now as a get request using the cartid
+ * in the url
+ */
+async function getStripePaymentRedirectdb(req, res){
+    try{
+        const requrl = new URL(req.url, `http://${req.headers.host}`);
+        const cart_id = requrl.searchParams.get("cart_id");
+        if(cart_id === null){
+            res.writeHead(406);
+            res.end();
+            return;
+        }
+        const products = await cartRepo.getProductsFromCart(cart_id)
+        if(products.length == 0){
+            res.writeHead(404);
+            res.end();
+            return;
+        }
+        let items = await getFormatedStripeJSON(products);
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ["card"],
+            mode: "payment",
+            line_items: items,
+            success_url: "http://127.0.0.1:5500/views/shoppingCart.html",
+            cancel_url: "http://127.0.0.1:5500/views/shoppingCart.html"
+        });
+        res.writeHead(200);
+        res.end(JSON.stringify(session));
+    } catch(err){
+        console.log(err);
+        res.writeHead(500);
+        res.end();
+    }
+}
+
+
+
+module.exports = {getStripePaymentRedirect, getStripePaymentRedirectdb};
 
 // HELPER FUNCTIONS
 
 /*
  * Returns a list of JSON objects for Stripe API
- * findOne({"_id": item.product_id}, "name price");
  */
 async function getFormatedStripeJSON(array){
     let newarray = await Promise.all(array.map(async (item) => {
@@ -97,7 +136,7 @@ function strToCents(str){
  * Gets the JSON from a http request object
  * If it fails to do so it returns a empty JSON
  */
-async function getJSON(req){
+async function getJSONBody(req){
     datastr = await new Promise((resolve, reject) => {
         const datachunks = [];
         let str;
@@ -133,7 +172,6 @@ function isValid(json){
     }
     return true;
 }
-
 
 //REFERENCE DATA
 
