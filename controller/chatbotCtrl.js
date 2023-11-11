@@ -1,5 +1,5 @@
 const { NlpManager } = require('node-nlp');
-const manager = new NlpManager({ languages: ['en'] });
+const manager = new NlpManager({ languages: ['en'], nlu: { log: false }  });
 
 manager.addDocument('en', 'hello', 'greeting');
 manager.addDocument('en', 'hi', 'greeting');

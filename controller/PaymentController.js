@@ -1,6 +1,7 @@
  
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
-const Product = require('../models/Product');
+const ProductRepo = require('../Repository/ProductRepo')
+//const Product = require('../models/Product');
 
 /*
  * Returns a JSON object from Stripe that redirects to
@@ -43,21 +44,22 @@ module.exports = {getStripePaymentRedirect};
 
 /*
  * Returns a list of JSON objects for Stripe API
+ * findOne({"_id": item.product_id}, "name price");
  */
 async function getFormatedStripeJSON(array){
     let newarray = await Promise.all(array.map(async (item) => {
-        const productdata = await Product.findOne({"_id": item.product_id}, "name price");
-        console.log(productdata);
-        if(productdata.name === undefined || productdata.price === undefined)
+        const productdata = await ProductRepo.getProductByIdSpecific(item.product_id, "name price");
+        //console.log(productdata);
+        if(!productdata.doesExist)
             return undefined;
-        const cents = strToCents(productdata.price);
+        const cents = strToCents(productdata.data.price);
         if(cents === -1)
             return undefined;
         return {
             price_data:{
                 currency: "usd",
                 product_data:{
-                    name: productdata.name
+                    name: productdata.data.name
                 },
                 unit_amount: cents,
             },
@@ -100,7 +102,7 @@ async function getJSON(req){
         const datachunks = [];
         let str;
         req.on("data", chunk => {
-            console.log("chunks being recieved")
+            //console.log("chunks being recieved")
             datachunks.push(chunk);
         });
         req.on("end", () => {
@@ -108,7 +110,7 @@ async function getJSON(req){
             resolve(str);
         });
     });
-    console.log(datastr)
+    //console.log(datastr)
     let json;
     let isParsable = true;
     try{

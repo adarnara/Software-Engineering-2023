@@ -21,6 +21,15 @@ class ProductRepository {
     return product;
   }
 
+  async getProductByIdSpecific(id, fieldstr){
+    const product = await Product.findOne({"_id": id}, fieldstr);
+    let flag = true
+    if(!product){
+      flag = false
+    }
+    return {doesExist: flag, data: product};
+  }
+
   async getProductsByCategory(category, page, pageSize) {
     const offset = (page - 1) * pageSize; //calculates how many items should be skipped to get to the current page.
     const products = await Product.find({
