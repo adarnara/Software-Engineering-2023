@@ -2,43 +2,54 @@ const userRepo = require('../Repository/userRepo');
 const { generateToken } = require('../config/jwt');
 const url = require('url');
 const fs = require('fs');
-const createUser = async (path,req, res) => { // passs path as argument parame...
+
+const createUser = async (path, req, res) => {
     const email = req.body.email;
-    console.log(path)
+    console.log(path);
     try {
-        if(path === '/member/register'){
-            const findUser = await userRepo.findMemberByEmail(email);
-            if (!findUser) {
-                // Create a new user and save to db
+        if (path === '/member/register') {
+            const findSeller = await userRepo.findSellerByEmail(email);
+            if (findSeller) {
+                res.writeHead(409, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ message: 'A seller cannot register as a member, please use a different email', success: false }));
+                return;
+            }
+            const findMember = await userRepo.findMemberByEmail(email);
+            if (!findMember) {
                 const newUser = await userRepo.createMember(req.body);
                 res.writeHead(201, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify(newUser));
             } else {
                 res.writeHead(409, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ message: 'Email already in use', success: false }));
+                res.end(JSON.stringify({ message: 'Email already in use by a member', success: false }));
             }
-        } else if(path==='/seller/register'){
-            const findUser = await userRepo.findSellerByEmail(email);
-            if (!findUser) {
-                // Create a new user and save to db
+        } else if (path === '/seller/register') {
+            const findMember = await userRepo.findMemberByEmail(email);
+            if (findMember) {
+                res.writeHead(409, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ message: 'A member cannot register as a seller, please use a different email', success: false }));
+                return;
+            }
+            const findSeller = await userRepo.findSellerByEmail(email);
+            if (!findSeller) {
                 const newUser = await userRepo.createSeller(req.body);
                 res.writeHead(201, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify(newUser));
             } else {
                 res.writeHead(409, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ message: 'Email already in use', success: false }));
+                res.end(JSON.stringify({ message: 'Email already in use by a seller', success: false }));
             }
-        }else {
-            res.writeHead(409, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: 'unable to save user', success: false }));
+        } else {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Invalid registration path', success: false }));
         }
-
     } catch (error) {
         console.error(error);
         res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ message: 'a member cannot register as a seller, please use a different email', success: false }));
+        res.end(JSON.stringify({ message: 'An error occurred during registration', success: false }));
     }
 };
+
 
 const memberLogin = async (req, res) =>{
     const {email, password} = req.body;
