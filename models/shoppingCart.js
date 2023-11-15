@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const cartProduct = require('./cartProduct.js').schema;
+const Product = require('./Product.js').schema;
 const Schema = mongoose.Schema;
 
 
@@ -15,6 +16,9 @@ const shoppingCartSchema = new Schema({
     },
     products: {
         type: [cartProduct]
+    },
+    deletedProducts: {
+        type: [String]
     },
     numShipped: {
         type: Number,

@@ -1,5 +1,8 @@
-const currMemberEmail = "ooga@gmail.com";
-
+const currMemberEmail = "testCart@gmail.com";
+function checkPos(quantity) {
+  console.log(quantity.value);
+  if (quantity.value < 0) quantity.value = 0;
+}
 let subtotal;
 // Get the current Member's cart
 const getCurrMemberCart = async () => {
@@ -35,6 +38,45 @@ function handleKeyPress(event, productId, inputElement) {
   }
 }
 
+async function addProductToCart(product) {
+  let quantity = document.getElementById(product).value;
+
+  console.log(quantity);
+  if (isNaN(parseInt(quantity)) || parseInt(quantity) < 0) {
+    quantity = 0;
+  } else {
+    console.log("Sending");
+    await fetch(
+      `http://localhost:3000/cart/add?user_id=6547e3ad257b40fae701ccc6`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          quantity: parseInt(quantity),
+          email: currMemberEmail,
+          product_id: product,
+        }),
+      }
+    ).then((res) => console.log(res));
+  }
+  location.reload();
+}
+
+function toggleDeletedProducts() {
+  var deletedProductsContainer = document.getElementById(
+    "deleted-products-container"
+  );
+  var button = document.querySelector(".hidden-button");
+
+  deletedProductsContainer.classList.toggle("hidden");
+  if (deletedProductsContainer.classList.contains("hidden")) {
+    button.textContent = "Show Deleted Products From the Current Cart";
+  } else {
+    button.textContent = "Hide Deleted Products From the Current Cart";
+  }
+}
 // Update product quantity based on arrow input
 async function changeNumber(productId, displayNumber) {
   const req = {
@@ -56,25 +98,25 @@ async function changeNumber(productId, displayNumber) {
     displayNumber.value = 0;
   } else {
     await fetch(
-      `http://localhost:3000/cart?user_id=6545a86825de71eac175dfc7`,
+      `http://localhost:3000/cart?user_id=6547e36e438bf48a9ec11e74`,
       req
     ).then((res) => console.log(res));
-    await fetch("http://localhost:3000/cart?user_id=6545a86825de71eac175dfc7")
-    .then((response) => {
-      console.log(
-        "***********************************************************************"
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      // console.log(response.json());
-      return response.json();
-    })
-    .then(async (data) => {
-      subtotal = data.totalPrice;
-      const subtotalElement = document.getElementById("subtotal-value");
-    subtotalElement.textContent = `Price: $${subtotal}`;
-    });
+    await fetch("http://localhost:3000/cart?user_id=6547e36e438bf48a9ec11e74")
+      .then((response) => {
+        console.log(
+          "***********************************************************************"
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        // console.log(response.json());
+        return response.json();
+      })
+      .then(async (data) => {
+        subtotal = data.totalPrice;
+        const subtotalElement = document.getElementById("subtotal-value");
+        subtotalElement.textContent = `Price: $${subtotal}`;
+      });
     // location.reload();
   }
 }
@@ -84,7 +126,7 @@ async function deleteProduct(productId) {
   console.log(productId);
 
   await fetch(
-    `http://localhost:3000/cart/remove?user_id=6545a86825de71eac175dfc7&product_id=${productId}`,
+    `http://localhost:3000/cart/remove?user_id=6547e36e438bf48a9ec11e74&product_id=${productId}`,
     {
       method: "DELETE",
     }
@@ -95,9 +137,14 @@ async function deleteProduct(productId) {
 
 document.addEventListener("DOMContentLoaded", async () => {
   const productsContainer = document.getElementById("products-container");
+  const deletedProductsContainer = document.getElementById(
+    "deleted-products-container"
+  );
+  toggleDeletedProducts();
+
   const products = [];
 
-  await fetch("http://localhost:3000/cart?user_id=6545a86825de71eac175dfc7")
+  await fetch("http://localhost:3000/cart?user_id=6547e36e438bf48a9ec11e74")
     .then((response) => {
       console.log(
         "***********************************************************************"
@@ -125,6 +172,21 @@ document.addEventListener("DOMContentLoaded", async () => {
           const productHTML = createProductHTML(response, product);
           productsContainer.innerHTML += productHTML;
         });
+      }
+      console.log(data);
+      for (let i = 0; i < data.deletedProducts.length; i++) {
+        const product = data.deletedProducts[i];
+        await fetch(`http://localhost:3000/search?productId=${product}`).then(
+          async (response) => {
+            // console.log(response);
+            response = await response.json();
+            products.push(response);
+            console.log(response);
+            console.log(product);
+            const productHTML = createDeletedProductHTML(response, product);
+            deletedProductsContainer.innerHTML += productHTML;
+          }
+        );
       }
 
       const subtotalHTML = createSubTotalHTML(data);
@@ -193,18 +255,69 @@ document.addEventListener("DOMContentLoaded", async () => {
       `;
     return productHTML;
   }
+  function createDeletedProductHTML(product, currCartProduct) {
+    // Check if variant_data is empty
+    let colorsHTML = "";
+    if (product.variant_data.length > 0) {
+      const variantData = JSON.parse(product.variant_data[0]);
+      const colors = Object.values(variantData).flat();
+      colorsHTML = `
+            <p>Variants:</p>
+            <ul>
+                ${colors.map((color) => `<li>${color}</li>`).join("")}
+            </ul>
+        `;
+    }
+
+    const productHTML = `
+    <div class="product-container">
+        <div class="product-image">
+            <img src="${product.images[0].large}" alt="${product.name}" />
+            <div class="image-navigation">
+                <button onclick="changeImage('${
+                  product._id
+                }', -1, this)">Previous</button>
+                <button onclick="changeImage('${
+                  product._id
+                }', 1, this)">Next</button>
+            </div>
+        </div>
+        <div class="product-info">
+            <h2>${product.name}</h2>
+            <p>Price: ${product.price}</p>
+            <p>Stars: ${product.stars}</p>
+            <p>Features: ${product.rating_count}</p>
+            <ul>
+                ${product.feature_bullets
+                  .map((bullet) => `<li>${bullet}</li>`)
+                  .join("")}
+            </ul>
+            ${colorsHTML}
+        </div>
+        <div class="add-to-cart-button">
+            <button class= "add-button" onclick="addProductToCart('${
+              product._id
+            }')">Add Quantity</br> to Cart</button>
+        </div>
+        <div class="number-control">
+            <input type="number" id='${
+              product._id
+            }' onclick="checkPos(this)" class="display-number" value="1">
+        </div>
+    </div>
+`;
+    return productHTML;
+  }
 
   function createSubTotalHTML(data) {
-    const emptyCart = 
-    `<div class="empty-cart">
+    const emptyCart = `<div class="empty-cart">
       <h1>Your cart is empty!</h1>
       <div>
       <button class= "continue-shopping-main" onclick="continueShopping()">Continue Shopping</button>
       </div>
      </div>`;
     subtotal = data.totalPrice.toFixed(2);
-    const subtotalHTML = 
-    `<div class="subtotal">
+    const subtotalHTML = `<div class="subtotal">
       <h1>Subtotal</h1>
       <br>
       <h2 id = "subtotal-value">Price: $${subtotal}</h2>

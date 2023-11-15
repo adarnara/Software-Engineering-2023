@@ -28,6 +28,18 @@ class ShoppingCart {
         return await productToAdd.save();
     }
 
+    async pushProductToDeleted(currCart_id, product_id) {
+        return new Promise(async (resolve) => {
+            const updateRes = await shoppingCartCollection.updateOne(
+                { _id: currCart_id.toString(), purchaseTime: null },
+                { $push: { deletedProducts: product_id }
+              }
+              );
+            resolve(updateRes);
+            return;
+        });
+    }
+
     async removeProductFromCart(email, product_id) {
         const currCart = await shoppingCart.findOne({email: email, purchaseTime: null});
         return await cartProduct.findOneAndDelete({parent_cart: currCart, product_id: product_id});
@@ -138,6 +150,19 @@ class ShoppingCart {
              });
             resolve(removedCartProduct);
             return;
+        });
+    }
+    async updateDeletedList(currCart_id, newProductList) {
+        return new Promise(async (resolve) => {
+            const updatedProduct = await shoppingCartCollection.findOneAndUpdate(
+                { _id: currCart_id.toString(), purchaseTime: null },
+                { $set: { 
+                  deletedProducts: newProductList
+                 }},
+                { new: true }
+            );
+            resolve(updatedProduct);
+            return;            
         });
     }
    
