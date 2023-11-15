@@ -9,7 +9,6 @@ class UserRepository {
     async findSellerByEmail(email){
         return await seller.findOne({email});
     }
-
     async createMember(memberData) {
         return await member.create(memberData);
     }
