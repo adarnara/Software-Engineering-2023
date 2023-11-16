@@ -63,7 +63,7 @@ async function addProductToCart(product, button) {
   }
 
   var prods = document.getElementById("products-container");
-  var productContainer = button.closest(".product-container");
+  var productContainer = button.closest(".deleted-product-container");
   var quant = {
     quantity: quantity,
   };
@@ -263,7 +263,7 @@ function createDeletedProductHTML(product) {
   }
 
   const productHTML = `
-  <div class="product-container">
+  <div class="deleted-product-container">
       <div class="product-image">
           <img src="${product.images[0].large}" alt="${product.name}" />
           <div class="image-navigation">

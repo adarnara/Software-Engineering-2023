@@ -6,10 +6,11 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.2.0",
     "mongodb-memory-server": "^7.6.3",
-    "mongoose": "^7.5.2"
+    "mongoose": "^7.5.2",
+    "node": "^21.1.0"
   },
   "scripts": {
-"test": "jest --forceExit --detectOpenHandles  --watchAll --runInBand"
+    "test": "jest --forceExit --detectOpenHandles  --watchAll --runInBand"
   },
   "devDependencies": {
     "jest": "^29.7.0",
