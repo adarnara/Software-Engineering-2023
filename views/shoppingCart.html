@@ -72,7 +72,7 @@
         position: absolute;
         top: 70px;
         left: 0;
-        width: 100vw;
+        width: 100%;
         height: calc(100vh - 70px);
         overflow-y: auto;
         z-index: 1001;
@@ -92,7 +92,7 @@
         padding: 20px;
         border-radius: 5px;
         background-color: #f8f8f8;
-        width: 1240px; /* Fixed width */
+        width: 100%; /* Fixed width */
         
       }
       .deleted-product-container {
@@ -104,13 +104,14 @@
         padding: 20px;
         border-radius: 5px;
         background-color: #f8f8f8;
-        width: 1200px; /* Fixed width */
+        width: 100%; /* Fixed width */
         
       }
       #deleted-products-container{
+        align-items: center;
         background-color: rgba(121, 80, 80, 0.459);
         padding: 20px;
-        width: 1240px;
+        width: 100%;
       }
       #deleted-products-container:hover{
         background-color: rgba(130, 20, 20, 0.612);
@@ -129,7 +130,7 @@
         max-width: 600px; /* Set maximum width */
         margin-bottom: 400px;
         margin-top: 10px;
-        max-height: 250px;
+        max-height: 300px;
         margin-left: 20px; /* Add padding on the left side */
 
         position: fixed;
@@ -265,6 +266,12 @@
         padding: 15px;
         margin-bottom: 20px;
       }
+      .flex-container {
+        border-radius: 8px;
+        padding: 15px;
+        width: 100%;
+        margin-bottom: 20px;
+      }
       .deleted-product-container {
         display: flex;
         border: 1px solid #e0e0e0;
@@ -330,7 +337,7 @@
       .content-container {
         width: 100%;
         margin: 0 auto;
-        padding-right: 400px;
+        padding-right: 20%;
         display: flex;
         flex-wrap: wrap;
       }
@@ -362,13 +369,14 @@
         cursor: pointer;
         border-radius: 5px;
         align-items: center;
-        margin-left: 370px;
-        margin-right: 370px;
+        margin-left: 25%;
+        margin-right: 25%;
         margin-top: 50px;
         margin-bottom: 30px;
-        width: 500px;
+        width: 50%;
         /* width: 30%; */
       }
+      
     </style>
   </head>
 
