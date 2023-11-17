@@ -7,6 +7,7 @@ const adminRouter = require("./routes/adminRoute");
 const landingRouter = require('./routes/landingRoute');
 const shoppingCartRouter = require('./routes/shoppingCartRoute');
 const routes = require('./routes/landingRoute');
+const viewRouter = require("./routes/viewRoute");
 
 const fs = require('fs')
 const path_m = require('path')
@@ -21,6 +22,13 @@ const server = http.createServer(async (request, response) => {
     const path = parsedUrl.pathname;
     const method = request.method;
     console.log(`Incoming request: ${request.method} ${request.url}`);
+
+    // Handle file hosting of the front-end.
+    // This allows for accessing the front-end at `localhost:PORT/views/landingPage.html`
+    // TODO: This does not address `favicon.ico`. Where is it?
+    if (method === "GET" && (path.startsWith("/views/") || path.startsWith("/public/"))) {
+        return viewRouter(request, response);
+    }
 
     //handling dymanic routes like /user/{id}
     for (const route in userRouter) {
