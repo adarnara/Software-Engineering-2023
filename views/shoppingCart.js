@@ -1,7 +1,7 @@
 const currMemberEmail = "testCart@gmail.com";
 function checkPos(quantity) {
   console.log(quantity.value);
-  if (quantity.value < 0) quantity.value = 0;
+  if (quantity.value < 1) quantity.value = 1;
 }
 let subtotal;
 // Get the current Member's cart
@@ -42,8 +42,8 @@ async function addProductToCart(product, button) {
   let quantity = document.getElementById(product).value;
 
   console.log(quantity);
-  if (isNaN(parseInt(quantity)) || parseInt(quantity) < 0) {
-    quantity = 0;
+  if (isNaN(parseInt(quantity)) || parseInt(quantity) < 1) {
+    quantity = 1;
   } else {
     console.log("Sending");
     await fetch(
@@ -103,9 +103,11 @@ function toggleDeletedProducts() {
 
   deletedProductsContainer.classList.toggle("hidden");
   if (deletedProductsContainer.classList.contains("hidden")) {
-    button.textContent = "Show Deleted Products From the Current Cart";
+    button.textContent = "Products Removed From Cart";
+    button.style.backgroundColor = "#808080"
   } else {
-    button.textContent = "Hide Deleted Products From the Current Cart";
+    button.textContent = "Products Removed From Cart";
+    button.style.backgroundColor = "#2980b9"
   }
 }
 // Update product quantity based on arrow input
@@ -124,9 +126,9 @@ async function changeNumber(productId, displayNumber) {
   console.log(req);
   if (
     isNaN(parseInt(displayNumber.value)) ||
-    parseInt(displayNumber.value) < 0
+    parseInt(displayNumber.value) < 1
   ) {
-    displayNumber.value = 0;
+    displayNumber.value = 1;
   } else {
     await fetch(
       `http://localhost:3000/cart?user_id=6547e36e438bf48a9ec11e74`,

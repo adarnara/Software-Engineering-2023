@@ -116,30 +116,6 @@
         background-color: rgba(130, 20, 20, 0.612);
       }
 
-      .subtotal {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-bottom: 20px;
-        border: 1px solid #ccc;
-        padding: 20px;
-        border-radius: 10px;
-        background-color: #f8f8f8;
-        width: 15%;
-        max-width: 600px; /* Set maximum width */
-        margin-bottom: 400px;
-        margin-top: 10px;
-        max-height: 250px;
-        margin-left: 20px; /* Add padding on the left side */
-
-        position: fixed;
-        top: 80px; /* Adjust the top distance */
-        right: 80px; /* Adjust the right distance */
-      }
-
-      .subtotal h2 {
-        margin-top: 0;
-      }
       .empty-cart {
         position: absolute;
         top: 50%;
@@ -283,7 +259,8 @@
         /* Additional styles for the delete button */
       }
       .delete-button:hover {
-        background-color: #d32f2f;  
+        background-color: #d32f2f;
+        
       }
 
       .product-image img {
@@ -354,7 +331,7 @@
         display: none;
       }
       .hidden-button {
-        background-color: #808080;
+        background-color: #646464;
         color: white;
         padding: 12px 20px;
         font-size: 25px;
@@ -362,13 +339,20 @@
         cursor: pointer;
         border-radius: 5px;
         align-items: center;
-        margin-left: 33%;
+        margin-left: 28%;
         margin-top: 50px;
         margin-bottom: 30px;
         /* width: 30%; */
       }
+      .hidden-button:hover {
+        background-color: #246692; /* Change color on hover */
+      }
     </style>
   </head>
+
+
+
+
 
   <body>
     <div class="navbar">
@@ -386,22 +370,18 @@
           Continue Shopping
         </button>
       </div>
-
-      
-
       <div id="shopping-icon" class="navbar-cart">
-        
+
         <a href="http://127.0.0.1:5500/views/shoppingCartHistory.html">
-          <img src="../public/Images/shoppingCartHistory.png" alt="shoppingCart" />
+          <img src="../public/Images/shoppingCartHistory.png" alt="shoppingCartHistory" />
           <span style="font-weight: bold; font-size: 20px"></span>
         </a>
+
 
         <a href="http://127.0.0.1:5500/views/shoppingCart.html">
           <img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />
           <span style="font-weight: bold; font-size: 20px"></span>
         </a>
-
-
       </div>
     </div>
 
@@ -411,14 +391,21 @@
 
     <div class="content-container">
       <div class="flex-container">
+        
         <div id="products-container"></div>
-        <button onclick="toggleDeletedProducts()" class="hidden-button">
+        
+        <!-- <button onclick="toggleDeletedProducts()" class="hidden-button">
           Show Deleted Products From the Current Cart
-        </button>
-        <div id="subtotal-section"></div>
-        <div id="deleted-products-container" class="hidden"></div>
+        </button> -->
+        
+        
+        <!-- <div id="deleted-products-container" class="hidden"></div> -->
+      
+      
       </div>
     </div>
+
+
 
     <section>
       <div class="waves">

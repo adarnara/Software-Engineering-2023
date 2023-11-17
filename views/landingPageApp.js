@@ -1,13 +1,12 @@
 
-function checkPos(quantity)
-{
+function checkPos(quantity) {
     console.log(quantity.value)
-    if (quantity.value<0)
-        quantity.value = 0;
+    if (quantity.value < 1)
+        quantity.value = 1;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    
+
     const productsContainer = document.getElementById("products-container");
     const products = [];
 
@@ -19,16 +18,16 @@ document.addEventListener("DOMContentLoaded", () => {
     //Set up event listener for search bar.
     const searchButton = document.querySelector('.search-bar .search-button');
     if (searchButton) {
-        searchButton.addEventListener('click', function() {
+        searchButton.addEventListener('click', function () {
             currentPage = 1
             const searchText = document.querySelector('.search-bar input[type="text"]').value;
             const pattern = /^(books|ipad|tshirts|laptop)\d*$/;
-            if(pattern.test(searchText)){ //only continues if the search was valid
+            if (pattern.test(searchText)) { //only continues if the search was valid
                 currentSearchText = searchText; // Store the current search text
                 searchProducts(searchText);
             } else {
                 var errorMessage = document.getElementById('error-message');
-                errorMessage.classList.remove('hidden');   
+                errorMessage.classList.remove('hidden');
                 productsContainer.innerHTML = ''; //Clear the products container
                 products.length = 0; //Reset the products array
             }
@@ -38,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function searchProducts(searchText) {
         currentSearchText = searchText; //stores in global variable so that it can be accessed in next and previous method
         let url = '';
-        if (['books', 'ipad', 'laptop', 'tshirts'].includes(searchText.toLowerCase())) { 
+        if (['books', 'ipad', 'laptop', 'tshirts'].includes(searchText.toLowerCase())) {
             url = `http://localhost:3000/search/category?name=${searchText}&page=${currentPage}&pageSize=${pageSize}`; //searching by category
         } else {
             url = `http://localhost:3000/search?productId=${searchText}`; //searching for specific product
@@ -46,15 +45,15 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch(url) //Fetch requested product(s)
             .then(response => response.json())
             .then(data => {
-                console.log(data); 
+                console.log(data);
                 lastFetchedProductCount = data.length;
                 let singleSearch = false;
 
                 productsContainer.innerHTML = ''; //Clear the products container
                 products.length = 0; //Reset the products array
 
-                if(Array.isArray(data)){ //add new products and display
-                    data.forEach((product) => { 
+                if (Array.isArray(data)) { //add new products and display
+                    data.forEach((product) => {
                         products.push(product);
                         productsContainer.innerHTML += createProductHTML(product);
                     });
@@ -67,30 +66,30 @@ document.addEventListener("DOMContentLoaded", () => {
                 //logic to hide or reveal next/previous button when searching
                 const prevButton = document.querySelector('.previous-button');
                 const nextButton = document.querySelector('.next-button');
-                if(!singleSearch){
+                if (!singleSearch) {
                     if (prevButton) {
                         prevButton.classList.toggle('hidden', currentPage === 1); //hide previous button if on the first page
                     }
                     if (nextButton) {
                         //hide next button if the amount of products found is less then the page can fit (meaning theres no more products to display on the next page)
-                        nextButton.classList.toggle('hidden', lastFetchedProductCount < pageSize); 
+                        nextButton.classList.toggle('hidden', lastFetchedProductCount < pageSize);
                     }
                 } else {
-                    prevButton.classList.toggle('hidden',true);
-                    nextButton.classList.toggle('hidden',true);
+                    prevButton.classList.toggle('hidden', true);
+                    nextButton.classList.toggle('hidden', true);
                 }
             })
             .catch(error => {
-                console.error('Error fetching data:', error);            
+                console.error('Error fetching data:', error);
             });
     }
 
-    window.nextPage = function() { //go to next page
+    window.nextPage = function () { //go to next page
         currentPage += 1;
         searchProducts(currentSearchText);
     };
 
-    window.previousPage = function() { //go to previous page
+    window.previousPage = function () { //go to previous page
         if (currentPage > 1) {
             currentPage -= 1;
             searchProducts(currentSearchText);
@@ -152,7 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 ${colorsHTML}
             </div>
             <div class="add-to-cart-button">
-                <button class= "add-button" onclick="addProductToCart('${product._id}')">Add Quantity</br> to Cart</button>
+                <button class= "add-button" onclick="addProductToCart('${product._id}')">Add to Cart</button>
             </div>
             <div class="number-control">
                 <input type="number" id='${product._id}' onclick="checkPos(this)" class="display-number" value="1">
@@ -183,28 +182,32 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addProductToCart = addProductToCart;
 
     const currMemberEmail = "testCart@gmail.com";
-    function addProductToCart(product){
+    function addProductToCart(product) {
+
         let quantity = document.getElementById(product).value;
 
         console.log(quantity);
         if (
             isNaN(parseInt(quantity)) ||
-            parseInt(quantity) < 0
-          ) {
-            quantity = 0;
-          } else {
+            parseInt(quantity) < 1
+        ) {
+            quantity = 1;
+        } else {
             console.log("Sending")
-        fetch(`http://localhost:3000/cart/add?user_id=6547e3ad257b40fae701ccc6`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                quantity: parseInt(quantity),
-                email: currMemberEmail,
-                product_id: product
-            })
+            fetch(`http://localhost:3000/cart/add?user_id=6547e3ad257b40fae701ccc6`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    quantity: parseInt(quantity),
+                    email: currMemberEmail,
+                    product_id: product
+                })
             }).then(res => console.log(res))
+        }
+
+
+
     }
-}
 });
