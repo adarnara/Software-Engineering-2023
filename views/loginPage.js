@@ -22,11 +22,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const handleLoginResult = async (response) => {
         if (response.status === 201) {
+            // Store the JWT in session storage, if given
+            if (response.headers.get("Content-Type") === "application/json") {
+                const data = await response.json();
+                console.log(response);
+                console.log(data);
+                if (data.token) {
+                    console.log(`Set token to ${data.token}`);
+                    sessionStorage.setItem("token", data.token);
+                }
+            }
             // Successful login, redirect to landing page
             window.location.href = "landingPage.html";
         } else {
             const data = await response.json();
             console.log(data.message);
+            // TODO: this doesn't work (no element with id 'message')
             document.getElementById("message").innerText = data.message;
             loginButton.textContent = 'Invalid login';
         }
