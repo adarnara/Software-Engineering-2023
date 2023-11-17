@@ -8,8 +8,9 @@ const routes = {
   'POST/seller/register': (request,response) => userController.register('/seller/register',request,response),
   'PUT/updateUser/:id': (request,response) => userController.updateUser(request,response), 
   'DELETE/user/:id': (request,response) => userController.removeUser(request,response),
-  'GET/user/:id':  (request,response) => userController.getAUser(request,response)
+  'GET/user/:id':  (request,response) => userController.getAUser(request,response),
 
+    'GET/token': userController.getUserByToken,
 };
 
 
