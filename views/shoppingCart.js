@@ -339,7 +339,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const deletedProductsContainer = document.getElementById(
     "deleted-products-container"
   );
-  toggleDeletedProducts();
 
   const products = [];
 
