@@ -62,7 +62,7 @@ function createProductHTML(product, currCartProduct) {
                 
                 <button class= "readd-button" onclick="addProductToCart('${
                   product._id
-                }', this)">Re-add to Cart</button>
+                }', this)">Re-add to Current Cart</button>
                 </div>
             </div>
         </div>
