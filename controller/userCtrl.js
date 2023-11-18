@@ -1,6 +1,6 @@
 const userRepo = require('../Repository/userRepo');
 const { generateToken } = require('../config/jwt');
-const { usernameForToken } = require("../middlewares/authmiddleware");
+const { parseToken } = require("../middlewares/authmiddleware");
 const url = require('url');
 const fs = require('fs');
 
@@ -133,6 +133,7 @@ async function register(path, request, response) {
             body: userData,
         };
 
+        // TODO: sellers should also have an address?
         // Handle address: should always be true with new form
         if (userData.address) {
             reqData.body.shippingInfo = {
@@ -233,6 +234,7 @@ const getAUser = async (request, response) => {
 async function getUserByToken(request, response) {
     let auth = request.headers["authorization"];
     if (!auth) {
+        // no authorization header
         response.statusCode = 401;
         response.setHeader("Content-Type", "application/json");
         response.end(JSON.stringify({ message: "No authorization provided." }));
@@ -243,11 +245,14 @@ async function getUserByToken(request, response) {
     } else {
         // Cut off the 'Bearer ' part.
         let token = auth.slice(7).trim();
-        let userData = usernameForToken(token);
+        let userData = parseToken(token);
         if (!userData) {
             response.statusCode = 403;
             response.setHeader("Content-Type", "application/json");
             response.setHeader(
+                // Header specified here:
+                // https://www.rfc-editor.org/rfc/rfc6750#section-3
+                // and somewhere else probably
                 "WWW-Authenticate",
                 // not completely sure how this works
                 // -!- TODO: Temporary handling (replace with better messages?)
@@ -255,13 +260,14 @@ async function getUserByToken(request, response) {
             );
             response.end(JSON.stringify({ message: "Token expired." }));
         } else {
-            // if the `usernameForToken` function is not changed, the returned data
-            // should have the `id` property.
+            // if the `parseToken` function is not changed, the returned data
+            // should always have the `id` property.
             let user = await userRepo.findUserById(userData["id"]);
             // Set some properties to return.
             userData["firstName"] = user["firstName"];
             userData["lastName"] = user["lastName"];
             userData["email"] = user["email"];
+            // probably should send member/seller/admin information as well
             response.setHeader("Content-Type", "application/json");
             response.end(JSON.stringify(userData));
         }

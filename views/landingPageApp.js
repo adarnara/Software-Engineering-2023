@@ -21,11 +21,10 @@ function checkSignedIn() {
                 "Authorization": `Bearer ${token}`,
             }
         }).then(response => {
-            let body = null;
             console.log(`Response`);
             console.log(response);
             if (response.headers.get("Content-Type") === "application/json") {
-                body = response.json().then(x => {
+                response.json().then(x => {
                     console.log("Body:");
                     console.log(x);
                 });

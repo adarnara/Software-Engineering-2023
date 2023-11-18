@@ -12,7 +12,7 @@ function checkToken(token, id) {
     if (!data) {
         return false;
     } else {
-        // TODO: implmement -!-
+        // TODO: implmement
         console.log(`-!- ${data}`);
     }
 }
@@ -21,7 +21,7 @@ function checkToken(token, id) {
  * Mostly a test function for getting the username on
  * the landing page
  */
-function usernameForToken(token) {
+function parseToken(token) {
     let data = null;
     try {
         data = validateToken(token);
@@ -36,4 +36,4 @@ function usernameForToken(token) {
     }
 }
 
-module.exports = { checkToken, usernameForToken };
+module.exports = { checkToken, parseToken };
