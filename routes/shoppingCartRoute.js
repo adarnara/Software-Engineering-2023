@@ -19,6 +19,7 @@ const routes = {
     'GET/cart': (request, response) => shoppingCartController.getProducts(request,response),
     'POST/cart/add': (request, response) => shoppingCartController.addProductToCart(request,response),
     'DELETE/cart/remove': (request, response) => shoppingCartController.removeProductFromCart(request,response),
+    'GET/cartHistory': (request, response) => shoppingCartController.getCartHistory(request,response),
 };
 
 module.exports = routes

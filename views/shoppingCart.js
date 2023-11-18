@@ -250,6 +250,7 @@ function createProductHTML(product, currCartProduct) {
     `;
   return productHTML;
 }
+
 function createDeletedProductHTML(product) {
   // Check if variant_data is empty
   let colorsHTML = "";

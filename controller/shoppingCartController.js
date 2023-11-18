@@ -701,10 +701,79 @@ const FOUND_USER = 200;
 //   });
 // }
 
+// calls cartrepo and sends back array of past cart ids for user in response to a get request
+async function getCartHistory(req, res) {
+  // // take a get request with uri of /cartHistory?userId=___
+  return new Promise(async (resolve) => {
+    let resMsg = "";
+    let resCode, resType;
+
+    const parsedUrl = url.parse(req.url, true);
+    const queryParams = parsedUrl.query;
+
+    // ensure that only one query parameter (the user_id)
+    if (Object.keys(queryParams).length !== 1) {
+      resCode = 400;
+      resMsg =
+        "Bad Request: Please Ensure exactly one query params for user_id is specified";
+      resType = "text/plain";
+      res.writeHead(resCode, { "Content-Type": resType });
+      res.end(resMsg);
+      resolve(resMsg);
+      return;
+    }
+    if (!("user_id" in queryParams)) {
+      resCode = 400;
+      resMsg =
+        "Bad Request: Must have exactly one query param with key 'user_id'";
+      resType = "text/plain";
+      res.writeHead(resCode, { "Content-Type": resType });
+      res.end(resMsg);
+      resolve(resMsg);
+      return;
+    }
+    const currUser = queryParams["user_id"];
+
+    try {
+      const currMember = await cartRepo.getMember(currUser);
+
+      console.log(currMember.email);
+
+      const currMemberCartHistory = await cartRepo.getUserCartHistory(currMember.email);
+
+      console.log(currMemberCartHistory);
+
+      if (currMemberCartHistory == null) {
+        //No shopping carts purchased
+        resCode = 200;
+        resType = "text/plain";
+        resMsg = "You haven't checkout out yet!";
+      } else {
+        resCode = 200;
+        resType = "application/json";
+        resMsg = JSON.stringify(currMemberCartHistory);
+      }
+    } catch (err) {
+      // User is not registered
+      console.log(err);
+      console.log("You are not a registered member!");
+      resCode = 401;
+      resType = "text/plain";
+      resMsg = "You are not a registered member!";
+    }
+
+    res.writeHead(resCode, { "Content-Type": resType });
+    res.end(resMsg);
+    console.log("Request Complete");
+    resolve(resMsg);
+  });
+}
+
 module.exports = {
   getProducts,
   removeProductFromCart,
   addProductToCart,
   changeProductQuantityFromCart,
   changeProductQuantityFromCatalog,
+  getCartHistory
 };

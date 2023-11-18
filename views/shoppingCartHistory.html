@@ -92,8 +92,7 @@
         padding: 20px;
         border-radius: 5px;
         background-color: #f8f8f8;
-        width: 1240px; /* Fixed width */
-        
+        width: 1240px; /* Fixed width */ 
       }
       .deleted-product-container {
         display: flex;
@@ -216,22 +215,6 @@
       .continue-shopping-small:hover {
         background-color: #2980b9;
       }
-      .checkout {
-        padding: 10px 20px;
-        background-color: #3498db;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 19px;
-      }
-
-      .checkout {
-        background-color: #2980b9;
-      }
-      .checkout:hover {
-        background-color: rgb(41, 185, 87);
-      }
 
       /* CSS */
       .product-container {
@@ -260,6 +243,20 @@
       }
       .delete-button:hover {
         background-color: #d32f2f;
+        
+      }
+      .readd-button {
+        padding: 5px 10px;
+        background-color: #808080;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 20px;
+        /* Additional styles for the delete button */
+      }
+      .readd-button:hover {
+        background-color: rgb(41, 185, 87);
         
       }
 
@@ -307,31 +304,31 @@
       .content-container {
         width: 100%;
         margin: 0 auto;
-        padding-right: 400px;
+        padding-right: 20px;
         display: flex;
         flex-wrap: wrap;
       }
-      .add-button {
-        padding: 5px 10px;
-        background-color: #2fc5d3;
+      .empty-history-display {
+        background-color: #808080;
         color: white;
+        padding: 12px 20px;
+        font-size: 25px;
         border: none;
+        /* cursor: pointer; */
         border-radius: 5px;
-        cursor: pointer;
-        margin-left: 20px;
-        margin-right: 10px;
-        font-size: 15px;
-        /* Additional styles for the delete button */
-      }
-
-      .add-button:hover {
-        background-color: #2ab289; /* Change color on hover */
+        align-items: center;
+        margin-left: 4%;
+        margin-top: 50px;
+        margin-bottom: 30px;
+        text-align: center;        
+        width: 100%;
+        display:none;
       }
       .hidden {
         display: none;
       }
-      .hidden-button {
-        background-color: #646464;
+      .cart-history-button {
+        background-color: #808080;
         color: white;
         padding: 12px 20px;
         font-size: 25px;
@@ -339,13 +336,11 @@
         cursor: pointer;
         border-radius: 5px;
         align-items: center;
-        margin-left: 28%;
+        margin-left: 3%;
+        margin-right: 25%;
         margin-top: 50px;
         margin-bottom: 30px;
-        /* width: 30%; */
-      }
-      .hidden-button:hover {
-        background-color: #246692; /* Change color on hover */
+        width: 100%;
       }
     </style>
   </head>
@@ -391,17 +386,16 @@
 
     <div class="content-container">
       <div class="flex-container">
-        
-        <div id="products-container"></div>
+
+        <div id="empty-history-display" class="empty-history-display">No Cart History!</div>
+
+        <div id="products-history-container"></div>
         
         <!-- <button onclick="toggleDeletedProducts()" class="hidden-button">
           Show Deleted Products From the Current Cart
         </button> -->
         
-        
         <!-- <div id="deleted-products-container" class="hidden"></div> -->
-      
-      
       </div>
     </div>
 
@@ -418,6 +412,6 @@
       </div>
     </section>
 
-    <script src="shoppingCart.js"></script>
+    <script src="shoppingCartHistory.js"></script>
   </body>
 </html>
