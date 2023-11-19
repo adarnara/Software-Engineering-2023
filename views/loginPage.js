@@ -22,13 +22,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const handleLoginResult = async (response) => {
         if (response.status === 201) {
-            // Store the JWT in session storage, if given
+            // We can change where we store the JWT. We have 3 options:
+            //  - Session storage: lasts for the session, but removed when,
+            //    for instance, the browser is closed
+            //  - Local storage: lasts longer than session storage
+            //  - Cookies: automatically sent with every request from browser,
+            //    but may be harder to parse without libraries (but might not
+            //    be that hard)
             if (response.headers.get("Content-Type") === "application/json") {
                 const data = await response.json();
                 console.log(response);
                 console.log(data);
                 if (data.token) {
-                    console.log(`Set token to ${data.token}`);
                     sessionStorage.setItem("token", data.token);
                 }
             }

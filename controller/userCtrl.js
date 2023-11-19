@@ -1,6 +1,6 @@
 const userRepo = require('../Repository/userRepo');
 const { generateToken } = require('../config/jwt');
-const { parseToken } = require("../middlewares/authmiddleware");
+const { parseJwtHeader } = require("../middlewares/authmiddleware");
 const url = require('url');
 const fs = require('fs');
 
@@ -232,45 +232,17 @@ const getAUser = async (request, response) => {
  * Current approach is to put the token in a header
  */
 async function getUserByToken(request, response) {
-    let auth = request.headers["authorization"];
-    if (!auth) {
-        // no authorization header
-        response.statusCode = 401;
+    let userData = parseJwtHeader(request, response);
+    // We continue handling if the JWT was valid.
+    if (userData) {
+        let user = await userRepo.findUserById(userData["id"]);
+        // Set some properties to return.
+        userData["firstName"] = user["firstName"];
+        userData["lastName"] = user["lastName"];
+        userData["email"] = user["email"];
+        // probably should send member/seller/admin information as well
         response.setHeader("Content-Type", "application/json");
-        response.end(JSON.stringify({ message: "No authorization provided." }));
-    } else if (!auth.startsWith("Bearer ")) {
-        response.statusCode = 400;
-        response.setHeader("Content-Type", "application/json");
-        response.end(JSON.stringify({ message: "Authorization does not follow Bearer scheme." }));
-    } else {
-        // Cut off the 'Bearer ' part.
-        let token = auth.slice(7).trim();
-        let userData = parseToken(token);
-        if (!userData) {
-            response.statusCode = 403;
-            response.setHeader("Content-Type", "application/json");
-            response.setHeader(
-                // Header specified here:
-                // https://www.rfc-editor.org/rfc/rfc6750#section-3
-                // and somewhere else probably
-                "WWW-Authenticate",
-                // not completely sure how this works
-                // -!- TODO: Temporary handling (replace with better messages?)
-                "realm=\"example\"\nerror=\"invalid_token\"\nerror_description=\"Token expired.\""
-            );
-            response.end(JSON.stringify({ message: "Token expired." }));
-        } else {
-            // if the `parseToken` function is not changed, the returned data
-            // should always have the `id` property.
-            let user = await userRepo.findUserById(userData["id"]);
-            // Set some properties to return.
-            userData["firstName"] = user["firstName"];
-            userData["lastName"] = user["lastName"];
-            userData["email"] = user["email"];
-            // probably should send member/seller/admin information as well
-            response.setHeader("Content-Type", "application/json");
-            response.end(JSON.stringify(userData));
-        }
+        response.end(JSON.stringify(userData));
     }
 }
 
