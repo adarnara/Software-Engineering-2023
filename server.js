@@ -6,6 +6,7 @@ const userRouter = require("./routes/userRoute");
 const adminRouter = require("./routes/adminRoute");
 const landingRouter = require('./routes/landingRoute');
 const shoppingCartRouter = require('./routes/shoppingCartRoute');
+const shippingRouter = require('./routes/shippingRoute');
 const routes = require('./routes/landingRoute');
 
 const fs = require('fs')
@@ -79,6 +80,7 @@ const server = http.createServer(async (request, response) => {
         const adminRouteHandler = adminRouter[routeKey];
         const paymentRouteHandler = paymentRouter[routeKey];
         const shoppingCartRouteHandler = shoppingCartRouter[routeKey];
+        const shippingRouteHandler = shippingRouter[routeKey];
 
         if (userRouteHandler) {
             userRouteHandler(request, response);
@@ -90,6 +92,8 @@ const server = http.createServer(async (request, response) => {
             // console.log(path);
             // const user_id = path.split("/")[2];
             shoppingCartRouteHandler(request, response);
+        } else if (shippingRouteHandler) {
+            shippingRouteHandler(request, response);
         } else {
             // Might as well return something than
             // let the client get stuck fetching
