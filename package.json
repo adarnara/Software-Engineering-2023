@@ -8,7 +8,8 @@
     "mongodb": "^6.2.0",
     "mongodb-memory-server": "^7.6.3",
     "mongoose": "^7.5.2",
-    "node": "^21.1.0"
+    "node": "^21.1.0",
+    "shippo": "^1.7.1"
   },
   "scripts": {
     "test": "jest --forceExit --detectOpenHandles  --watchAll --runInBand"

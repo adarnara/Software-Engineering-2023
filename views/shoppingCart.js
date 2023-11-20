@@ -21,7 +21,7 @@ function proceedToCheckout() {
   const confirmation = confirm("Are you sure you want to proceed to checkout?");
 
   if (confirmation) {
-    window.location.href = "checkout/checkoutPage.html";
+    window.location.href = "shippingPage.html";
   }
 }
 
