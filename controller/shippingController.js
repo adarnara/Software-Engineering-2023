@@ -116,9 +116,9 @@ async function createShipment(req, res) {
 
 async function calculateTotalCostEachProduct(req, res) {
     return new Promise(async (resolve) => {
-        if (req.method !== "PATCH") {
+        if (req.method !== "POST") {
             let resMsg = 
-                "Method Not Allowed: Please use PATCH to calculate shipping costs.";
+                "Method Not Allowed: Please use POST to calculate shipping costs.";
             let resCode = 405;
             let resType = "text/plain";
             res.writeHead(resCode, { "Content-Type": resType });
@@ -135,26 +135,26 @@ async function calculateTotalCostEachProduct(req, res) {
         const parsedUrl = url.parse(req.url, true);
         const queryParams = parsedUrl.query;
 
-        if (Object.keys(queryParams).length != 1) {
-            resCode = 400;
-            resMsg =
-              "Bad Request: Please Ensure only one query param for user_id is specified";
-            resType = "text/plain";
-            res.writeHead(resCode, { "Content-Type": resType });
-            res.end(resMsg);
-            resolve(resMsg);
-            return;
-        }
-        if (!("user_id" in queryParams)) {
-            resCode = 400;
-            resType = "text/plain";
-            resMsg = "Bad Request: Single query param must have the key 'user_id'";
-            res.writeHead(resCode, { "Content-Type": resType });
-            res.end(resMsg);
-            resolve(resMsg);
-            return;
-        }
-        const user_id = queryParams["user_id"];
+        // if (Object.keys(queryParams).length != 1) {
+        //     resCode = 400;
+        //     resMsg =
+        //       "Bad Request: Please Ensure only one query param for user_id is specified";
+        //     resType = "text/plain";
+        //     res.writeHead(resCode, { "Content-Type": resType });
+        //     res.end(resMsg);
+        //     resolve(resMsg);
+        //     return;
+        // }
+        // if (!("user_id" in queryParams)) {
+        //     resCode = 400;
+        //     resType = "text/plain";
+        //     resMsg = "Bad Request: Single query param must have the key 'user_id'";
+        //     res.writeHead(resCode, { "Content-Type": resType });
+        //     res.end(resMsg);
+        //     resolve(resMsg);
+        //     return;
+        // }
+        // const user_id = queryParams["user_id"];
 
         try {
             await req.on("data", (chunk) => {

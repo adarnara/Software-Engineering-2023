@@ -267,6 +267,90 @@ h2 {
     color: rgba(255, 255, 255, .3);
 }
 
+.content-container {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
+    z-index: 1001;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 20px;
+    overflow-y: scroll;
+  }
+
+.product-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #f8f8f8;
+    width: 100%; /* Fixed width */
+    
+  }
+
+  .product-image {
+    flex: 1;
+    margin-right: 20px;
+    max-width: 200px;
+  }
+
+  .product-image img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .product-info {
+    flex: 2;
+  }
+
+  .product-info h2,
+  .product-info p,
+  .product-info ul {
+    font-size: 14px;
+    color: black;
+  }
+
+  .loading-spinner {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto; /* Adjust the margin as needed */
+    
+    /* Center the spinner using Flexbox */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+  .image-navigation button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .product-info ul {
+    padding-left: 20px;
+  }
+
 input::placeholder {
     font-size: 13px;
 }
@@ -550,5 +634,48 @@ select option {
     color: white;
 }
 
+.button-info {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 200px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    z-index: 1;
+}
+
+.option-button {
+    /* Your existing button styles */
+    font-size: 16px; /* Adjust the font size as needed */
+    padding: 10px;   /* Adjust the padding as needed */
+    margin-right: 10px; /* Adjust the margin as needed */
+    position: relative; /* Add relative positioning */
+}
+
+.option-button:hover .button-info {
+    display: block;
+}
+
+.disabled-button {
+    color: #888; /* Grey text color */
+    background-color: #ddd; /* Grey background color */
+    cursor: not-allowed; /* Change cursor to indicate not clickable */
+    /* Add any additional styles to indicate the button is disabled */
+}
+
+.arrival-time, .extra-cost {
+    display: block;
+    font-size: 14px; /* Adjust the font size as needed */
+    margin-bottom: 5px; /* Adjust the margin as needed */
+}
+
+/* Add this style to your CSS */
+.highlighted {
+    background-color: yellow; /* Set the background color to indicate highlighting */
+    /* Add any other styles to indicate the button is highlighted */
+}
 
 

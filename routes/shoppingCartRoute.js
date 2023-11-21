@@ -21,7 +21,8 @@ const routes = {
     'POST/cart/add': (request, response) => shoppingCartController.addProductToCart(request,response),
     'DELETE/cart/remove': (request, response) => shoppingCartController.removeProductFromCart(request,response),
     'GET/cartHistory': (request, response) => shoppingCartController.getCartHistory(request,response),
-    'PATCH/cart/ship': (request, response) => shippingController.calculateTotalCostEachProduct(request, response)
+    'POST/cart/ship': (request, response) => shippingController.calculateTotalCostEachProduct(request, response),
+    'GET/cart/product': (request, response) => shoppingCartController.getCartProduct(request, response),
 };
 
 module.exports = routes

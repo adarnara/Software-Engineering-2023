@@ -81,19 +81,19 @@ class Shipping {
                 const shipObj = await this.createShipmentObject(addressFrom, addressTo, parcels);
                 shippingObjects.push([product.product_id, shipObj, product._id.toString()]);
 
-                const updatedProduct = await cartRepo.setProductShippingAddresses(product.product_id, currCart._id, fromStr, toStr);
+                // const updatedProduct = await cartRepo.setProductShippingAddresses(product.product_id, currCart._id, fromStr, toStr);
 
-                await shoppingCartCollection.findById(currCart._id.toString())
-                    .then(cart => {
-                        const indexToUpdate = cart.products.findIndex(someProduct => {
-                            const someProductID = someProduct.product_id;
-                            return someProductID === product.product_id;
-                        });
+                // await shoppingCartCollection.findById(currCart._id.toString())
+                //     .then(cart => {
+                //         const indexToUpdate = cart.products.findIndex(someProduct => {
+                //             const someProductID = someProduct.product_id;
+                //             return someProductID === product.product_id;
+                //         });
 
-                        cart.products[indexToUpdate].set(updatedProduct);
+                //         cart.products[indexToUpdate].set(updatedProduct);
 
-                        return cart.save();
-                    });
+                //         return cart.save();
+                // });
                 // console.log("UPDATED:");
                 // console.log(updated);
                 // await cartRepo.deleteProductFromCart(product.product_id, currCart._id);

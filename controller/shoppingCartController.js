@@ -769,11 +769,92 @@ async function getCartHistory(req, res) {
   });
 }
 
+// retrieve specific cart product based on ID
+async function getCartProduct(req, res) {
+  // // take a get request with uri of /cartHistory?userId=___
+  return new Promise(async (resolve) => {
+    let resMsg = "";
+    let resCode, resType;
+
+    const parsedUrl = url.parse(req.url, true);
+    const queryParams = parsedUrl.query;
+
+    // ensure that only one query parameter (the user_id)
+    if (Object.keys(queryParams).length !== 2) {
+      resCode = 400;
+      resMsg =
+        "Bad Request: Please Ensure user_id and product_id are specified.";
+      resType = "text/plain";
+      res.writeHead(resCode, { "Content-Type": resType });
+      res.end(resMsg);
+      resolve(resMsg);
+      return;
+    }
+    if (!("user_id" in queryParams)) {
+      resCode = 400;
+      resMsg =
+        "Bad Request: Must specify user_id.";
+      resType = "text/plain";
+      res.writeHead(resCode, { "Content-Type": resType });
+      res.end(resMsg);
+      resolve(resMsg);
+      return;
+    }
+    if (!("product_id" in queryParams)) {
+      resCode = 400;
+      resMsg =
+        "Bad Request: Must specify product_id";
+      resType = "text/plain";
+      res.writeHead(resCode, { "Content-Type": resType });
+      res.end(resMsg);
+      resolve(resMsg);
+      return;
+    }
+    const currUser = queryParams["user_id"];
+    const productID = queryParams["product_id"];
+
+    console.log("*** " + productID);
+
+    try {
+      const currMember = await cartRepo.getMember(currUser);
+      const currCart = await cartRepo.getCurrCart(currMember.email);
+      const cartProductInfo = await cartRepo.getCurrProduct(productID, currCart._id);
+
+      console.log(currMember.email);
+      console.log(cartProductInfo);
+
+      if (cartProductInfo == null) {
+        //No shopping carts purchased
+        resCode = 200;
+        resType = "text/plain";
+        resMsg = "You don't have this product in your cart!";
+      } else {
+        resCode = 200;
+        resType = "application/json";
+        resMsg = JSON.stringify(cartProductInfo);
+      }
+    } catch (err) {
+      // User is not registered
+      console.log(err);
+      console.log("You are not a registered member!");
+      resCode = 401;
+      resType = "text/plain";
+      resMsg = "You are not a registered member!";
+    }
+
+    res.writeHead(resCode, { "Content-Type": resType });
+    res.end(resMsg);
+    console.log("Request Complete");
+    resolve(resMsg);
+  });
+}
+
 module.exports = {
   getProducts,
   removeProductFromCart,
   addProductToCart,
   changeProductQuantityFromCart,
   changeProductQuantityFromCatalog,
-  getCartHistory
+  getCartHistory,
+  getCartProduct,
 };
