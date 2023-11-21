@@ -1,3 +1,4 @@
+const shippingController = require('../controller/shippingController');
 const shoppingCartController = require('../controller/shoppingCartController');
 // const fs = require('fs');
 
@@ -20,6 +21,7 @@ const routes = {
     'POST/cart/add': (request, response) => shoppingCartController.addProductToCart(request,response),
     'DELETE/cart/remove': (request, response) => shoppingCartController.removeProductFromCart(request,response),
     'GET/cartHistory': (request, response) => shoppingCartController.getCartHistory(request,response),
+    'PATCH/cart/ship': (request, response) => shippingController.calculateTotalCostEachProduct(request, response)
 };
 
 module.exports = routes

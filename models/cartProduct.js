@@ -26,6 +26,10 @@ const cartProductSchema = new Schema({
         type: Number,
         default: 1
     },
+    shipping_price: {
+        type: Number,
+        default: 1.00
+    },
     from: String,
     to: String,
     date_shipped: Date,
