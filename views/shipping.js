@@ -2,13 +2,15 @@
 // let shippo = require('shippo')('shippo_test_98bdae79698aa6f42363e805399343db9b796058');
 // const userRepo = require('../Repository/userRepo.js');
 
-
 // const productRepo = require("../Repository/ProductRepo.js");
 const currMemberEmail = "123email.com";
 const currMemberAddress = "123 Epic Drive";
 let currMemberCart;
 let buttonCount = 0;
-
+let cartPrice;
+let shippingPrice = 0;
+let countDeliveryOptionsSelected = 0;
+let numProducts = 0;
 
 // let emailInput = document.getElementById("username");
 // emailInput.value = currMemberEmail;
@@ -63,6 +65,19 @@ function disableForm(isDisabled) {
     }
 }
 
+const newDiv = document.createElement('div');
+newDiv.innerHTML = `
+<div id="right-container" class="content-container">
+    <div class="flex-container">
+        <div id="products-container"></div>
+        <div class="loading-spinner"></div>
+        <div class="price-text"></div>
+        <div id="confirmOrderButtonContainer" style="display: none;">
+            <button id="confirmButton" class="confirm-button" disabled onclick="confirmOrder()">Confirm Order</button>
+        </div>
+    </div>
+</div>`;
+
 document.addEventListener('DOMContentLoaded', async function () {
     document.getElementById("confirm_shipping_info").addEventListener("input", function() {
         const form = document.getElementById("confirm_shipping_info");
@@ -87,6 +102,9 @@ document.addEventListener('DOMContentLoaded', async function () {
             return;
         });
 
+
+    cartPrice = currMemberCart.totalPrice;
+    numProducts = currMemberCart.products.length;
 
     // Wait when user presses confirm button
     document.getElementById('confirmShippingInfoButton').addEventListener('click', async function (event) {
@@ -113,15 +131,6 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         confirmForm();      // !**** THIS DOESN'T WORK :C
 
-        const newDiv = document.createElement('div');
-        newDiv.innerHTML = `
-        <div id="right-container" class="content-container">
-            <div class="flex-container">
-                <div id="products-container"></div>
-                <div class="loading-spinner"></div>
-                <div> Price: </div>
-            </div>
-        </div>`;
         newDiv.classList.add('new-content');
         document.body.appendChild(newDiv);
 
@@ -221,30 +230,31 @@ document.addEventListener('DOMContentLoaded', async function () {
                             products.push(response);
                             const productHTML = createProductHTML(response, product, etaArr, shipArr, quantity);
                             prods.innerHTML += productHTML;
-
-                            const fastestBtn = document.getElementById(`fastest_btn_${product.product_id}`);
-                            const bestValueBtn = document.getElementById(`best_value_btn_${product.product_id}`);
-                            const cheapestBtn = document.getElementById(`cheapest_btn_${product.product_id}`);
-    
-                            console.log("fastestBtn" + " " + fastestBtn);
-                            console.log("bestValueBtn" + " " + bestValueBtn);
-                            console.log("cheapestBtn" + " " + cheapestBtn);
-    
-                            for (k = 0; k < 2; k++) {
-                                if (shipArr[i] === null || etaArr[i] === null) {
-                                    if (i == 0) {   // fastest
-                                        fastestBtn.disabled = true;
-                                        fastestBtn.classList.add('disabled-button');
-                                    } else if (i == 1) {    // best value
-                                        bestValueBtn.disabled = true;
-                                        bestValueBtn.classList.add('disabled-button');
-                                    } else {        // cheapest
-                                        cheapestBtn.disabled = true;
-                                        cheapestBtn.classList.add('disabled-button');
-                                    }
-                                }
-                            }
                           });
+
+
+                          const fastestBtn = document.getElementById(`fastest_btn_${product.product_id}`);
+                          const bestValueBtn = document.getElementById(`best_value_btn_${product.product_id}`);
+                          const cheapestBtn = document.getElementById(`cheapest_btn_${product.product_id}`);
+  
+                          console.log("fastestBtn" + " " + fastestBtn);
+                          console.log("bestValueBtn" + " " + bestValueBtn);
+                          console.log("cheapestBtn" + " " + cheapestBtn);
+  
+                          for (let k = 0; k < 2; k++) {
+                              if (shipArr[k] === null || etaArr[k] === null) {
+                                  if (k == 0) {   // fastest
+                                      fastestBtn.disabled = true;
+                                      fastestBtn.classList.add('disabled-button');
+                                  } else if (k == 1) {    // best value
+                                      bestValueBtn.disabled = true;
+                                      bestValueBtn.classList.add('disabled-button');
+                                  } else {        // cheapest
+                                      cheapestBtn.disabled = true;
+                                      cheapestBtn.classList.add('disabled-button');
+                                  }
+                              }
+                          }
                     }
 
                 });
@@ -292,6 +302,17 @@ document.addEventListener('DOMContentLoaded', async function () {
             loadingSpinner.parentNode.removeChild(loadingSpinner);
         }
 
+        const confirmOrderButtonContainer = document.getElementById('confirmOrderButtonContainer');
+        if (confirmOrderButtonContainer) {
+            confirmOrderButtonContainer.style.display = 'block';
+        }
+        refreshPrice(cartPrice);
+        // const priceDiv = newDiv.querySelector('.price-text');
+        // const priceSpan = document.createElement('span');
+        // priceSpan.textContent = '$0.00';
+        // priceDiv.parentNode.appendChild(priceSpan);
+
+
         // subtotal = 0.5;
         // const subtotalDisplay = document.createElement('h2');
         // subtotalDisplay.textContent = `Price: $${subtotal}`;
@@ -337,25 +358,43 @@ function createProductHTML(product, currCartProduct, etaArr, shippingPriceArr, q
                   <span class="display-number">${
                     quantity
                   }     </span>
-                  <button id="fastest_btn_${product._id}" class= "option-button" onclick="test('${
+                  <button id="fastest_btn_${product._id}" class= "option-button" onclick="toggleShipmentOption('${
                     product._id
-                  }', this); toggleHighlight(this)">FASTEST
+                  }','${
+                    shippingPriceArr[0]
+                  }','${
+                    shippingPriceArr[1]
+                  }','${
+                    shippingPriceArr[2]
+                  }',this)">FASTEST
                     <div class="button-info">
                         <span class="arrival-time"> Estimated Arrival: ${etaArr[0]} days</span>
                         <span class="extra-cost"> + $${shippingPriceArr[0]}</span>
                     </div></button>
 
-                  <button id="best_value_btn_${product._id}" class= "option-button" onclick="test('${
+                  <button id="best_value_btn_${product._id}" class= "option-button" onclick="toggleShipmentOption('${
                     product._id
-                  }', this); toggleHighlight(this)">BEST VALUE
+                  }','${
+                    shippingPriceArr[0]
+                  }','${
+                    shippingPriceArr[1]
+                  }','${
+                    shippingPriceArr[2]
+                  }',this)">BEST VALUE
                     <div class="button-info">
                         <span class="arrival-time"> Estimated Arrival: ${etaArr[1]} days</span>
                         <span class="extra-cost"> + $${shippingPriceArr[1]}</span>
                     </div></button>
 
-                    <button id="cheapest_btn_${product._id}" class= "option-button" onclick="test('${
+                    <button id="cheapest_btn_${product._id}" class= "option-button" onclick="toggleShipmentOption('${
                         product._id
-                      }', this); toggleHighlight(this)">CHEAPEST
+                      }','${
+                        shippingPriceArr[0]
+                      }','${
+                        shippingPriceArr[1]
+                      }','${
+                        shippingPriceArr[2]
+                      }',this)">CHEAPEST
                         <div class="button-info">
                             <span class="arrival-time"> Estimated Arrival: ${etaArr[2]} days</span>
                             <span class="extra-cost"> + $${shippingPriceArr[2]}</span>
@@ -368,17 +407,117 @@ function createProductHTML(product, currCartProduct, etaArr, shippingPriceArr, q
     return productHTML;
 }
 
-function toggleHighlight(btn) {
-    const btns = document.getElementsByTagName('button');
-    for (let i = 0; i < btns.length; i++) {
-        btns[i].classList.remove('highlighted');
+function toggleShipmentOption(product_id, fastest, bestValue, cheapest, btn) {
+    const fastestPrice = parseFloat(fastest);
+    const bestValPrice = parseFloat(bestValue);
+    const cheapestPrice = parseFloat(cheapest);
+
+    const optionPattern = /^(fastest|best_value|cheapest)_[\w]+$/;
+    const pattern = new RegExp(`^.*_${product_id}`);
+    let currOption;
+
+    
+    const matchOption = btn.id.match(optionPattern);
+
+    let option;
+    if (matchOption) {
+        option = matchOption[1]; // fastest | best_value | cheapest
     }
 
+    const btns = document.getElementsByTagName('button');
+    for (let i = 0; i < btns.length; i++) {
+        if (pattern.test(btns[i].id)) {
+            if (btns[i].classList.contains('highlighted')) {
+                const matchOldOption = btns[i].id.match(optionPattern);
+                if (matchOldOption) {
+                    if (matchOldOption[1] === option) return;
+                    currOption = matchOldOption[1];
+                }
+            }
+            btns[i].classList.remove('highlighted');
+        }
+    }
+
+    console.log("CURR OPTION: " + currOption);
+    console.log("NEW OPTION: " + option);
+
+
+
+    console.log("1. " + shippingPrice);
+
+    if (currOption === undefined && option !== undefined) {
+        countDeliveryOptionsSelected++;
+    }
+
+    if (currOption === option) {
+       return;
+    }
+
+    if (currOption !== undefined && currOption !== option) {
+        if (currOption === 'fastest') {
+            shippingPrice -= parseFloat(fastestPrice);
+        } else if (currOption === 'best_value') {
+            shippingPrice -= parseFloat(bestValPrice);
+        } else if (currOption === 'cheapest') {
+            shippingPrice -= parseFloat(cheapestPrice);
+        }
+    }
+
+    shippingPrice = parseFloat(shippingPrice).toFixed(2);
+    console.log("2. " + shippingPrice);
+
+    if (currOption !== option) {
+        if (option === 'fastest') {
+            console.log(parseFloat(shippingPrice) + parseFloat(fastestPrice));
+            console.log("452");
+            shippingPrice = parseFloat(shippingPrice) + parseFloat(fastestPrice);
+        } else if (option === 'best_value') {
+            console.log(parseFloat(shippingPrice) + parseFloat(bestValPrice));
+            console.log("455");
+            shippingPrice = parseFloat(shippingPrice) + parseFloat(bestValPrice);
+        } else if (option === 'cheapest') {
+            console.log(parseFloat(shippingPrice) + parseFloat(cheapestPrice));
+            console.log("458");
+            shippingPrice = parseFloat(shippingPrice) + parseFloat(cheapestPrice);
+        }
+    }
+
+    shippingPrice = parseFloat(shippingPrice).toFixed(2);
+    
+    console.log("3. " + shippingPrice);
+
+    refreshPrice((parseFloat(shippingPrice) + parseFloat(cartPrice)).toFixed(2));
+
+    // cartPrice = tempCartPrice;
     btn.classList.toggle('highlighted');
+
+
+    const confirmOrderButton = document.getElementById('confirmButton');
+    console.log("confirm button: " + confirmOrderButton);
+    console.log("options selected = " + countDeliveryOptionsSelected);
+    console.log("num products = " + numProducts);
+
+    if (confirmOrderButton) {
+        confirmOrderButton.disabled = (countDeliveryOptionsSelected != numProducts);
+    }
+}
+
+function confirmOrder() {
+    // update shipping price of each cartProduct
+    // update total price of cart (cart price + shipping - the thing in the price-text class/span)
+
+
+
+    window.location.href = 'checkout/checkoutPage.html';
 }
 
 function test(btn) {
     console.log("EEE");
+}
+
+function refreshPrice(price) {
+    var priceSpan = newDiv.querySelector('.price-text');
+    priceSpan.textContent = `Total Price: $${price}`;
 }
 
 function changeImage(productId, offset, button) {
