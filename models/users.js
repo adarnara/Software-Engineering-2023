@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
-const options = { discriminatorKey: 'role' }; // 'role' will indicate what type of user it is
+const options = { discriminatorKey: 'role' };
 
 const UserSchema = new mongoose.Schema({
     firstName: {
@@ -25,10 +25,48 @@ const UserSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        default: "user"  
+        default: "user"
+    },
+    address: {
+        country: {
+            type: String,
+            default: null
+        },
+        address1: {
+            type: String,
+            default: null
+        },
+        address2: {
+            type: String,
+            default: null
+        },
+        address3: {
+            type: String,
+            default: null
+        },
+        city: {
+            type: String,
+            default: null
+        },
+        state: {
+            type: String,
+            default: null
+        },
+        postalCode: {
+            type: String,
+            default: null
+        }
+    },
+    phoneNumber: {
+        type: String,
+        default: null
+    },
+    profileImage: {
+        type: String,
+        default: null
     }
-},{
-    timestamps : true
+}, {
+    timestamps: true
 }, options);
 
 UserSchema.pre('save', async function (next) {
@@ -37,9 +75,8 @@ UserSchema.pre('save', async function (next) {
     next();
 });
 
-//login functionality
-UserSchema.methods.isPasswordMatched = async function(enteredPassWord){
-return await bcrypt.compare(enteredPassWord, this.password)
-}
+UserSchema.methods.isPasswordMatched = async function (enteredPassWord) {
+    return await bcrypt.compare(enteredPassWord, this.password);
+};
 
 module.exports = mongoose.model('user', UserSchema);

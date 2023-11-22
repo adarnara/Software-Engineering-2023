@@ -7,7 +7,7 @@ const adminRouter = require("./routes/adminRoute");
 const landingRouter = require('./routes/landingRoute');
 const shoppingCartRouter = require('./routes/shoppingCartRoute');
 const routes = require('./routes/landingRoute');
-const viewRouter = require("./routes/viewRoute");
+const profileRouter = require('./routes/profileRoute');
 
 const fs = require('fs')
 const path_m = require('path')
@@ -23,11 +23,16 @@ const server = http.createServer(async (request, response) => {
     const method = request.method;
     console.log(`Incoming request: ${request.method} ${request.url}`);
 
-    // Handle file hosting of the front-end.
-    // This allows for accessing the front-end at `localhost:PORT/views/landingPage.html`
-    // TODO: This does not address `favicon.ico`. Where is it?
-    if (method === "GET" && (path.startsWith("/views/") || path.startsWith("/public/"))) {
-        return viewRouter(request, response);
+    // Set the CORS headers to allow all origins (you can restrict it as needed)
+    response.setHeader('Access-Control-Allow-Origin', '*');
+    response.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS'); // Add the necessary HTTP methods you want to support
+    response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Add the necessary headers
+
+    if (request.method === 'OPTIONS') {
+        // Respond to preflight requests
+        response.writeHead(200);
+        response.end();
+        return;
     }
 
     //handling dymanic routes like /user/{id}
@@ -57,17 +62,33 @@ const server = http.createServer(async (request, response) => {
         }
       }
 
-    // Set the CORS headers to allow all origins (you can restrict it as needed)
-    response.setHeader('Access-Control-Allow-Origin', '*');
-    response.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS'); // Add the necessary HTTP methods you want to support
-    response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Add the necessary headers
+    // handling dynamic routes like /profile/updateProfile/{userId}
+    for (const route in profileRouter) {
+        console.log(`Checking route: ${route}`);
+        const methodPart = route.match(/^[A-Z]+/)[0]; // Match the HTTP method part
+        const pathPart = route.substring(methodPart.length); // Get the path part
 
-    if (request.method === 'OPTIONS') {
-        // Respond to preflight requests
-        response.writeHead(200);
-        response.end();
-        return;
+        console.log(methodPart)
+        console.log(pathPart)
+        if (methodPart !== method) continue;
+
+        const params = matchDynamicRoute(pathPart, path);
+        if (params) {
+            // Found a matching dynamic route
+            request.params = params;
+            console.log(params)
+            try {
+                await profileRouter[route](request, response);
+                return;
+            } catch (error) {
+                console.error('Route Handler Error:', error);
+                response.writeHead(500);
+                response.end(JSON.stringify({ message: 'Internal Server Error' }));
+                return;
+            }
+        }
     }
+
   
     
     const routeKey = `${method}${path}`;
