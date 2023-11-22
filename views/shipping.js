@@ -506,10 +506,48 @@ function confirmOrder() {
     // update shipping price of each cartProduct
     // update total price of cart (cart price + shipping - the thing in the price-text class/span)
 
+    const confirmation = window.confirm('Are you sure you want to confirm your order?');
 
+    if (confirmation) {
+        handleCheckout();
+    }
 
-    window.location.href = 'checkout/checkoutPage.html';
+    // window.location.href = 'checkout/checkoutPage.html';
 }
+
+async function handleCheckout() {
+    try {
+      const responseGET = await fetch(`http://localhost:3000/cart?user_id=6549b7d806aa0377ef8a5a69`);
+      if (!responseGET.ok) {
+        throw new Error(`HTTP error! Status: ${responseGET.status}`);
+      }
+      const cartDetails = await responseGET.json();
+      const checkoutBody = {
+        "_id": cartDetails._id,
+        "email": cartDetails.email,
+        "purchaseTime": cartDetails.purchaseTime,
+        "numShipped": cartDetails.numShipped,
+        "products": cartDetails.products,
+        "__v": cartDetails.__v,
+        "totalPrice": cartDetails.totalPrice
+      };
+      const checkoutResponse = await fetch("http://localhost:3000/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(checkoutBody)
+      });
+      if (!checkoutResponse.ok) {
+        const errorDetails = await checkoutResponse.json();
+        throw new Error(`Checkout error: ${errorDetails.message}`);
+      }
+      const checkoutData = await checkoutResponse.json();
+      window.location.href = checkoutData.url;
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
 
 function test(btn) {
     console.log("EEE");
