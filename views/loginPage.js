@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const LoginBtn = document.querySelector('.LoginBtn');
     const loginButton = document.getElementById('loginButton');
 
+
     RegiBtn.addEventListener('click', () => {
         registerForm.classList.add('active');
         loginForm.classList.add('active');
@@ -22,33 +23,63 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const handleLoginResult = async (response) => {
         if (response.status === 201) {
-            // We can change where we store the JWT. We have 3 options:
-            //  - Session storage: lasts for the session, but removed when,
-            //    for instance, the browser is closed
-            //  - Local storage: lasts longer than session storage
-            //  - Cookies: automatically sent with every request from browser,
-            //    but may be harder to parse without libraries (but might not
-            //    be that hard)
             if (response.headers.get("Content-Type") === "application/json") {
                 const data = await response.json();
                 console.log(response);
                 console.log(data);
                 if (data.token) {
-                    sessionStorage.setItem("token", data.token);
+                    // Store the token in cookies
+                    document.cookie = `token=${data.token}; path=/`;
+
+                    // Make a request to /token to get user information
+                    try {
+                        const tokenResponse = await fetch("http://localhost:3000/token", {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${data.token}`
+                            }
+                        });
+
+                        if (tokenResponse.status === 200) {
+                            const userData = await tokenResponse.json();
+
+                            // Store user information in cookies
+                            document.cookie = `user=${JSON.stringify(userData)}; path=/`;
+
+                            // Check if the entered email matches the email stored in cookies
+                            const enteredEmail = document.getElementById("username").value;
+                            const storedUser = getCookie("user");
+                            if (storedUser) {
+                                const storedEmail = JSON.parse(storedUser).email;
+                                if (enteredEmail === storedEmail) {
+                                    loginButton.textContent = 'Already logged in';
+                                    setTimeout(() => {
+                                        loginButton.textContent = 'Login';
+                                    }, 1000);
+                                } else {
+                                    // Successful login, redirect to landing page
+                                    window.location.href = "landingPage.html";
+                                }
+                            }
+                        } else {
+                            // Handle error from /token route
+                            console.log("Error from /token route");
+                            loginButton.textContent = 'Invalid login';
+                        }
+                    } catch (error) {
+                        console.error(error);
+                    }
                 }
             }
-            // Successful login, redirect to landing page
-            window.location.href = "landingPage.html";
         } else {
             const data = await response.json();
             console.log(data.message);
-            // TODO: this doesn't work (no element with id 'message')
             document.getElementById("message").innerText = data.message;
             loginButton.textContent = 'Invalid login';
         }
     };
 
-    // Handle form submission
     const loginFormElement = document.getElementById('login-form');
     loginFormElement.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -93,3 +124,13 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+function getCookie(name) {
+    const cookies = document.cookie.split('; ');
+    for (const cookie of cookies) {
+        const [cookieName, cookieValue] = cookie.split('=');
+        if (cookieName === name) {
+            return cookieValue;
+        }
+    }
+    return null;
+}

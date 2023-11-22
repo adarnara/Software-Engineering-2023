@@ -4,14 +4,13 @@ document.getElementById("registration-form").addEventListener("submit", async (e
     const firstName = document.getElementById("reg-first-name").value;
     const lastName = document.getElementById("reg-last-name").value;
     const email = document.getElementById("reg-username").value;
-    const address = document.getElementById("reg-address").value;
     const password = document.getElementById("reg-password").value;
     const confirmPassword = document.getElementById("reg-confirm-password").value;
     const role = document.getElementById("reg-role").value;
 
     const registerButton = document.getElementById("registerButton");
 
-    const updateRegisterButtonText = (text, delay = 1000) => {
+    const updateRegisterButtonText = (text, delay = 1500) => {
         registerButton.textContent = text;
         setTimeout(() => {
             registerButton.textContent = "Register";
@@ -27,7 +26,6 @@ document.getElementById("registration-form").addEventListener("submit", async (e
         firstName: firstName,
         lastName: lastName,
         email: email,
-        address: address,
         password: password,
         role: role.charAt(0).toUpperCase() + role.slice(1).toLowerCase(),
     };
@@ -57,7 +55,6 @@ document.getElementById("registration-form").addEventListener("submit", async (e
 
             document.getElementById("reg-username").value = "";
             document.getElementById("reg-password").value = "";
-            document.getElementById("reg-address").value = "";
 
             document.getElementById("username").value = email;
 
@@ -79,5 +76,3 @@ document.getElementById("registration-form").addEventListener("submit", async (e
         updateRegisterButtonText("Internal Server Error");
     }
 });
-
-

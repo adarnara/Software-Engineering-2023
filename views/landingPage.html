@@ -253,5 +253,13 @@
 </script>
 
 <script src="landingPageApp.js"></script>
+
+<script>
+  const token = getCookie("token");
+
+  if (token) {
+    document.write('<a href="/views/profilePage.html" style="text-decoration: none; color: inherit;">Profile Page</a>');
+  }
+</script>
 </body>
 </html>
