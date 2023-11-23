@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.changeImage = changeImage;
     window.addProductToCart = addProductToCart;
 
-    const currMemberEmail = "shippingTest2@gmail.com";
+    const currMemberEmail = "shippingTest1@gmail.com";
     function addProductToCart(product) {
 
         let quantity = document.getElementById(product).value;

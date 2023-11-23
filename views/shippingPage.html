@@ -24,29 +24,36 @@
             align-items: center;
             background-color: rgba(0, 135, 255, 0.7);
             color: #fff;
-            padding: 5px 20px;
-            height: 50px;
+            padding: 10px;
             border-bottom-left-radius: 10px;
             border-bottom-right-radius: 10px;
             box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
             z-index: 2;
         }
-
-        .navbar-logo {
+    
+          .navbar-logo {
             display: flex;
             align-items: center;
-        }
-        .navbar-logo a {
-            text-decoration: none;
-            color: #fff;
-            font-weight: bold;
-            font-size: 20px;
-        }
-
-        .navbar-logo img {
+          }
+    
+          .navbar-logo img {
+            max-width: 60px;
+            margin-right: 10px;
+          }
+    
+          .navbar-cart {
+            display: flex;
+            align-items: center;
+          }
+    
+          .navbar-cart img {
             max-width: 40px;
             margin-right: 10px;
-            vertical-align: middle;
+          }
+        .right-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .search-bar {
@@ -122,23 +129,155 @@
             font-size: 14px;
             margin-top: 5px;
         }
+        #edit-address {
+            display: inline-block;
+            padding: 10px 200px;
+            background-color: #3498db;
+            margin-bottom: 10%;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 32px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            white-space: nowrap;
+          }
+          
+          #edit-address:hover {
+            background-color: #2980b9;
+          }
+          #edit-address1 {
+            display: inline-block;
+            padding: 10px 200px;
+            background-color: #3498db;
+            margin-left: 10%;
+            margin-bottom: 10%;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 32px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            white-space: nowrap;
+          }
+          
+          #edit-address:hover1 {
+            background-color: #2980b9;
+          }
+          
+        .price-text {
+            margin-top: 15%;
+            display: inline-block;
+            padding: 10px 200px;
+            color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 32px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            white-space: nowrap;
+          }
+          .confirm-button {
+            display: inline-block;
+            padding: 10px 200px;
+            background-color: #3498db;
+            margin-left: 5%;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 32px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            white-space: nowrap;
+          }
+          
+          .confirm-button:hover {
+            background-color: #29b96f;
+          }
+          .continue-shopping {
+            position: fixed;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 19px;
+            transform: translate(-60%, -55%);
+          }
+    
+          .continue-shopping:hover {
+            background-color: #2980b9;
+          }
+    
+          .continue-shopping-main {
+            padding: 50px 100px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 40px;
+          }
+    
+          .continue-shopping-main:hover {
+            background-color: #2980b9;
+          }
+          .image-navigation button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+          }
+          
+          
+          
+          
     </style>
 </head>
 
 <body>
 
-<div class="navbar">
-    <div class="navbar-logo">
-        <a href="landingPage.html">
-        <img src="../public/Images/logo.png" alt="Logo">
-        <span style="font-weight: bold; font-size: 20px;">Reprua</span>
+    <div class="navbar">
+        <a
+          href="http://127.0.0.1:5500/views/landingPage.html"
+          style="text-decoration: none; color: inherit"
+        >
+          <div class="navbar-logo">
+            <img src="../public/Images/logo.png" alt="Logo" />
+            <span style="font-weight: bold; font-size: 20px">Reprua</span>
+          </div>
         </a>
-    </div>
-    <div class="search-bar">
-        <input type="text" placeholder="Search...">
-        <button>Search</button>
-    </div>
-</div>
+        <div>
+          <button class="continue-shopping" onclick="continueShopping()">
+            Continue Shopping
+          </button>
+        </div>
+        <div id="shopping-icon" class="navbar-cart">
+  
+          <a href="http://127.0.0.1:5500/views/shoppingCartHistory.html">
+            <img src="../public/Images/shoppingCartHistory.png" alt="shoppingCartHistory" />
+            <span style="font-weight: bold; font-size: 20px"></span>
+          </a>
+  
+  
+          <a href="http://127.0.0.1:5500/views/shoppingCart.html">
+            <img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />
+            <span style="font-weight: bold; font-size: 20px"></span>
+          </a>
+        </div>
+      </div>
 
 
 <section>

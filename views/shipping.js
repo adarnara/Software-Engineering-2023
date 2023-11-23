@@ -146,10 +146,22 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 
         document.querySelector('.container').classList.add('slide-left');
+        document.querySelector('.container').classList.remove('slide-right');
 
         confirmForm();      // !**** THIS DOESN'T WORK :C
 
         newDiv.classList.add('new-content');
+        newDiv.innerHTML = `
+        <div id="right-container" class="content-container">
+            <div class="flex-container">
+                <div id="products-container"></div>
+                <div class="loading-spinner"></div>
+                <div class="price-text"></div>
+                <div id="confirmOrderButtonContainer" style="display: none;">
+                    <button id="confirmButton" class="confirm-button" disabled onclick="confirmOrder()">Confirm Order</button>
+                </div>
+            </div>
+        </div>`;
         document.body.appendChild(newDiv);
 
         const addressTo = {
@@ -213,31 +225,24 @@ document.addEventListener('DOMContentLoaded', async function () {
                     return await res.json();
                 }).then(async (data) => {
                     if (!validAddress) {
+                        let invalidDiv = document.getElementById('invalid-address');
                         console.log(data.messages[0].text);
                         const invalidAddressHTML = 
-                            `<div style="text-align: center;">
+                            `            
+                            <div style="text-align: center;">
+                            <img src="../public/Images/warning.png" alt="Warning!" width="300" height="300">
                                 <h2 class="invalid-address-text"> ${data.messages[0].text} </h2>
-                                <button id="edit-shipping-form" class="edit-shipping_btn" onclick="editForm()"> Edit Form </button> 
+                                <br/><br/><br/>
+                                <button id="edit-address" onclick="editForm()">Edit Address</button>
                             </div>
 
                             `
                             ;
                         // prods.innerHTML += invalidAddressHTML;
                         newDiv.innerHTML = invalidAddressHTML;
+                        invalidDiv.innerHTML = data.messages[0].text;
                         return;
                     }
-
-                    newDiv.innerHTML = `
-                    <div id="right-container" class="content-container">
-                        <div class="flex-container">
-                            <div id="products-container"></div>
-                            <div class="loading-spinner"></div>
-                            <div class="price-text"></div>
-                            <div id="confirmOrderButtonContainer" style="display: none;">
-                                <button id="confirmButton" class="confirm-button" disabled onclick="confirmOrder()">Confirm Order</button>
-                            </div>
-                        </div>
-                    </div>`;
 
                     /*
                     
@@ -259,6 +264,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
                     shipmentInfo;
                     prods = document.getElementById("products-container");
+                    prods.innerHTML+=`<button id="edit-address1" onclick="editForm()">Edit Address</button>`;
                     products = [];
                     validAddress = true;
 
@@ -284,8 +290,6 @@ document.addEventListener('DOMContentLoaded', async function () {
             "cheapest_rate": null
         };
                         */
-
-
                         for (let j = 0; j < shipRates.length; j++) {
                             const currRate = shipRates[j];
                             if (currRate.attributes[0] === 'FASTEST') {
@@ -337,7 +341,8 @@ document.addEventListener('DOMContentLoaded', async function () {
                           console.log("bestValueBtn" + " " + bestValueBtn);
                           console.log("cheapestBtn" + " " + cheapestBtn);
   
-                          for (let k = 0; k < 2; k++) {
+                          for (let k = 0; k <= 2; k++) {
+                            console.log(k);
                               if (shipArr[k] === null || etaArr[k] === null) {
                                   if (k == 0) {   // fastest
                                       fastestBtn.disabled = true;
@@ -652,22 +657,26 @@ function confirmOrder() {
 }
 
 function editForm() {
+    const right = document.getElementById('right-container-after-form-confirm');
     const nameIn = document.getElementById('full_name');
-    const emailIn = document.getElementById('email');
     const phoneNumberIn = document.getElementById('phoneNumber');
     const addressIn = document.getElementById('address');
     const cityIn = document.getElementById('city');
     const stateIn = document.getElementById('state');
     const zipIn = document.getElementById('zip');
+    
+    right.remove();
+    console.log(document.querySelector('.container'))
+    document.querySelector('.container').classList.add('slide-right');
+    document.querySelector('.container').classList.remove('slide-left');
 
     nameIn.removeAttribute('readonly');
-    emailIn.removeAttribute('readonly');
     phoneNumberIn.removeAttribute('readonly');
     addressIn.removeAttribute('readonly');
     cityIn.removeAttribute('readonly');
     stateIn.removeAttribute('disabled');
     zipIn.removeAttribute('readonly');
-
+    console.log(667);
     disableForm(false);
 }
 
