@@ -128,6 +128,18 @@ class ShoppingCart {
         });
     }
 
+    async setProductTransaction(product_id, currCart_id, transactionObj) {
+        return new Promise(async (resolve) => {
+            const updatedProduct = await cartProductCollection.findOneAndUpdate(
+                { product_id: product_id, parent_cart: currCart_id.toString() },
+                { $set: { transaction: transactionObj } },
+                { new: true }
+            );
+            resolve(updatedProduct);
+            return;
+        });
+    }
+
     async updateProductsAndPriceInCurrCart(currCart_id, newProductList, newPrice) {
         return new Promise(async (resolve) => {
             const updatedProduct = await shoppingCartCollection.findOneAndUpdate(

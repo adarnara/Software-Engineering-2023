@@ -650,7 +650,7 @@ function confirmOrder() {
 
         // fetch stuff to set shipping Prices, cart total price, to/from (PATCH)
 
-        handleCheckout();
+        // handleCheckout();
     }
 
     // window.location.href = 'checkout/checkoutPage.html';

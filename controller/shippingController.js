@@ -353,16 +353,19 @@ async function setCartProductShippingInfo(req, res) {
 
         try {
             let updatedProducts = [];
+            console.log(parsedRequestBody);
+            let email;
+            let currMemberCart;
 
-            for (const product_id of parsedRequestBody) {
-                const chosenRate = parsedRequestBody.chosen_rate;
-                const addressTo = parsedRequestBody.to;
-                const fastestRate = parsedRequestBody.fastest_rate;
-                const bestValueRate = parsedRequestBody.best_value_rate;
-                const cheapestRate = parsedRequestBody.cheapest_rate;
-                const email = addressTo.email;          // maybe change later?
+            for (const product_id in parsedRequestBody) {
+                const chosenRate = parsedRequestBody[product_id].chosen_rate;
+                const addressTo = parsedRequestBody[product_id].to;
+                const fastestRate = parsedRequestBody[product_id].fastest_rate;
+                const bestValueRate = parsedRequestBody[product_id].best_value_rate;
+                const cheapestRate = parsedRequestBody[product_id].cheapest_rate;
+                email = addressTo.email;          // maybe change later?
 
-                const currMemberCart = await cartRepo.getCurrCart(email);
+                currMemberCart = await cartRepo.getCurrCart(email);
                 if (!currMemberCart) {
                     resCode = 401;
                     resType = "text/plain";
@@ -410,10 +413,99 @@ async function setCartProductShippingInfo(req, res) {
     });
 }
 
+async function setCartProductTransaction(req, res) {
+    return new Promise(async (resolve) => {
+        if (req.method !== "PATCH") {
+            let resMsg = 
+                "Method Not Allowed: Please use PATCH to update cart product transaction.";
+            let resCode = 405;
+            let resType = "text/plain";
+            res.writeHead(resCode, { "Content-Type": resType });
+            res.end(resMsg);
+            resolve(resMsg);
+            return;
+        }
+
+        let resMsg = "";
+        let resCode, resType;
+        let requestBody = "";
+        let parsedRequestBody;
+
+        const parsedUrl = url.parse(req.url, true);
+        const queryParams = parsedUrl.query;
+
+        if (Object.keys(queryParams).length != 1) {
+            resCode = 400;
+            resMsg =
+              "Bad Request: Please Ensure only one query param for cart_id is specified";
+            resType = "text/plain";
+            res.writeHead(resCode, { "Content-Type": resType });
+            res.end(resMsg);
+            resolve(resMsg);
+            return;
+        }
+        if (!("cart_id" in queryParams)) {
+            resCode = 400;
+            resType = "text/plain";
+            resMsg = "Bad Request: Single query param must have the key 'cart_id'";
+            res.writeHead(resCode, { "Content-Type": resType });
+            res.end(resMsg);
+            resolve(resMsg);
+            return;
+        }
+        const cart_id = queryParams["user_id"];
+
+        try {
+            await req.on("data", (chunk) => {
+                requestBody += chunk;
+            });
+            parsedRequestBody = JSON.parse(requestBody);
+        } catch (err) {
+            console.error(err);
+            return;
+        }
+
+        try {
+            const email = parsedRequestBody.email;
+            const cartID = parsedRequestBody.cart_id;
+
+            let transactionProducts = [];
+            for (const product of parsedRequestBody.updated_cart_products) {
+                const productID = product.product_id;
+                const shipRate = product.shipping_rate;
+                const transactionObject = await shippingRepo.createTransactionObject(shipRate, "PDF", false);
+
+                // set transaction property of current cart product
+                const updatedCartProduct = await shippingRepo.updateCartProductTransaction(email, cartID, productID, transactionObject);
+                transactionProducts.push(updatedCartProduct);
+            }
+
+            console.log(parsedRequestBody);
+            // console.log(productShipmentInfo);
+            resCode = 200;
+            resType = "application/json";
+            resMsg = JSON.stringify({
+                "email": email,
+                "cart_id": cartID,
+                "transaction_products": transactionProducts
+            });
+            res.writeHead(resCode, { "Content-Type": resType });
+            res.end(resMsg);
+            console.log("Shipment Info Updated.");
+            resolve(resMsg);
+        } catch (err) {
+            console.error(err);
+            return;
+        }
+    });
+}
+
+
 
 module.exports = {
     createAddress : createAddress,
     createShipment : createShipment,
     calculateTotalCostEachProduct : calculateTotalCostEachProduct,
     setCartProductShippingInfo : setCartProductShippingInfo,
+    setCartProductTransaction : setCartProductTransaction,
 };

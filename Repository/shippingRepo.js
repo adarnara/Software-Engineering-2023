@@ -70,9 +70,23 @@ class Shipping {
         })
     }
 
-    async createTransactionObject(shipmentObj) {
-        return new Promise((resolve) => {
-            const rate = shipmentObj
+    async createTransactionObject(rate, labelFileType, isAsync) {
+        return new Promise(async (resolve) => {
+            const transactionObject = await shippo.transaction.create({
+                "rate": rate.object_id,
+                "label_file_type": labelFileType,
+                "async": isAsync
+            }, function(err, transaction) {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.log("TRANSACTION COMPLETE");
+                    console.log(transaction);
+                }
+            });
+
+            resolve(transactionObject);
+            return;
         });
     }
 
@@ -145,7 +159,7 @@ class Shipping {
             await cartRepo.deleteProductFromCart(productID, currCartID);
             await cartRepo.addProductToCartWithProductObject(email, updatedProduct);
             await cartProductCollection.findOneAndUpdate(
-                { parent_cart: currCartID.toString() },
+                { parent_cart: currCartID.toString(), product_id: productID },
                 { $set: {
                     from: addressFrom,
                     to: addressTo
@@ -181,10 +195,52 @@ class Shipping {
             console.log(updatedProduct);
             await cartRepo.deleteProductFromCart(productID, currCartID);
             await cartRepo.addProductToCartWithProductObject(email, updatedProduct);
+            
+
+
+            const foundShipRate = await cartProductCollection.findOneAndUpdate(
+                { parent_cart: currCartID.toString(), product_id: productID },
+                { $set: {
+                    shipping_rate: shipRate
+                }},
+                { new: true }
+            );
+            console.log("SHIP RATE: ");
+            console.log(foundShipRate);
+            console.log(shipRate);
+            console.log("DONE UPDATE REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE !!!");
+            resolve(updatedProduct);
+            return;
+        });
+    }
+    
+    async updateCartProductTransaction(email, currCartID, productID, transactionObj) {
+        return new Promise(async (resolve) => {
+            // const currCart = await cartRepo.getCurrCart(email);
+            // const fromStr = addressFrom.street1 + ", " + addressFrom.city + ", " + addressFrom.state + ", " + addressFrom.zip;
+            // const toStr = addressTo.street1 + ", " + addressTo.city + ", " + addressTo.state + ", " + addressTo.zip;
+
+            const updatedProduct = await cartRepo.setProductTransaction(productID, currCartID, transactionObj);
+
+            await shoppingCartCollection.findById(currCartID.toString())
+                .then(cart => {
+                    const indexToUpdate = cart.products.findIndex(someProduct => {
+                        const someProductID = someProduct.product_id;
+                        return someProductID === productID;
+                    });
+
+                    cart.products[indexToUpdate].set(updatedProduct);
+
+                    return cart.save();
+            });
+            console.log("UPDATED:");
+            console.log(updatedProduct);
+            await cartRepo.deleteProductFromCart(productID, currCartID);
+            await cartRepo.addProductToCartWithProductObject(email, updatedProduct);
             await cartProductCollection.findOneAndUpdate(
                 { parent_cart: currCartID.toString() },
                 { $set: {
-                    shipping_rate: shipRate
+                    transaction: transactionObj
                 }},
                 { new: true }
             );
@@ -192,8 +248,10 @@ class Shipping {
             resolve(updatedProduct);
             return;
         });
-    } 
+    }
 }
+
+
 
 
 
