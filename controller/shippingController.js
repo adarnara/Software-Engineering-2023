@@ -468,27 +468,34 @@ async function setCartProductTransaction(req, res) {
         try {
             const email = parsedRequestBody.email;
             const cartID = parsedRequestBody.cart_id;
+            let lastTransactionTime = null;
 
             let transactionProducts = [];
             for (const product of parsedRequestBody.updated_cart_products) {
                 const productID = product.product_id;
                 const shipRate = product.shipping_rate;
                 const transactionObject = await shippingRepo.createTransactionObject(shipRate, "PDF", false);
-
-                // set transaction property of current cart product
+                lastTransactionTime = transactionObject.object_updated;
                 const updatedCartProduct = await shippingRepo.updateCartProductTransaction(email, cartID, productID, transactionObject);
                 transactionProducts.push(updatedCartProduct);
+                // set transaction property of current cart product
             }
-
+            console.log(lastTransactionTime);
+            console.log(typeof lastTransactionTime);
+            const updatedShoppingCart = await shippingRepo.purchaseCart(email, cartID, lastTransactionTime);
             console.log(parsedRequestBody);
-            // console.log(productShipmentInfo);
             resCode = 200;
             resType = "application/json";
-            resMsg = JSON.stringify({
-                "email": email,
-                "cart_id": cartID,
-                "transaction_products": transactionProducts
-            });
+            resMsg = null;
+            // make new empty shopping cart
+            await cartRepo.createEmptyCart(email).then((res) => {
+                console.log(res);
+                resMsg = JSON.stringify({
+                    "purchased_cart": updatedShoppingCart,
+                    "empty_cart": res
+                });
+            })
+            // console.log(productShipmentInfo);
             res.writeHead(resCode, { "Content-Type": resType });
             res.end(resMsg);
             console.log("Shipment Info Updated.");

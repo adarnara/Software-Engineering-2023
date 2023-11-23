@@ -249,7 +249,39 @@ class Shipping {
             return;
         });
     }
+
+    async purchaseCart(email, currCartID, transactionTime) {
+        return new Promise(async (resolve) => {
+            // const currCart = await cartRepo.getCurrCart(email);
+            // const fromStr = addressFrom.street1 + ", " + addressFrom.city + ", " + addressFrom.state + ", " + addressFrom.zip;
+            // const toStr = addressTo.street1 + ", " + addressTo.city + ", " + addressTo.state + ", " + addressTo.zip;
+            const updatedCart = await shoppingCartCollection.findOneAndUpdate(
+                { _id: currCartID.toString() },
+                { $set: { purchaseTime: transactionTime } },
+                { new: true }
+            );
+            resolve(updatedCart);
+            return;
+
+            console.log("UPDATED:");
+            console.log(updatedProduct);
+            await cartRepo.deleteProductFromCart(productID, currCartID);
+            await cartRepo.addProductToCartWithProductObject(email, updatedProduct);
+            await cartProductCollection.findOneAndUpdate(
+                { parent_cart: currCartID.toString() },
+                { $set: {
+                    transaction: transactionObj
+                }},
+                { new: true }
+            );
+            console.log("DONE UPDATE");
+            resolve(updatedProduct);
+            return;
+        });
+    }
 }
+
+
 
 
 

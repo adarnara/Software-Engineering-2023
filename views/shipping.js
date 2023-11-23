@@ -607,7 +607,7 @@ function toggleShipmentOption(product_id, fastest, bestValue, cheapest, btn) {
     }
 }
 
-function confirmOrder() {
+async function confirmOrder() {
     // update shipping price of each cartProduct
     // update total price of cart (cart price + shipping - the thing in the price-text class/span)
     const optionPattern = /^(fastest|best_value|cheapest)_[\w]+$/;
@@ -649,6 +649,12 @@ function confirmOrder() {
         }
 
         // fetch stuff to set shipping Prices, cart total price, to/from (PATCH)
+        const updatedShippingInfo = await fetch(`http://localhost:3000/cart/info-confirmation?cart_id=${currMemberCart._id}`)
+            .then((res) => {
+                
+            })
+
+
 
         // handleCheckout();
     }

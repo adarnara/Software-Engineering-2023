@@ -11,7 +11,7 @@ const shoppingCartSchema = new Schema({
         required: true
       },
     purchaseTime: {
-        type: Number, // epoch time
+        type: Date, // epoch time
         default: null
     },
     products: {
