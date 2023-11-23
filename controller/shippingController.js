@@ -187,12 +187,15 @@ async function calculateTotalCostEachProduct(req, res) {
 
         const addressFrom = {
             // ... from env? one address for warehouse?
-            "name": "Shawn Ippotle",
-            "street1": "215 Clayton St.",
-            "city": "San Francisco",
-            "state": "CA",
-            "zip": "94117",
-            "country": "US"
+            "name": "Michael Mogilevsky",
+            "company": "Reprua",
+            "street1": "604 Bartholomew Rd",
+            "city": "Piscataway",
+            "state": "NJ",
+            "zip": "08854",
+            "country": "US",
+            "phone:": "+1 123 456 7890",
+            "email": "softwareEngineeringF23@gmail.com"
         };
         const addressTo = parsedRequestBody.address_to;
         const parcels = parsedRequestBody.parcels;
@@ -213,7 +216,29 @@ async function calculateTotalCostEachProduct(req, res) {
                 return;
             }
 
-            const productShipments = await shippingRepo.getCartProductsShippingInfoAndUpdateToAddress(email, addressTo, addressFrom, parcels);
+            const addressToObject = await shippingRepo.createAddressObject(addressTo.name, addressTo.company, addressTo.street1, addressTo.city, addressTo.state, addressTo.zip, addressTo.country, addressTo.phone, addressTo.email);
+            if (!(addressToObject.validation_results.is_valid)) {
+                resCode = 422;
+                resType = "application/json";
+                resMsg = JSON.stringify(addressToObject.validation_results);
+                res.writeHead(resCode, { "Content-Type": resType });
+                res.end(resMsg);
+                resolve(resMsg);
+                return;
+            }
+
+            const addressFromObject = await shippingRepo.createAddressObject(addressFrom.name, addressFrom.company, addressFrom.street1, addressFrom.city, addressFrom.state, addressFrom.zip, addressFrom.country, addressFrom.phone, addressFrom.email);
+            if (!(addressFromObject.validation_results.is_valid)) {
+                resCode = 422;
+                resType = "application/json";
+                resMsg = JSON.stringify(addressFromObject.validation_results);
+                res.writeHead(resCode, { "Content-Type": resType });
+                res.end(resMsg);
+                resolve(resMsg);
+                return;
+            }
+
+            const productShipments = await shippingRepo.getCartProductsShippingInfo(email, addressToObject, addressFromObject, parcels);
             console.log("217");
             // console.log(productShipments);
 
@@ -259,9 +284,136 @@ async function calculateTotalCostEachProduct(req, res) {
 }
 
 
+async function setCartProductShippingInfo(req, res) {
+    return new Promise(async (resolve) => {
+        if (req.method !== "PATCH") {
+            let resMsg = 
+                "Method Not Allowed: Please use PATCH to update cart product shipping info.";
+            let resCode = 405;
+            let resType = "text/plain";
+            res.writeHead(resCode, { "Content-Type": resType });
+            res.end(resMsg);
+            resolve(resMsg);
+            return;
+        }
+
+        let resMsg = "";
+        let resCode, resType;
+        let requestBody = "";
+        let parsedRequestBody;
+
+        const parsedUrl = url.parse(req.url, true);
+        const queryParams = parsedUrl.query;
+
+        if (Object.keys(queryParams).length != 1) {
+            resCode = 400;
+            resMsg =
+              "Bad Request: Please Ensure only one query param for cart_id is specified";
+            resType = "text/plain";
+            res.writeHead(resCode, { "Content-Type": resType });
+            res.end(resMsg);
+            resolve(resMsg);
+            return;
+        }
+        if (!("cart_id" in queryParams)) {
+            resCode = 400;
+            resType = "text/plain";
+            resMsg = "Bad Request: Single query param must have the key 'cart_id'";
+            res.writeHead(resCode, { "Content-Type": resType });
+            res.end(resMsg);
+            resolve(resMsg);
+            return;
+        }
+        const cart_id = queryParams["user_id"];
+
+        try {
+            await req.on("data", (chunk) => {
+                requestBody += chunk;
+            });
+            parsedRequestBody = JSON.parse(requestBody);
+        } catch (err) {
+            console.error(err);
+            return;
+        }
+
+        const addressFrom = {
+            // ... from env? one address for warehouse?
+            "name": "Michael Mogilevsky",
+            "company": "Reprua",
+            "street1": "604 Bartholomew Rd",
+            "city": "Piscataway",
+            "state": "NJ",
+            "zip": "08854",
+            "country": "US",
+            "phone:": "+1 123 456 7890",
+            "email": "softwareEngineeringF23@gmail.com"
+        };
+
+
+
+        try {
+            let updatedProducts = [];
+
+            for (const product_id of parsedRequestBody) {
+                const chosenRate = parsedRequestBody.chosen_rate;
+                const addressTo = parsedRequestBody.to;
+                const fastestRate = parsedRequestBody.fastest_rate;
+                const bestValueRate = parsedRequestBody.best_value_rate;
+                const cheapestRate = parsedRequestBody.cheapest_rate;
+                const email = addressTo.email;          // maybe change later?
+
+                const currMemberCart = await cartRepo.getCurrCart(email);
+                if (!currMemberCart) {
+                    resCode = 401;
+                    resType = "text/plain";
+                    resMsg =
+                      "Unauthorized Access: Email <" +
+                      email +
+                      "> is not currently registered!";
+                    res.writeHead(resCode, { "Content-Type": resType });
+                    res.end(resMsg);
+                    resolve(resMsg);
+                    return;
+                }
+
+                // set the correct shipping price of the cartProduct
+                let ratePrice = 0;
+                if (chosenRate === "fastest") {
+                    await shippingRepo.updateCartProductShippingRate(email, currMemberCart._id, product_id, fastestRate);
+                } else if (chosenRate === "best_value") {
+                    await shippingRepo.updateCartProductShippingRate(email, currMemberCart._id, product_id, bestValueRate);
+                } else if (chosenRate === "cheapest") {
+                    await shippingRepo.updateCartProductShippingRate(email, currMemberCart._id, product_id, cheapestRate);
+                }
+
+                // set from and to address
+                const updatedProduct = await shippingRepo.updateCartProductAddresses(email, currMemberCart._id, product_id, addressTo, addressFrom);
+                updatedProducts.push(updatedProduct);
+            }
+
+            // console.log(productShipmentInfo);
+            resCode = 200;
+            resType = "application/json";
+            resMsg = JSON.stringify({
+                "email": email,
+                "cart_id": currMemberCart._id,
+                "updated_cart_products": updatedProducts
+            });
+            res.writeHead(resCode, { "Content-Type": resType });
+            res.end(resMsg);
+            console.log("Shipment Info Updated.");
+            resolve(resMsg);
+        } catch (err) {
+            console.error(err);
+            return;
+        }
+    });
+}
+
 
 module.exports = {
     createAddress : createAddress,
     createShipment : createShipment,
-    calculateTotalCostEachProduct : calculateTotalCostEachProduct
+    calculateTotalCostEachProduct : calculateTotalCostEachProduct,
+    setCartProductShippingInfo : setCartProductShippingInfo,
 };

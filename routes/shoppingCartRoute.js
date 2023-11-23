@@ -23,6 +23,7 @@ const routes = {
     'GET/cartHistory': (request, response) => shoppingCartController.getCartHistory(request,response),
     'POST/cart/ship': (request, response) => shippingController.calculateTotalCostEachProduct(request, response),
     'GET/cart/product': (request, response) => shoppingCartController.getCartProduct(request, response),
+    'PATCH/cart/shipping': (request, response) => shippingController.setCartProductShippingInfo(request, response),
 };
 
 module.exports = routes

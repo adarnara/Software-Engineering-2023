@@ -1,4 +1,4 @@
-const currMemberEmail = "123email.com";
+const currMemberEmail = "shippingTest1@gmail.com";
 function checkPos(quantity) {
   console.log(quantity.value);
   if (quantity.value < 1) quantity.value = 1;
@@ -47,7 +47,7 @@ async function addProductToCart(product, button) {
   } else {
     console.log("Sending");
     await fetch(
-      `http://localhost:3000/cart/add?user_id=6549b7d806aa0377ef8a5a69`,
+      `http://localhost:3000/cart/add?user_id=655e52dddb2eaa26ad62b092`,
       {
         method: "POST",
         headers: {
@@ -77,7 +77,7 @@ async function addProductToCart(product, button) {
       prods.innerHTML += productHTML;
     }
   );
-  await fetch("http://localhost:3000/cart?user_id=6549b7d806aa0377ef8a5a69")
+  await fetch("http://localhost:3000/cart?user_id=655e52dddb2eaa26ad62b092")
     .then((response) => {
       console.log(
         "***********************************************************************"
@@ -131,10 +131,10 @@ async function changeNumber(productId, displayNumber) {
     displayNumber.value = 1;
   } else {
     await fetch(
-      `http://localhost:3000/cart?user_id=66549b7d806aa0377ef8a5a69`,
+      `http://localhost:3000/cart?user_id=655e52dddb2eaa26ad62b092`,
       req
     ).then((res) => console.log(res));
-    await fetch("http://localhost:3000/cart?user_id=6549b7d806aa0377ef8a5a69")
+    await fetch("http://localhost:3000/cart?user_id=655e52dddb2eaa26ad62b092")
       .then((response) => {
         console.log(
           "***********************************************************************"
@@ -159,7 +159,7 @@ async function deleteProduct(productId, button) {
   console.log(productId);
 
   await fetch(
-    `http://localhost:3000/cart/remove?user_id=6549b7d806aa0377ef8a5a69&product_id=${productId}`,
+    `http://localhost:3000/cart/remove?user_id=655e52dddb2eaa26ad62b092&product_id=${productId}`,
     {
       method: "DELETE",
     }
@@ -178,7 +178,7 @@ async function deleteProduct(productId, button) {
       deletedContainer.innerHTML += productHTML;
     }
   );
-  await fetch("http://localhost:3000/cart?user_id=6549b7d806aa0377ef8a5a69")
+  await fetch("http://localhost:3000/cart?user_id=655e52dddb2eaa26ad62b092")
     .then((response) => {
       console.log(
         "***********************************************************************"
@@ -343,7 +343,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const products = [];
 
-  await fetch("http://localhost:3000/cart?user_id=6549b7d806aa0377ef8a5a69")
+  await fetch("http://localhost:3000/cart?user_id=655e52dddb2eaa26ad62b092")
     .then((response) => {
       console.log(
         "***********************************************************************"

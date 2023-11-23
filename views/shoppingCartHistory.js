@@ -1,4 +1,4 @@
-const currMemberEmail = "123email.com";
+const currMemberEmail = "shippingTest1@gmail.com";
 
 function checkPos(quantity) {
   console.log(quantity.value);
@@ -131,7 +131,7 @@ async function addProductToCart(product, button) {
 
     console.log("Sending");
     await fetch(
-      `http://localhost:3000/cart/add?user_id=6549b7d806aa0377ef8a5a69`,
+      `http://localhost:3000/cart/add?user_id=655e52dddb2eaa26ad62b092`,
       {
         method: "POST",
         headers: {
@@ -152,7 +152,7 @@ async function addProductToCart(product, button) {
 document.addEventListener("DOMContentLoaded", async () => {
   const products = [];
 
-  await fetch("http://localhost:3000/cartHistory?user_id=6549b7d806aa0377ef8a5a69")
+  await fetch("http://localhost:3000/cartHistory?user_id=655e52dddb2eaa26ad62b092")
     .then((response) => {
       // console.log(
       //   "***********************************************************************"

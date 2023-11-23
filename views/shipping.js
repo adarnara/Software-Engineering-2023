@@ -3,7 +3,7 @@
 // const userRepo = require('../Repository/userRepo.js');
 
 // const productRepo = require("../Repository/ProductRepo.js");
-const currMemberEmail = "123email.com";
+const currMemberEmail = "shippingTest1@gmail.com";
 const currMemberAddress = "123 Epic Drive";
 let currMemberCart;
 let buttonCount = 0;
@@ -11,6 +11,8 @@ let cartPrice;
 let shippingPrice = 0;
 let countDeliveryOptionsSelected = 0;
 let numProducts = 0;
+let cartProductSet;
+let cartProductShippingInfo;
 
 // let emailInput = document.getElementById("username");
 // emailInput.value = currMemberEmail;
@@ -65,7 +67,8 @@ function disableForm(isDisabled) {
     }
 }
 
-const newDiv = document.createElement('div');
+let newDiv = document.createElement('div');
+newDiv.id = 'right-container-after-form-confirm';
 newDiv.innerHTML = `
 <div id="right-container" class="content-container">
     <div class="flex-container">
@@ -92,7 +95,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     });
 
-    await fetch(`http://localhost:3000/cart?user_id=6549b7d806aa0377ef8a5a69`)
+    cartProductSet = new Set();
+    cartProductShippingInfo = {};
+
+    await fetch(`http://localhost:3000/cart?user_id=655e52dddb2eaa26ad62b092`)
         .then(async (response) => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -105,6 +111,18 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     cartPrice = currMemberCart.totalPrice;
     numProducts = currMemberCart.products.length;
+
+    for (let product of currMemberCart.products) {
+        cartProductShippingInfo[product.product_id] = {
+            "chosen_rate": null,
+            "from": null,
+            "to": null,
+            "fastest_rate": null,
+            "best_value_rate": null,
+            "cheapest_rate": null
+        };
+        cartProductSet.add(product.product_id);
+    }
 
     // Wait when user presses confirm button
     document.getElementById('confirmShippingInfoButton').addEventListener('click', async function (event) {
@@ -141,7 +159,9 @@ document.addEventListener('DOMContentLoaded', async function () {
             "state": stateIn.value.toString().trim(),
             "zip": zipIn.value.toString().trim(),
             "country": "US",                        // MAYBE CHANGE FOR INTERNATIONAL SHIPPING LATER?
-            "email": emailIn.value.toString().trim()    // maybe add phone later too?
+            "email": emailIn.value.toString().trim(),    // maybe add phone later too?
+            "phone": phoneNumberIn.value.toString().trim(),
+            "company": null
         }
 
         const parcels = [                         // hardcoded... waiting for Adarsh to add randomized weights, heights, etc. to scraped products *
@@ -168,19 +188,80 @@ document.addEventListener('DOMContentLoaded', async function () {
             ),
         };
 
+        for (const product_id in cartProductShippingInfo) {
+            cartProductShippingInfo[product_id].to = addressTo;
+        }
+
         let shipmentInfo;
         var prods = document.getElementById("products-container");
-        const products = [];
+        let products = [];
+        let validAddress = true;
+
 
         try {
             await fetch('http://localhost:3000/cart/ship', req)
                 .then(async (res) => {
-                    if (!res.ok) {
+                    if (res.status == 422) {
+                        console.log("HI");
+                        validAddress = false;
+                    }
+
+                    if (!res.ok && res.status != 422) {
                         throw new Error(`HTTP error! Status: ${res.status}`);
                     }
 
                     return await res.json();
                 }).then(async (data) => {
+                    if (!validAddress) {
+                        console.log(data.messages[0].text);
+                        const invalidAddressHTML = 
+                            `<div style="text-align: center;">
+                                <h2 class="invalid-address-text"> ${data.messages[0].text} </h2>
+                                <button id="edit-shipping-form" class="edit-shipping_btn" onclick="editForm()"> Edit Form </button> 
+                            </div>
+
+                            `
+                            ;
+                        // prods.innerHTML += invalidAddressHTML;
+                        newDiv.innerHTML = invalidAddressHTML;
+                        return;
+                    }
+
+                    newDiv.innerHTML = `
+                    <div id="right-container" class="content-container">
+                        <div class="flex-container">
+                            <div id="products-container"></div>
+                            <div class="loading-spinner"></div>
+                            <div class="price-text"></div>
+                            <div id="confirmOrderButtonContainer" style="display: none;">
+                                <button id="confirmButton" class="confirm-button" disabled onclick="confirmOrder()">Confirm Order</button>
+                            </div>
+                        </div>
+                    </div>`;
+
+                    /*
+                    
+    /*
+
+    <button id="fastest_btn_${product._id}" class= "option-button" onclick="toggleShipmentOption('${
+                    product._id
+                  }','${
+                    shippingPriceArr[0]
+                  }','${
+                    shippingPriceArr[1]
+                  }','${
+                    shippingPriceArr[2]
+                  }',this)">
+    */
+
+
+                    
+
+                    shipmentInfo;
+                    prods = document.getElementById("products-container");
+                    products = [];
+                    validAddress = true;
+
                     console.log(data);
                     data.shipments.sort(
                         (shipment1, shipment2) => shipment1.product_id - shipment2.product_id
@@ -193,17 +274,32 @@ document.addEventListener('DOMContentLoaded', async function () {
                         const shipArr = [null, null, null];
                         const etaArr = [null, null, null];
 
+                        /*
+                                cartProductShippingInfo[product.product_id] = {
+            "chosen_rate": null,
+            "from": null,
+            "to": null,
+            "fastest_rate": null,
+            "best_value_rate": null,
+            "cheapest_rate": null
+        };
+                        */
+
+
                         for (let j = 0; j < shipRates.length; j++) {
                             const currRate = shipRates[j];
                             if (currRate.attributes[0] === 'FASTEST') {
                                 shipArr[0] = currRate.amount;
                                 etaArr[0] = currRate.estimated_days;
+                                cartProductShippingInfo[product.product_id].fastest_rate = currRate;
                             } else if (currRate.attributes[0] === 'BESTVALUE') {
                                 shipArr[1] = currRate.amount;
                                 etaArr[1] = currRate.estimated_days;
+                                cartProductShippingInfo[product.product_id].best_value_rate = currRate;
                             } else if (currRate.attributes[0] === 'CHEAPEST') {
                                 shipArr[2] = currRate.amount;
                                 etaArr[2] = currRate.estimated_days;
+                                cartProductShippingInfo[product.product_id].cheapest_rate = currRate;
                             }
                         }
 
@@ -215,7 +311,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
                         // get quantity of the product
                         let quantity;
-                        await fetch(`http://localhost:3000/cart/product?user_id=6549b7d806aa0377ef8a5a69&product_id=${product.product_id}`)
+                        await fetch(`http://localhost:3000/cart/product?user_id=655e52dddb2eaa26ad62b092&product_id=${product.product_id}`)
                             .then(async (response) => {
                                 response = await response.json();
                                 quantity = response.quantity;
@@ -296,6 +392,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         //         });
         //     }
         // });
+        
+        if (!validAddress) {
+            return;
+        }
 
         const loadingSpinner = newDiv.querySelector('.loading-spinner');
         if (loadingSpinner) {
@@ -505,19 +605,121 @@ function toggleShipmentOption(product_id, fastest, bestValue, cheapest, btn) {
 function confirmOrder() {
     // update shipping price of each cartProduct
     // update total price of cart (cart price + shipping - the thing in the price-text class/span)
-
+    const optionPattern = /^(fastest|best_value|cheapest)_[\w]+$/;
+    const prodIDpattern = /(?<=btn_).*/;
     const confirmation = window.confirm('Are you sure you want to confirm your order?');
 
     if (confirmation) {
+        const totalCartPrice = (parseFloat(shippingPrice) + parseFloat(cartPrice)).toFixed(2);
+        // grab shipping price of each item
+        const btns = document.getElementsByTagName('button');
+        for (let i = 0; i < btns.length; i++) {
+            console.log("btn id = " + btns[i].id);
+            if (prodIDpattern.test(btns[i].id)) {
+                if (btns[i].classList.contains('highlighted')) {
+                    const matchOption = btns[i].id.match(optionPattern);
+                    if (matchOption) {
+                        const option = matchOption[1];
+                        const matchProdID = btns[i].id.match(prodIDpattern);
+                        const prodID = matchProdID[0];
+                        console.log("prodID = " + prodID);
+                        console.log("matchOption = " + matchOption[1]);
+                        console.log(" ");
+                        if (option === 'fastest') {
+                            cartProductShippingInfo[prodID].chosen_rate = "fastest";
+                        } else if (option === 'best_value') {
+                            cartProductShippingInfo[prodID].chosen_rate = "best_value";
+                        } else if (option === 'cheapest') {
+                            cartProductShippingInfo[prodID].chosen_rate = "cheapest";
+                        }
+                    }
+                }
+                // btns[i].classList.remove('highlighted');
+            }
+        }
+
+        console.log("CHECK MAP:");
+        for (const product_id in cartProductShippingInfo) {
+            console.log(`${product_id}: ${JSON.stringify(cartProductShippingInfo[product_id])}`);
+        }
+
+        // fetch stuff to set shipping Prices, cart total price, to/from (PATCH)
+
         handleCheckout();
     }
 
     // window.location.href = 'checkout/checkoutPage.html';
 }
 
+function editForm() {
+    const nameIn = document.getElementById('full_name');
+    const emailIn = document.getElementById('email');
+    const phoneNumberIn = document.getElementById('phoneNumber');
+    const addressIn = document.getElementById('address');
+    const cityIn = document.getElementById('city');
+    const stateIn = document.getElementById('state');
+    const zipIn = document.getElementById('zip');
+
+    nameIn.removeAttribute('readonly');
+    emailIn.removeAttribute('readonly');
+    phoneNumberIn.removeAttribute('readonly');
+    addressIn.removeAttribute('readonly');
+    cityIn.removeAttribute('readonly');
+    stateIn.removeAttribute('disabled');
+    zipIn.removeAttribute('readonly');
+
+    disableForm(false);
+}
+
+function editFormOLD() {
+    
+    const nameIn = document.getElementById('full_name');
+    const emailIn = document.getElementById('email');
+    const phoneNumberIn = document.getElementById('phoneNumber');
+    const addressIn = document.getElementById('address');
+    const cityIn = document.getElementById('city');
+    const stateIn = document.getElementById('state');
+    const zipIn = document.getElementById('zip');
+
+    nameIn.removeAttribute('readonly');
+    emailIn.removeAttribute('readonly');
+    phoneNumberIn.removeAttribute('readonly');
+    addressIn.removeAttribute('readonly');
+    cityIn.removeAttribute('readonly');
+    stateIn.removeAttribute('disabled');
+    zipIn.removeAttribute('readonly');
+
+    disableForm(false);
+
+    const containerToRemove = document.getElementById('right-container-after-form-confirm');
+    if (containerToRemove) {
+        containerToRemove.remove();
+    }
+
+    document.querySelector('.container').classList.remove('slide-left');
+    document.querySelector('.container').classList.add('slide-right');
+
+    newDiv = document.createElement('div');
+    newDiv.id = 'right-container-after-form-confirm';
+    newDiv.innerHTML = `
+    <div id="right-container" class="content-container">
+        <div class="flex-container">
+            <div id="products-container"></div>
+            <div class="loading-spinner"></div>
+            <div class="price-text"></div>
+            <div id="confirmOrderButtonContainer" style="display: none;">
+                <button id="confirmButton" class="confirm-button" disabled onclick="confirmOrder()">Confirm Order</button>
+            </div>
+        </div>
+    </div>`;
+
+    newDiv.classList.add('new-content');
+    document.body.appendChild(newDiv);
+}
+
 async function handleCheckout() {
     try {
-      const responseGET = await fetch(`http://localhost:3000/cart?user_id=6549b7d806aa0377ef8a5a69`);
+      const responseGET = await fetch(`http://localhost:3000/cart?user_id=655e52dddb2eaa26ad62b092`);
       if (!responseGET.ok) {
         throw new Error(`HTTP error! Status: ${responseGET.status}`);
       }

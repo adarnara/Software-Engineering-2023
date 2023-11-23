@@ -116,6 +116,12 @@
         .product-info ul {
             padding-left: 20px;
         }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
     </style>
 </head>
 
@@ -147,8 +153,8 @@
                 <div class="input-box">
                     <i class='bx bxs-envelope'></i>
                     <label for="address">Email</label>
-                    <input type="text" id="email" value="123email.com" placeholder="Enter Your Primary Address" readonly required>
-                </div>
+                    <input type="text" id="email" value="shippingTest1@gmail.com" placeholder="Enter Your Primary Address" readonly required>
+                </div> <div id="errorAddressContainer" class="error-message"></div>
                 <div class="input-box">
                     <label for="address">Phone</label>
                     <input type="text" id="phoneNumber" placeholder="Phone Number" maxLength="14" onInput="formatPhoneNumber(this)" required>

@@ -21,10 +21,12 @@ class Shipping {
                 "zip": zip,
                 "country": country,
                 "phone": phone,
-                "email": email
+                "email": email,
+                "validate": true
             });
 
             resolve(addressObj);
+            return;
         });
     }
 
@@ -48,7 +50,11 @@ class Shipping {
                 "parcels": parcel,
                 "async": false
             }, function(err, shipment) {
+                console.log("53");
                 console.log("SUCCESS CREATING SHIPMENT");
+                if (err) {
+                    console.error(err);
+                }
                 // console.log(shipment);
                 // for (let rate of shipment.rates) {
                 //     // console.log(rate);
@@ -70,7 +76,7 @@ class Shipping {
         });
     }
 
-    async getCartProductsShippingInfoAndUpdateToAddress(email, addressTo, addressFrom, parcels) {
+    async getCartProductsShippingInfo(email, addressTo, addressFrom, parcels) {
         return new Promise(async (resolve) => {
             const currCart = await cartRepo.getCurrCart(email);
             let shippingObjects = [];
@@ -114,6 +120,81 @@ class Shipping {
             return;
         });
     }
+
+    async updateCartProductAddresses(email, currCartID, productID, addressTo, addressFrom) {
+        return new Promise(async (resolve) => {
+            // const currCart = await cartRepo.getCurrCart(email);
+            // const fromStr = addressFrom.street1 + ", " + addressFrom.city + ", " + addressFrom.state + ", " + addressFrom.zip;
+            // const toStr = addressTo.street1 + ", " + addressTo.city + ", " + addressTo.state + ", " + addressTo.zip;
+
+            const updatedProduct = await cartRepo.setProductShippingAddresses(productID, currCartID, addressFrom, addressTo);
+
+            await shoppingCartCollection.findById(currCartID.toString())
+                .then(cart => {
+                    const indexToUpdate = cart.products.findIndex(someProduct => {
+                        const someProductID = someProduct.product_id;
+                        return someProductID === productID;
+                    });
+
+                    cart.products[indexToUpdate].set(updatedProduct);
+
+                    return cart.save();
+            });
+            console.log("UPDATED:");
+            console.log(updatedProduct);
+            await cartRepo.deleteProductFromCart(productID, currCartID);
+            await cartRepo.addProductToCartWithProductObject(email, updatedProduct);
+            await cartProductCollection.findOneAndUpdate(
+                { parent_cart: currCartID.toString() },
+                { $set: {
+                    from: addressFrom,
+                    to: addressTo
+                }},
+                { new: true }
+            );
+            console.log("DONE UPDATE");
+            resolve(updatedProduct);
+            return;
+        });
+    }
+
+    async updateCartProductShippingRate(email, currCartID, productID, shipRate) {
+        return new Promise(async (resolve) => {
+            // const currCart = await cartRepo.getCurrCart(email);
+            // const fromStr = addressFrom.street1 + ", " + addressFrom.city + ", " + addressFrom.state + ", " + addressFrom.zip;
+            // const toStr = addressTo.street1 + ", " + addressTo.city + ", " + addressTo.state + ", " + addressTo.zip;
+
+            const updatedProduct = await cartRepo.setProductShippingRate(productID, currCartID, shipRate);
+
+            await shoppingCartCollection.findById(currCartID.toString())
+                .then(cart => {
+                    const indexToUpdate = cart.products.findIndex(someProduct => {
+                        const someProductID = someProduct.product_id;
+                        return someProductID === productID;
+                    });
+
+                    cart.products[indexToUpdate].set(updatedProduct);
+
+                    return cart.save();
+            });
+            console.log("UPDATED:");
+            console.log(updatedProduct);
+            await cartRepo.deleteProductFromCart(productID, currCartID);
+            await cartRepo.addProductToCartWithProductObject(email, updatedProduct);
+            await cartProductCollection.findOneAndUpdate(
+                { parent_cart: currCartID.toString() },
+                { $set: {
+                    shipping_rate: shipRate
+                }},
+                { new: true }
+            );
+            console.log("DONE UPDATE");
+            resolve(updatedProduct);
+            return;
+        });
+    } 
 }
+
+
 
 module.exports = new Shipping();

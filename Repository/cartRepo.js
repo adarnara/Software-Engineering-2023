@@ -116,6 +116,18 @@ class ShoppingCart {
         });
     }
 
+    async setProductShippingRate(product_id, currCart_id, shipRate) {
+        return new Promise(async (resolve) => {
+            const updatedProduct = await cartProductCollection.findOneAndUpdate(
+                { product_id: product_id, parent_cart: currCart_id.toString() },
+                { $set: { shipping_rate: shipRate } },
+                { new: true }
+            );
+            resolve(updatedProduct);
+            return;
+        });
+    }
+
     async updateProductsAndPriceInCurrCart(currCart_id, newProductList, newPrice) {
         return new Promise(async (resolve) => {
             const updatedProduct = await shoppingCartCollection.findOneAndUpdate(
