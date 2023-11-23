@@ -3,7 +3,7 @@
 // const userRepo = require('../Repository/userRepo.js');
 
 // const productRepo = require("../Repository/ProductRepo.js");
-const currMemberEmail = "shippingTest1@gmail.com";
+const currMemberEmail = "mm3201@scarletmail.rutgers.edu";
 const currMemberAddress = "123 Epic Drive";
 let currMemberCart;
 let buttonCount = 0;
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     cartProductSet = new Set();
     cartProductShippingInfo = {};
 
-    await fetch(`http://localhost:3000/cart?user_id=655e52dddb2eaa26ad62b092`)
+    await fetch(`http://localhost:3000/cart?user_id=655f9963f9cbae2c21c3bb60`)
         .then(async (response) => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -315,7 +315,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
                         // get quantity of the product
                         let quantity;
-                        await fetch(`http://localhost:3000/cart/product?user_id=655e52dddb2eaa26ad62b092&product_id=${product.product_id}`)
+                        await fetch(`http://localhost:3000/cart/product?user_id=655f9963f9cbae2c21c3bb60&product_id=${product.product_id}`)
                             .then(async (response) => {
                                 response = await response.json();
                                 quantity = response.quantity;
@@ -728,7 +728,7 @@ function editFormOLD() {
 
 async function handleCheckout() {
     try {
-      const responseGET = await fetch(`http://localhost:3000/cart?user_id=655e52dddb2eaa26ad62b092`);
+      const responseGET = await fetch(`http://localhost:3000/cart?user_id=655f9963f9cbae2c21c3bb60`);
       if (!responseGET.ok) {
         throw new Error(`HTTP error! Status: ${responseGET.status}`);
       }

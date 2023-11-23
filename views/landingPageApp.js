@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.changeImage = changeImage;
     window.addProductToCart = addProductToCart;
 
-    const currMemberEmail = "shippingTest1@gmail.com";
+    const currMemberEmail = "mm3201@scarletmail.rutgers.edu";
     function addProductToCart(product) {
 
         let quantity = document.getElementById(product).value;
@@ -194,7 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
             quantity = 1;
         } else {
             console.log("Sending")
-            fetch(`http://localhost:3000/cart/add?user_id=655e52dddb2eaa26ad62b092`, {
+            fetch(`http://localhost:3000/cart/add?user_id=655f9963f9cbae2c21c3bb60`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
