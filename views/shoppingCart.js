@@ -100,7 +100,7 @@ function toggleDeletedProducts() {
     "deleted-products-container"
   );
   var button = document.querySelector(".hidden-button");
-
+  
   deletedProductsContainer.classList.toggle("hidden");
   if (deletedProductsContainer.classList.contains("hidden")) {
     button.textContent = "Products Removed From Cart";
@@ -360,6 +360,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         (product1, product2) => product1.product_id - product2.product_id
       );
 
+      const hiddenButton = document.getElementById(
+        "hidden-button"
+      );
+      if (data.deletedProducts.length == 0)
+        {
+          hiddenButton.remove();
+        }
       for (let i = 0; i < data.products.length; i++) {
         const product = data.products[i];
         await fetch(

@@ -38,9 +38,10 @@ async function createAddress(req, res) {
         let parsedRequestBody;
 
         try {
-            await req.on("data", (chunk) => {
-                requestBody += chunk;
-            });
+            requestBody = await handleData(req);
+            console.log("REQUEST BODY !!!!!");
+            console.log(requestBody);
+            parsedRequestBody = JSON.parse(requestBody);
             parsedRequestBody = JSON.parse(requestBody);
         } catch (e) {
             console.log(e);
@@ -88,9 +89,10 @@ async function createShipment(req, res) {
         let parsedRequestBody;
 
         try {
-            await req.on("data", (chunk) => {
-                requestBody += chunk;
-            });
+            requestBody = await handleData(req);
+            console.log("REQUEST BODY !!!!!");
+            console.log(requestBody);
+            parsedRequestBody = JSON.parse(requestBody);
             parsedRequestBody = JSON.parse(requestBody);
         } catch (e) {
             console.log(e);
@@ -157,9 +159,10 @@ async function calculateTotalCostEachProduct(req, res) {
         // const user_id = queryParams["user_id"];
 
         try {
-            await req.on("data", (chunk) => {
-                requestBody += chunk;
-            });
+            requestBody = await handleData(req);
+            console.log("REQUEST BODY !!!!!");
+            console.log(requestBody);
+            parsedRequestBody = JSON.parse(requestBody);
             parsedRequestBody = JSON.parse(requestBody);
         } catch (err) {
             console.error(err);
@@ -325,11 +328,8 @@ async function setCartProductShippingInfo(req, res) {
             return;
         }
         const cart_id = queryParams["user_id"];
-
         try {
-            await req.on("data", (chunk) => {
-                requestBody += chunk;
-            });
+            requestBody = await handleData(req);
             console.log("REQUEST BODY !!!!!");
             console.log(requestBody);
             parsedRequestBody = JSON.parse(requestBody);
@@ -414,7 +414,21 @@ async function setCartProductShippingInfo(req, res) {
         }
     });
 }
-
+function handleData(req) {
+    return new Promise((resolve, reject) => {
+      let requestBody = '';
+      req.on("data", function (chunk) {
+        requestBody += chunk;
+        console.log("ooga");
+      });
+      req.on("end", function () {
+        resolve(requestBody);
+      });
+      req.on("error", function (error) {
+        reject(error);
+      });
+    });
+  }
 async function setCartProductTransaction(req, res) {
     return new Promise(async (resolve) => {
         if (req.method !== "PATCH") {
@@ -461,10 +475,11 @@ async function setCartProductTransaction(req, res) {
         const cart_id = queryParams["user_id"];
 
         try {
-            await req.on("data", (chunk) => {
-                console.log("EEEE");
-                requestBody += chunk;
-            });
+            
+            requestBody = await handleData(req);
+            console.log("REQUEST BODY !!!!!");
+            console.log(requestBody);
+            parsedRequestBody = JSON.parse(requestBody);
             console.log("$#$()*@#$)(*#@$)(*#@$)(*#$@()*#@$)(@#*$)(#$*@)(@#$*)(#$@");
             console.log();
 

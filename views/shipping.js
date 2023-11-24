@@ -290,22 +290,33 @@ document.addEventListener('DOMContentLoaded', async function () {
             "cheapest_rate": null
         };
                         */
-                        for (let j = 0; j < shipRates.length; j++) {
-                            const currRate = shipRates[j];
-                            if (currRate.attributes[0] === 'FASTEST') {
-                                shipArr[0] = currRate.amount;
-                                etaArr[0] = currRate.estimated_days;
-                                cartProductShippingInfo[product.product_id].fastest_rate = currRate;
-                            } else if (currRate.attributes[0] === 'BESTVALUE') {
-                                shipArr[1] = currRate.amount;
-                                etaArr[1] = currRate.estimated_days;
-                                cartProductShippingInfo[product.product_id].best_value_rate = currRate;
-                            } else if (currRate.attributes[0] === 'CHEAPEST') {
-                                shipArr[2] = currRate.amount;
-                                etaArr[2] = currRate.estimated_days;
-                                cartProductShippingInfo[product.product_id].cheapest_rate = currRate;
-                            }
-                        }
+        for (let j = 0; j < shipRates.length; j++) {
+            const currRate = shipRates[j];
+            for (let j2 = 0; j2 < currRate.attributes.length; j2++) {
+                if (currRate.attributes[j2] === 'FASTEST') {
+                    shipArr[0] = currRate.amount;
+                    etaArr[0] = currRate.estimated_days;
+                    cartProductShippingInfo[product.product_id].fastest_rate = currRate;
+                    break;
+                }
+            } 
+            for (let j2 = 0; j2 < currRate.attributes.length; j2++) {
+                if (currRate.attributes[j2] === 'BESTVALUE') {
+                    shipArr[1] = currRate.amount;
+                    etaArr[1] = currRate.estimated_days;
+                    cartProductShippingInfo[product.product_id].best_value_rate = currRate;
+                    break;
+                }
+            } 
+            for (let j2 = 0; j2 < currRate.attributes.length; j2++) {
+                if (currRate.attributes[j2] === 'CHEAPEST') {
+                    shipArr[2] = currRate.amount;
+                    etaArr[2] = currRate.estimated_days;
+                    cartProductShippingInfo[product.product_id].cheapest_rate = currRate;
+                    break;
+                }
+            } 
+        }
 
                         console.log("NNNNN:");
                         console.log(`fastest_btn_books7`);

@@ -71,7 +71,7 @@ function createProductHTML(product, currCartProduct) {
 }
 
 
-function createCartButtonHTML(cartData) {
+function createCartButtonHTML(cartData, numShipped) {
   // Check if variant_data is empty
   // let colorsHTML = "";
   // if (product.variant_data !== undefined && product.variant_data.length > 0) {
@@ -93,12 +93,23 @@ function createCartButtonHTML(cartData) {
   // This will give you the date in local timezone
   let localFormattedDate = date.toLocaleString();
   // console.log(localFormattedDate);
+  let width = (numShipped/cartData.products.length) * 100
+  const color = `hsl(${(120 * width) / 100}, 100%, 50%)`;
 
-  
   const buttonHTML = `
-    <button id = "button_${cartData.purchaseTime}"class = 'cart-history-button' onclick = "toggleCart('${cartData.purchaseTime}')">
-      Purchase of $${cartData.totalPrice} on ${localFormattedDate}
-    </button>
+  <button id="button_${cartData.purchaseTime}" class='cart-history-button' onclick="toggleCart('${cartData.purchaseTime}')">
+  <div>
+    Purchase of $${cartData.totalPrice.toFixed(2)} on ${localFormattedDate}
+  </div>
+  <div class="progress-bar" style="width: 100%; background-color: #f0f0f0; border-radius: 5px; overflow: hidden;">
+    <div class="progress" id="progressBar" style="width: ${width}%; height: 50px; background-color: ${color}; transition: width 2s ease-in-out;">
+    </div>
+  </div>
+  <div class="text-inside-progress">
+    Shipped: ${numShipped} / ${cartData.products.length}
+  </div>
+</button>
+
     <div id = "${cartData.purchaseTime}" class = "hidden">
 
 
@@ -179,13 +190,27 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // sort carts by purchase time in descending order
       data.sort(
-          (laterCart, earlierCart) => earlierCart.purchaseTime - laterCart.purchaseTime
+          (laterCart, earlierCart) =>  laterCart.purchaseTime - earlierCart.purchaseTime
           );
-
+          data.reverse();
+          let numShipped = 0;
       data.forEach((e) => {
+        console.log(e);
         // create buttons with shopping cart time
         var cartHistoryContainer = document.getElementById("products-history-container");
-        var cartButton = createCartButtonHTML(e);
+        try{
+
+          for (let i = 0; i < e.products.length; i++) {
+            var product = e.products[i];
+            if (product.transaction.tracking_status !== "UNKNOWN")
+              numShipped++;
+          }
+        }
+        catch (e)
+        {
+          console.log(e)
+        }
+        var cartButton = createCartButtonHTML(e, numShipped);
         cartHistoryContainer.innerHTML += cartButton;
 
         // for each shopping cart, fill it with product data
