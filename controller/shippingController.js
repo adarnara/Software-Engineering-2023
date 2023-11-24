@@ -330,6 +330,8 @@ async function setCartProductShippingInfo(req, res) {
             await req.on("data", (chunk) => {
                 requestBody += chunk;
             });
+            console.log("REQUEST BODY !!!!!");
+            console.log(requestBody);
             parsedRequestBody = JSON.parse(requestBody);
         } catch (err) {
             console.error(err);
@@ -426,6 +428,9 @@ async function setCartProductTransaction(req, res) {
             return;
         }
 
+        console.log("==========================");
+        console.log(req);
+
         let resMsg = "";
         let resCode, resType;
         let requestBody = "";
@@ -457,15 +462,23 @@ async function setCartProductTransaction(req, res) {
 
         try {
             await req.on("data", (chunk) => {
+                console.log("EEEE");
                 requestBody += chunk;
             });
-            parsedRequestBody = JSON.parse(requestBody);
+            console.log("$#$()*@#$)(*#@$)(*#@$)(*#$@()*#@$)(@#*$)(#$*@)(@#$*)(#$@");
+            console.log();
+
         } catch (err) {
             console.error(err);
             return;
         }
 
+
+
         try {
+
+            console.log("1: " + "    " + JSON.stringify(requestBody));
+            parsedRequestBody = JSON.parse(requestBody);
             const email = parsedRequestBody.email;
             const cartID = parsedRequestBody.cart_id;
             let lastTransactionTime = null;

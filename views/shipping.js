@@ -603,7 +603,7 @@ function toggleShipmentOption(product_id, fastest, bestValue, cheapest, btn) {
     console.log("num products = " + numProducts);
 
     if (confirmOrderButton) {
-        confirmOrderButton.disabled = (countDeliveryOptionsSelected != numProducts);
+        confirmOrderButton.disabled = (countDeliveryOptionsSelected < numProducts);
     }
 }
 
@@ -648,15 +648,64 @@ async function confirmOrder() {
             console.log(`${product_id}: ${JSON.stringify(cartProductShippingInfo[product_id])}`);
         }
 
-        // fetch stuff to set shipping Prices, cart total price, to/from (PATCH)
-        const updatedShippingInfo = await fetch(`http://localhost:3000/cart/info-confirmation?cart_id=${currMemberCart._id}`)
-            .then((res) => {
-                
-            })
 
+        const req = {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(cartProductShippingInfo)
+        };
 
+        let updatedShippingProducts;
+        let purchasedCart;
+        let emptyCart;
+        // fetch to set shipping Prices, cart total price, to/from (PATCH)
+        const updatedShippingInfo = await fetch(`http://localhost:3000/cart/info-confirmation?cart_id=${currMemberCart._id}`, req)
+            .then(async (res) => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error! Status: ${res.status}`);
+                }
 
-        // handleCheckout();
+                return await res.json();
+            }).then(async (data) => {
+                console.log("!*!(*&#)@(*@#()*@#)(*@()#*#@");
+                console.log(data);
+
+                updatedShippingProducts = data;
+            });
+        
+                        // fetch to set transaction and purchase cart and make new empty cart (NOTE: NEED TO EVENTUALLY PORT THIS TO AFTER STRIPE PAYMENT)
+                // can feed current data straight to the API
+        const transactionReq = {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedShippingProducts)
+        };
+
+                console.log("UPDATE SHIPPING INFO - SUCCESS");
+                console.log();
+
+        console.log(transactionReq);
+
+        const purchasedCartEmptyCart = await fetch(`http://localhost:3000/cart/transaction?cart_id=${currMemberCart._id}`, transactionReq)
+            .then(async (response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }                        
+                return await response.json();
+            }).then(async (data) => {
+                purchasedCart = data.purchased_cart;
+                emptyCart = data.empty_cart;
+
+                console.log("UPDATE SHIPPING INFO - SUCCESS");
+                console.log(data);
+                console.log();
+            });
+
+        handleCheckout();
     }
 
     // window.location.href = 'checkout/checkoutPage.html';
@@ -734,26 +783,26 @@ function editFormOLD() {
 
 async function handleCheckout() {
     try {
-      const responseGET = await fetch(`http://localhost:3000/cart?user_id=655f9963f9cbae2c21c3bb60`);
-      if (!responseGET.ok) {
-        throw new Error(`HTTP error! Status: ${responseGET.status}`);
-      }
-      const cartDetails = await responseGET.json();
-      const checkoutBody = {
-        "_id": cartDetails._id,
-        "email": cartDetails.email,
-        "purchaseTime": cartDetails.purchaseTime,
-        "numShipped": cartDetails.numShipped,
-        "products": cartDetails.products,
-        "__v": cartDetails.__v,
-        "totalPrice": cartDetails.totalPrice
-      };
+    //   const responseGET = await fetch(`http://localhost:3000/cart?user_id=655f9963f9cbae2c21c3bb60`);
+    //   if (!responseGET.ok) {
+    //     throw new Error(`HTTP error! Status: ${responseGET.status}`);
+    //   }
+    //   const cartDetails = await responseGET.json();
+    //   const checkoutBody = {
+    //     "_id": cartDetails._id,
+    //     "email": cartDetails.email,
+    //     "purchaseTime": cartDetails.purchaseTime,
+    //     "numShipped": cartDetails.numShipped,
+    //     "products": cartDetails.products,
+    //     "__v": cartDetails.__v,
+    //     "totalPrice": cartDetails.totalPrice
+    //   };
       const checkoutResponse = await fetch("http://localhost:3000/checkout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(checkoutBody)
+        body: JSON.stringify(currMemberCart)
       });
       if (!checkoutResponse.ok) {
         const errorDetails = await checkoutResponse.json();
