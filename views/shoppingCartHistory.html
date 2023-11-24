@@ -192,7 +192,6 @@
         cursor: pointer;
         font-size: 20px;
       }
-      
 
       .continue-shopping-small:hover {
         background-color: #2980b9;
@@ -211,7 +210,6 @@
       }
       .readd-button:hover {
         background-color: rgb(41, 185, 87);
-        
       }
       .progress-bar {
         width: 100%;
@@ -220,7 +218,7 @@
         overflow: hidden;
         height: 50px;
       }
-      
+
       .progress {
         height: 60px;
         background-color: #3498db;
@@ -237,7 +235,30 @@
         height: 0;
         transform: translate(0px, -54px);
       }
-      
+
+      /* Style for the paragraph containing the shipping status */
+      #tracking{
+        font-size: 20px;
+        /* Add other desired styles */
+        margin-right: 30px;
+        align-items: center;
+        justify-content: center;
+        
+        text-align: center;
+      }
+      .shipment
+      /* Style for the link */
+      a.shipped-link {
+        color: #3498db; /* Link color */
+        text-decoration: none; /* Remove underline */
+        /* Add other desired styles */
+      }
+
+      /* Style for the link when hovered over */
+      a.shipped-link:hover {
+        text-decoration: underline; /* Underline when hovered */
+        /* Add other desired hover styles */
+      }
 
       .product-image img {
         width: 150px;
@@ -299,9 +320,9 @@
         margin-left: 4%;
         margin-top: 50px;
         margin-bottom: 30px;
-        text-align: center;        
+        text-align: center;
         width: 100%;
-        display:none;
+        display: none;
       }
       .hidden {
         display: none;
@@ -323,10 +344,6 @@
     </style>
   </head>
 
-
-
-
-
   <body>
     <div class="navbar">
       <a
@@ -344,12 +361,13 @@
         </button>
       </div>
       <div id="shopping-icon" class="navbar-cart">
-
         <a href="http://127.0.0.1:5500/views/shoppingCartHistory.html">
-          <img src="../public/Images/shoppingCartHistory.png" alt="shoppingCartHistory" />
+          <img
+            src="../public/Images/shoppingCartHistory.png"
+            alt="shoppingCartHistory"
+          />
           <span style="font-weight: bold; font-size: 20px"></span>
         </a>
-
 
         <a href="http://127.0.0.1:5500/views/shoppingCart.html">
           <img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />
@@ -364,20 +382,19 @@
 
     <div class="content-container">
       <div class="flex-container">
-
-        <div id="empty-history-display" class="empty-history-display">No Cart History!</div>
+        <div id="empty-history-display" class="empty-history-display">
+          No Cart History!
+        </div>
 
         <div id="products-history-container"></div>
-        
+
         <!-- <button onclick="toggleDeletedProducts()" class="hidden-button">
           Show Deleted Products From the Current Cart
         </button> -->
-        
+
         <!-- <div id="deleted-products-container" class="hidden"></div> -->
       </div>
     </div>
-
-
 
     <section>
       <div class="waves">
