@@ -30,7 +30,9 @@ const productSchema = new mongoose.Schema({
     },
   ],
   variant_data: [String],
+
 });
+
 
 
 const Product = mongoose.model('Product', productSchema);

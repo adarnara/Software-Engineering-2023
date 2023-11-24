@@ -8,10 +8,9 @@ const landingRouter = require('./routes/landingRoute');
 const shoppingCartRouter = require('./routes/shoppingCartRoute');
 const routes = require('./routes/landingRoute');
 const profileRouter = require('./routes/profileRoute');
-
-const fs = require('fs')
-const path_m = require('path')
-
+const forgetPasswordRouter = require("./routes/forgetPasswordRoute");
+const fs = require('fs');
+const path_m = require('path');
 const paymentRouter = require("./routes/paymentRoute");
 
 
@@ -44,23 +43,23 @@ const server = http.createServer(async (request, response) => {
         console.log(methodPart)
         console.log(pathPart)
         if (methodPart !== method) continue;
-    
+
         const params = matchDynamicRoute(pathPart, path);
         if (params) {
-          // Found a matching dynamic route
-          request.params = params;
-          console.log(params)
-          try {
-            await userRouter[route](request, response);
-            return;
-          } catch (error) {
-            console.error('Route Handler Error:', error);
-            response.writeHead(500);
-            response.end(JSON.stringify({ message: 'Internal Server Error' }));
-            return;
-          }
+            // Found a matching dynamic route
+            request.params = params;
+            console.log(params)
+            try {
+                await userRouter[route](request, response);
+                return;
+            } catch (error) {
+                console.error('Route Handler Error:', error);
+                response.writeHead(500);
+                response.end(JSON.stringify({ message: 'Internal Server Error' }));
+                return;
+            }
         }
-      }
+    }
 
     // handling dynamic routes like /profile/updateProfile/{userId}
     for (const route in profileRouter) {
@@ -89,8 +88,47 @@ const server = http.createServer(async (request, response) => {
         }
     }
 
-  
-    
+    for (const route in forgetPasswordRouter) {
+        const methodPart = route.match(/^[A-Z]+/)[0];
+        const pathPart = route.substring(methodPart.length);
+
+        if (methodPart !== method) continue;
+
+        const params = matchDynamicRoute(pathPart, path);
+        if (params) {
+            request.params = params;
+
+            // Manually parse the JSON body
+            let body = '';
+            request.on('data', (chunk) => {
+                body += chunk;
+            });
+
+            request.on('end', async () => {
+                try {
+                    if (body) {
+                        request.body = JSON.parse(body);
+                    }
+
+                    const forgetPasswordRouteHandler = forgetPasswordRouter[route];
+                    if (forgetPasswordRouteHandler) {
+                        forgetPasswordRouteHandler(request, response);
+                    } else {
+                        response.writeHead(404);
+                        response.end("Could not find resource!");
+                    }
+                } catch (error) {
+                    console.error('Route Handler Error:', error);
+                    response.writeHead(500);
+                    response.end(JSON.stringify({ message: 'Internal Server Error' }));
+                }
+            });
+            return;
+        }
+    }
+
+
+
     const routeKey = `${method}${path}`;
     if (routes[routeKey]) {
         const routeHandler = routes[routeKey];
@@ -130,13 +168,13 @@ const server = http.createServer(async (request, response) => {
                 console.error('Route Handler Error:', error);
                 res.status(500).json({ message: 'Internal Server Error' });
             }
-        }
-        else {
+        } else {
             // Fallback if no route is matched
             response.writeHead(404);
             response.end("Could not find resource!");
-          } 
+        }
     }
+
     try {
         const userRouteHandler = userRouter[routeKey];
         const adminRouteHandler = adminRouter[routeKey];
@@ -145,18 +183,14 @@ const server = http.createServer(async (request, response) => {
 
         if (userRouteHandler) {
             userRouteHandler(request, response);
-            
+
         } else if (adminRouteHandler) {
             adminRouteHandler(request, response);
         } else if (paymentRouteHandler) {
             paymentRouteHandler(request, response);
         } else if (shoppingCartRouteHandler) {
-            // console.log(path);
-            // const user_id = path.split("/")[2];
             shoppingCartRouteHandler(request, response);
         } else {
-            // Might as well return something than
-            // let the client get stuck fetching
             if (!landingRouter[routeKey]) {
                 response.writeHead(404);
                 response.end("Could not find resource!");
@@ -165,24 +199,26 @@ const server = http.createServer(async (request, response) => {
     } catch (error) {
         console.error('Request Handling Error:', error);
     }
- 
+
 });
+
 // splitting : to get the id.
 function matchDynamicRoute(routePattern, path) {
     const routeParts = routePattern.split('/').filter(Boolean);
     const pathParts = path.split('/').filter(Boolean);
     if (routeParts.length !== pathParts.length) return null;
-  
+
     const params = {};
     for (let i = 0; i < routeParts.length; i++) {
-      if (routeParts[i].startsWith(':')) {
-        params[routeParts[i].substring(1)] = pathParts[i];
-      } else if (routeParts[i] !== pathParts[i]) {
-        return null;
-      }
+        if (routeParts[i].startsWith(':')) {
+            params[routeParts[i].substring(1)] = pathParts[i];
+        } else if (routeParts[i] !== pathParts[i]) {
+            return null;
+        }
     }
     return params;
-  }
+}
+
 server.listen(PORT, (error) => {
     if (error) {
         console.log('Error Occurred', error);

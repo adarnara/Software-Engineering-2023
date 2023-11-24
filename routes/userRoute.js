@@ -1,5 +1,5 @@
 const userController = require('../controller/userCtrl');
-const fs = require('fs');
+
 const routes = {
   'POST/member/login': (request,response) => userController.login('/member/login',request,response),
   'POST/member/register': (request,response) => userController.register('/member/register',request,response),

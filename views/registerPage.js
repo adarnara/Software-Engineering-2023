@@ -17,6 +17,16 @@ document.getElementById("registration-form").addEventListener("submit", async (e
         }, delay);
     };
 
+    // Check for blank fields
+    if (!firstName || !lastName || !email || !password || !confirmPassword || !role) {
+        showAlert("Missing fields. Please make sure to input all fields.");
+        registerButton.textContent = 'Error processing request';
+        setTimeout(() => {
+            registerButton.textContent = 'Register';
+        }, 1000);
+        return;
+    }
+
     if (password !== confirmPassword) {
         updateRegisterButtonText("Passwords do not match");
         return;
@@ -76,3 +86,23 @@ document.getElementById("registration-form").addEventListener("submit", async (e
         updateRegisterButtonText("Internal Server Error");
     }
 });
+
+function showAlert(message) {
+    const alertContainer = document.createElement('div');
+    alertContainer.className = 'custom-alert';
+
+    const alertText = document.createElement('p');
+    alertText.textContent = message;
+
+    const okButton = document.createElement('button');
+    okButton.textContent = 'OK';
+    okButton.style.color = 'red';
+    okButton.style.fontWeight = 'bold';
+    okButton.onclick = () => {
+        document.body.removeChild(alertContainer);
+    };
+
+    alertContainer.appendChild(alertText);
+    alertContainer.appendChild(okButton);
+    document.body.appendChild(alertContainer);
+}
