@@ -6,6 +6,7 @@ const shoppingCartCollection = require("../models/shoppingCart"); // dupliicate
 const cartProductCollection = require("../models/cartProduct");
 const productCollection = require("../models/Product");
 const usersCollection = require("../models/users.js");
+const userRepo = require("../Repository/userRepo.js");
 
 const cartRepo = require("../Repository/cartRepo.js");
 const productRepo = require("../Repository/ProductRepo.js");
@@ -13,6 +14,7 @@ const productRepo = require("../Repository/ProductRepo.js");
 const url = require("url");
 const { request } = require("http");
 const { parse } = require("path");
+const { parseJwtHeader } = require("../middlewares/authmiddleware.js");
 
 const parseProductPrice = /\$([\d.]+)/;
 

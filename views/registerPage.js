@@ -106,3 +106,40 @@ function showAlert(message) {
     alertContainer.appendChild(okButton);
     document.body.appendChild(alertContainer);
 }
+
+function fetchUserInformation(jwtToken) {
+    fetch("http://localhost:3000/token", {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${jwtToken}`,
+        },
+    })
+        .then(response => response.json())
+        .then(data => {
+            const userId = data.id;
+
+            fetch(`http://localhost:3000/user/${userId}`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${jwtToken}`,
+                },
+            })
+                .then(response => response.json())
+                .then(userData => {
+                    // Populate the form with retrieved user information
+                    populateForm(userData);
+                })
+                .catch(error => {
+                    console.error("Error fetching user information:", error);
+                });
+        })
+        .catch(error => {
+            console.error("Error fetching user ID:", error);
+        });
+}
+
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
