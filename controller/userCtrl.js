@@ -1,5 +1,6 @@
 const userRepo = require('../Repository/userRepo');
 const { generateToken } = require('../config/jwt');
+const { parseJwtHeader } = require("../middlewares/authmiddleware");
 const url = require('url');
 const fs = require('fs');
 
@@ -22,6 +23,7 @@ const createUser = async (path, req, res) => {
             } else {
                 res.writeHead(409, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ message: 'Email already in use by a member', success: false }));
+
             }
         } else if (path === '/seller/register') {
             const findMember = await userRepo.findMemberByEmail(email);
@@ -127,7 +129,23 @@ async function register(path, request, response) {
     try {
         const postData = await getPostData(request);
         const userData = JSON.parse(postData);
-        const result = await createUser(path,{ body: userData }, response);
+
+
+        let reqData = {
+            body: userData,
+        };
+
+        // TODO: sellers should also have an address?
+        // Handle address: should always be true with new form
+        if (userData.address) {
+            reqData.body.shippingInfo = {
+                address: userData.address,
+            };
+            delete userData.address;
+        }
+
+        const result = await createUser(path, reqData, response);
+
     } catch (error) {
         response.writeHead(500, { 'Content-Type': 'application/json' });
         response.end(JSON.stringify({ message: 'Internal Server Error' }));
@@ -212,4 +230,27 @@ const getAUser = async (request, response) => {
         response.end(JSON.stringify({ message: 'Server error Unable to get user' }));
     }
 };
-module.exports = { login, register, allUsers, updateUser, getAUser, removeUser };
+
+
+/**
+ * Current approach is to put the token in a header
+ */
+async function getUserByToken(request, response) {
+    let userData = parseJwtHeader(request, response);
+    // We continue handling if the JWT was valid.
+    if (userData) {
+        let user = await userRepo.findUserById(userData["id"]);
+        // Set some properties to return.
+        userData["firstName"] = user["firstName"];
+        userData["lastName"] = user["lastName"];
+        userData["email"] = user["email"];
+        userData["role"] = user["role"];
+        // probably should send member/seller/admin information as well
+        response.setHeader("Content-Type", "application/json");
+        response.end(JSON.stringify(userData));
+    }
+}
+
+
+module.exports = { login, register, allUsers, updateUser, getAUser, removeUser, getUserByToken };
+
