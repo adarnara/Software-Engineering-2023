@@ -23,6 +23,7 @@ const createUser = async (path, req, res) => {
             } else {
                 res.writeHead(409, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ message: 'Email already in use by a member', success: false }));
+
             }
         } else if (path === '/seller/register') {
             const findMember = await userRepo.findMemberByEmail(email);
@@ -129,6 +130,7 @@ async function register(path, request, response) {
         const postData = await getPostData(request);
         const userData = JSON.parse(postData);
 
+
         let reqData = {
             body: userData,
         };
@@ -143,6 +145,7 @@ async function register(path, request, response) {
         }
 
         const result = await createUser(path, reqData, response);
+
     } catch (error) {
         response.writeHead(500, { 'Content-Type': 'application/json' });
         response.end(JSON.stringify({ message: 'Internal Server Error' }));
@@ -228,6 +231,7 @@ const getAUser = async (request, response) => {
     }
 };
 
+
 /**
  * Current approach is to put the token in a header
  */
@@ -249,3 +253,4 @@ async function getUserByToken(request, response) {
 
 
 module.exports = { login, register, allUsers, updateUser, getAUser, removeUser, getUserByToken };
+

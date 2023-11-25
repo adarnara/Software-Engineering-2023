@@ -11,6 +11,7 @@ const routes = {
   'GET/user/:id':  (request,response) => userController.getAUser(request,response),
 
     'GET/token': userController.getUserByToken,
+
 };
 
 
