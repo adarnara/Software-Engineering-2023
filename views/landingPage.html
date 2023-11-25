@@ -251,6 +251,50 @@
     window.location.href = route;
   }
 </script>
+<script>
+  // Function to get cookie value by name
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  }
+
+  // Function to set cookie value
+  function setCookie(name, value, days) {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+  }
+
+  // Function to delete cookie by name
+  function deleteCookie(name) {
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+  }
+
+  // JavaScript function to navigate to another page
+  function navigateToPage(route) {
+    // Use window.location to navigate to the desired page
+    window.location.href = route;
+  }
+
+  // JavaScript function to handle logout
+  function logout() {
+    deleteCookie("token");
+    navigateToPage("/Software-Engineering-2023/views/landingPage.html");
+  }
+
+  // Check if a token exists in the cookies
+  const token = getCookie("token");
+
+  if (token) {
+    // If token exists, update the navbar
+    document.getElementById("shopping-icon").innerHTML =
+            '<a href="/views/profilePage.html" style="text-decoration: none; color: inherit;">' +
+            '<img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />' +
+            '<span style="font-weight: bold; font-size: 20px;">Profile</span></a>' +
+            '<button class="go-to-page-button" onclick="logout()">Logout</button>';
+  }
+</script>
 
 <script src="landingPageApp.js"></script>
 

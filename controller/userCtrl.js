@@ -240,6 +240,7 @@ async function getUserByToken(request, response) {
         userData["firstName"] = user["firstName"];
         userData["lastName"] = user["lastName"];
         userData["email"] = user["email"];
+        userData["role"] = user["role"];
         // probably should send member/seller/admin information as well
         response.setHeader("Content-Type", "application/json");
         response.end(JSON.stringify(userData));

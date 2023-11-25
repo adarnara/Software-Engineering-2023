@@ -28,10 +28,6 @@ const UserSchema = new mongoose.Schema({
         default: "user"
     },
     address: {
-        country: {
-            type: String,
-            default: null
-        },
         address1: {
             type: String,
             default: null
@@ -41,10 +37,6 @@ const UserSchema = new mongoose.Schema({
             default: null
         },
         address3: {
-            type: String,
-            default: null
-        },
-        city: {
             type: String,
             default: null
         },
@@ -61,10 +53,15 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: null
     },
+    dateOfBirth: {
+        type: String,
+        default: null
+    },
     profileImage: {
         type: String,
         default: null
     }
+
 }, {
     timestamps: true
 }, options);

@@ -34,6 +34,18 @@ const sellerSchema = mongoose.Schema({
   ratingCount: {
     type: Number,
     default: 0
+  },
+  website:{
+    type: String,
+    default: null
+  },
+  Bio:{
+    type: String,
+    default: ""
+  },
+  Company:{
+    type: String,
+    default: null
   }
 });
 
