@@ -1,0 +1,61 @@
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+
+h2 {
+  color: #333;
+  text-align: center;
+}
+/* Dashboard Page Styles */
+.dashboard-container {
+  width: 80%;
+  margin: 20px auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.user-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.user-row:last-child {
+  border-bottom: none;
+}
+
+.user-name, .user-role {
+  flex: 1;
+}
+
+button.update-user, button.delete-user {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button.update-user {
+  background-color: #f0ad4e;
+  color: white;
+}
+
+button.delete-user {
+  background-color: #d9534f;
+  color: white;
+}
+
+button.update-user:hover {
+  background-color: #ec971f;
+}
+
+button.delete-user:hover {
+  background-color: #c9302c;
+}
