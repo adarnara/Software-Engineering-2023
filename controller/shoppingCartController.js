@@ -51,7 +51,13 @@ async function changeProductQuantityFromCatalog(
       let productPrice = productInfo.price;
       productPrice = parseFloat(productPrice.match(parseProductPrice)[1]);
 
-      const updatedPOSTproduct = await cartRepo.updateProductsAndPriceInCurrCart(currCart._id, newProductList, (currCart.totalPrice + (productPrice * parseFloat(parsedRequestBody.quantity))));
+      const updatedPOSTproduct =
+        await cartRepo.updateProductsAndPriceInCurrCart(
+          currCart._id,
+          newProductList,
+          currCart.totalPrice +
+            productPrice * parseFloat(parsedRequestBody.quantity)
+        );
       resolve(updatedPOSTproduct);
       return;
     } catch (err) {
@@ -180,7 +186,10 @@ async function changeProductQuantityFromCart(req, res) {
               if (!currMemberCart) {
                 resCode = 401;
                 resType = "text/plain";
-                resMsg = "Unauthorized Access: Email <" + email + "> is not currently registered!";
+                resMsg =
+                  "Unauthorized Access: Email <" +
+                  email +
+                  "> is not currently registered!";
                 res.writeHead(resCode, { "Content-Type": resType });
                 res.end(resMsg);
                 resolve(resMsg);
@@ -209,13 +218,30 @@ async function changeProductQuantityFromCart(req, res) {
                 }
               }
 
-                const productInfo = await productRepo.getProductById(parsedRequestBody.product_id);
-                let productPrice = productInfo.price;
-                productPrice = parseFloat(productPrice.match(parseProductPrice)[1]);
-                
-              const newUpdatedProduct = await cartRepo.updateProductsAndPriceInCurrCart(currMemberCart._id, newProductList, (currMemberCart.totalPrice - (productPrice * parseFloat(oldProductQuantity)) + (productPrice * parseFloat(quantity))).toFixed(2), productInfo);
+              const productInfo = await productRepo.getProductById(
+                parsedRequestBody.product_id
+              );
+              let productPrice = productInfo.price;
+              productPrice = parseFloat(
+                productPrice.match(parseProductPrice)[1]
+              );
 
-              const updatedProductInfo = await cartRepo.getCurrProduct(parsedRequestBody.product_id, currMemberCart._id);
+              const newUpdatedProduct =
+                await cartRepo.updateProductsAndPriceInCurrCart(
+                  currMemberCart._id,
+                  newProductList,
+                  (
+                    currMemberCart.totalPrice -
+                    productPrice * parseFloat(oldProductQuantity) +
+                    productPrice * parseFloat(quantity)
+                  ).toFixed(2),
+                  productInfo
+                );
+
+              const updatedProductInfo = await cartRepo.getCurrProduct(
+                parsedRequestBody.product_id,
+                currMemberCart._id
+              );
               resCode = 200;
               resMsg = JSON.stringify(updatedProductInfo);
               resType = "application/json";
@@ -363,8 +389,11 @@ async function addProductToCart(req, res) {
                 res,
                 currMemberCart
               );
-              if (typeof changedProduct !== 'string') {
-                const changedProduct = await cartRepo.getCurrProduct(product_id, currMemberCart._id);
+              if (typeof changedProduct !== "string") {
+                const changedProduct = await cartRepo.getCurrProduct(
+                  product_id,
+                  currMemberCart._id
+                );
                 resMsg = JSON.stringify(changedProduct);
                 resType = "application/json";
               } else {
@@ -390,6 +419,21 @@ async function addProductToCart(req, res) {
               });
 
               try {
+                const newDeletedList = [];
+                for (const product of currMemberCart.deletedProducts) {
+                  if (product !== product_id) {
+                    newDeletedList.push(product);
+                  }
+                }
+
+                await cartRepo.updateDeletedList(
+                  currMemberCart._id,
+                  newDeletedList
+                );
+
+
+
+
                 const productInfo = await productRepo.getProductById(
                   product_id
                 );
@@ -401,10 +445,8 @@ async function addProductToCart(req, res) {
                 await cartRepo.pushProductToCart(
                   currMemberCart._id,
                   newProduct,
-                  (
-                    currMemberCart.totalPrice +
+                  currMemberCart.totalPrice +
                     productPrice * parseFloat(quantity)
-                  )
                 );
 
                 resCode = 200;
@@ -463,7 +505,8 @@ async function getProducts(req, res) {
     }
     if (!("user_id" in queryParams)) {
       resCode = 400;
-      resMsg = "Bad Request: Must have exactly one query param with key 'user_id'";
+      resMsg =
+        "Bad Request: Must have exactly one query param with key 'user_id'";
       resType = "text/plain";
       res.writeHead(resCode, { "Content-Type": resType });
       res.end(resMsg);
@@ -471,7 +514,6 @@ async function getProducts(req, res) {
       return;
     }
     const currUser = queryParams["user_id"];
-    let currMemberCart;
 
     try {
       const currMember = await cartRepo.getMember(currUser);
@@ -535,7 +577,8 @@ async function removeProductFromCart(req, res) {
       }
       if (!("user_id" in queryParams) || !("product_id" in queryParams)) {
         resCode = 400;
-        resMsg = "Bad Request: Must have exactly two query params with keys 'user_id' and 'product_id'";
+        resMsg =
+          "Bad Request: Must have exactly two query params with keys 'user_id' and 'product_id'";
         resType = "text/plain";
         res.writeHead(resCode, { "Content-Type": resType });
         res.end(resMsg);
@@ -560,7 +603,10 @@ async function removeProductFromCart(req, res) {
         resolve(resMsg);
         return;
       }
-
+      const pushProductToDeleted = await cartRepo.pushProductToDeleted(
+        currMemberCart._id,
+        product_id
+      );
       const removedCartProduct = await cartRepo.deleteProductFromCart(
         product_id,
         currMemberCart._id
@@ -586,7 +632,7 @@ async function removeProductFromCart(req, res) {
           newProductList.push(product);
         }
       }
-
+      
       const productInfo = await productRepo.getProductById(product_id);
 
       let productPrice = productInfo.price;
@@ -601,13 +647,13 @@ async function removeProductFromCart(req, res) {
         ).toFixed(2)
       );
 
-        resCode = 200;
-        resMsg = JSON.stringify(removedCartProduct);
-        resType = "application/json";
-        res.writeHead(resCode, { "Content-Type": resType });
-        res.end(resMsg);
-        resolve(resMsg);
-        return; 
+      resCode = 200;
+      resMsg = JSON.stringify(removedCartProduct);
+      resType = "application/json";
+      res.writeHead(resCode, { "Content-Type": resType });
+      res.end(resMsg);
+      resolve(resMsg);
+      return;
     } catch (error) {
       console.log(error);
       res.writeHead(400);
@@ -655,10 +701,160 @@ const FOUND_USER = 200;
 //   });
 // }
 
+// calls cartrepo and sends back array of past cart ids for user in response to a get request
+async function getCartHistory(req, res) {
+  // // take a get request with uri of /cartHistory?userId=___
+  return new Promise(async (resolve) => {
+    let resMsg = "";
+    let resCode, resType;
+
+    const parsedUrl = url.parse(req.url, true);
+    const queryParams = parsedUrl.query;
+
+    // ensure that only one query parameter (the user_id)
+    if (Object.keys(queryParams).length !== 1) {
+      resCode = 400;
+      resMsg =
+        "Bad Request: Please Ensure exactly one query params for user_id is specified";
+      resType = "text/plain";
+      res.writeHead(resCode, { "Content-Type": resType });
+      res.end(resMsg);
+      resolve(resMsg);
+      return;
+    }
+    if (!("user_id" in queryParams)) {
+      resCode = 400;
+      resMsg =
+        "Bad Request: Must have exactly one query param with key 'user_id'";
+      resType = "text/plain";
+      res.writeHead(resCode, { "Content-Type": resType });
+      res.end(resMsg);
+      resolve(resMsg);
+      return;
+    }
+    const currUser = queryParams["user_id"];
+
+    try {
+      const currMember = await cartRepo.getMember(currUser);
+
+      console.log(currMember.email);
+
+      const currMemberCartHistory = await cartRepo.getUserCartHistory(currMember.email);
+
+      console.log(currMemberCartHistory);
+
+      if (currMemberCartHistory == null) {
+        //No shopping carts purchased
+        resCode = 200;
+        resType = "text/plain";
+        resMsg = "You haven't checkout out yet!";
+      } else {
+        resCode = 200;
+        resType = "application/json";
+        resMsg = JSON.stringify(currMemberCartHistory);
+      }
+    } catch (err) {
+      // User is not registered
+      console.log(err);
+      console.log("You are not a registered member!");
+      resCode = 401;
+      resType = "text/plain";
+      resMsg = "You are not a registered member!";
+    }
+
+    res.writeHead(resCode, { "Content-Type": resType });
+    res.end(resMsg);
+    console.log("Request Complete");
+    resolve(resMsg);
+  });
+}
+
+// retrieve specific cart product based on ID
+async function getCartProduct(req, res) {
+  // // take a get request with uri of /cartHistory?userId=___
+  return new Promise(async (resolve) => {
+    let resMsg = "";
+    let resCode, resType;
+
+    const parsedUrl = url.parse(req.url, true);
+    const queryParams = parsedUrl.query;
+
+    // ensure that only one query parameter (the user_id)
+    if (Object.keys(queryParams).length !== 2) {
+      resCode = 400;
+      resMsg =
+        "Bad Request: Please Ensure user_id and product_id are specified.";
+      resType = "text/plain";
+      res.writeHead(resCode, { "Content-Type": resType });
+      res.end(resMsg);
+      resolve(resMsg);
+      return;
+    }
+    if (!("user_id" in queryParams)) {
+      resCode = 400;
+      resMsg =
+        "Bad Request: Must specify user_id.";
+      resType = "text/plain";
+      res.writeHead(resCode, { "Content-Type": resType });
+      res.end(resMsg);
+      resolve(resMsg);
+      return;
+    }
+    if (!("product_id" in queryParams)) {
+      resCode = 400;
+      resMsg =
+        "Bad Request: Must specify product_id";
+      resType = "text/plain";
+      res.writeHead(resCode, { "Content-Type": resType });
+      res.end(resMsg);
+      resolve(resMsg);
+      return;
+    }
+    const currUser = queryParams["user_id"];
+    const productID = queryParams["product_id"];
+
+    console.log("*** " + productID);
+
+    try {
+      const currMember = await cartRepo.getMember(currUser);
+      const currCart = await cartRepo.getCurrCart(currMember.email);
+      const cartProductInfo = await cartRepo.getCurrProduct(productID, currCart._id);
+
+      console.log(currMember.email);
+      console.log(cartProductInfo);
+
+      if (cartProductInfo == null) {
+        //No shopping carts purchased
+        resCode = 200;
+        resType = "text/plain";
+        resMsg = "You don't have this product in your cart!";
+      } else {
+        resCode = 200;
+        resType = "application/json";
+        resMsg = JSON.stringify(cartProductInfo);
+      }
+    } catch (err) {
+      // User is not registered
+      console.log(err);
+      console.log("You are not a registered member!");
+      resCode = 401;
+      resType = "text/plain";
+      resMsg = "You are not a registered member!";
+    }
+
+    res.writeHead(resCode, { "Content-Type": resType });
+    res.end(resMsg);
+    console.log("Request Complete");
+    resolve(resMsg);
+  });
+}
+
 module.exports = {
   getProducts,
   removeProductFromCart,
   addProductToCart,
   changeProductQuantityFromCart,
   changeProductQuantityFromCatalog,
+  getCartHistory,
+  getCartProduct,
 };

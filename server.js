@@ -6,6 +6,7 @@ const userRouter = require("./routes/userRoute");
 const adminRouter = require("./routes/adminRoute");
 const landingRouter = require('./routes/landingRoute');
 const shoppingCartRouter = require('./routes/shoppingCartRoute');
+const shippingRouter = require('./routes/shippingRoute');
 const routes = require('./routes/landingRoute');
 
 const profileRouter = require('./routes/profileRoute');
@@ -190,6 +191,7 @@ const server = http.createServer(async (request, response) => {
         const adminRouteHandler = adminRouter[routeKey];
         const paymentRouteHandler = paymentRouter[routeKey];
         const shoppingCartRouteHandler = shoppingCartRouter[routeKey];
+        const shippingRouteHandler = shippingRouter[routeKey];
 
         if (userRouteHandler) {
 
@@ -202,6 +204,8 @@ const server = http.createServer(async (request, response) => {
             paymentRouteHandler(request, response);
         } else if (shoppingCartRouteHandler) {
             shoppingCartRouteHandler(request, response);
+        } else if (shippingRouteHandler) {
+            shippingRouteHandler(request, response);
         } else {
             if (!landingRouter[routeKey]) {
                 response.writeHead(404);
