@@ -7,10 +7,12 @@ const adminRouter = require("./routes/adminRoute");
 const landingRouter = require('./routes/landingRoute');
 const shoppingCartRouter = require('./routes/shoppingCartRoute');
 const routes = require('./routes/landingRoute');
+
 const profileRouter = require('./routes/profileRoute');
 const forgetPasswordRouter = require("./routes/forgetPasswordRoute");
 const fs = require('fs');
 const path_m = require('path');
+
 const paymentRouter = require("./routes/paymentRoute");
 
 
@@ -21,6 +23,7 @@ const server = http.createServer(async (request, response) => {
     const path = parsedUrl.pathname;
     const method = request.method;
     console.log(`Incoming request: ${request.method} ${request.url}`);
+
 
     // Set the CORS headers to allow all origins (you can restrict it as needed)
     response.setHeader('Access-Control-Allow-Origin', '*');
@@ -33,6 +36,7 @@ const server = http.createServer(async (request, response) => {
         response.end();
         return;
     }
+
 
     //handling dymanic routes like /user/{id}
     for (const route in userRouter) {
@@ -129,6 +133,7 @@ const server = http.createServer(async (request, response) => {
 
 
 
+
     const routeKey = `${method}${path}`;
     if (routes[routeKey]) {
         const routeHandler = routes[routeKey];
@@ -173,6 +178,11 @@ const server = http.createServer(async (request, response) => {
             response.writeHead(404);
             response.end("Could not find resource!");
         }
+        else {
+            // Fallback if no route is matched
+            response.writeHead(404);
+            response.end("Could not find resource!");
+          } 
     }
 
     try {
@@ -182,7 +192,9 @@ const server = http.createServer(async (request, response) => {
         const shoppingCartRouteHandler = shoppingCartRouter[routeKey];
 
         if (userRouteHandler) {
+
             userRouteHandler(request, response);
+
 
         } else if (adminRouteHandler) {
             adminRouteHandler(request, response);
@@ -200,13 +212,16 @@ const server = http.createServer(async (request, response) => {
         console.error('Request Handling Error:', error);
     }
 
+
 });
+
 
 // splitting : to get the id.
 function matchDynamicRoute(routePattern, path) {
     const routeParts = routePattern.split('/').filter(Boolean);
     const pathParts = path.split('/').filter(Boolean);
     if (routeParts.length !== pathParts.length) return null;
+
 
     const params = {};
     for (let i = 0; i < routeParts.length; i++) {
@@ -218,6 +233,7 @@ function matchDynamicRoute(routePattern, path) {
     }
     return params;
 }
+
 
 server.listen(PORT, (error) => {
     if (error) {
