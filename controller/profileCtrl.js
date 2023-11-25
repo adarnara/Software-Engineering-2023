@@ -2,7 +2,7 @@ const userRepo = require("../Repository/userRepo");
 
 class ProfileController {
     async updateProfile(request, response) {
-        const { userId } = request.params; // Extracting id from request params
+        const { userId } = request.params;
 
         try {
             let body = '';
@@ -13,7 +13,17 @@ class ProfileController {
             request.on('end', async () => {
                 const userUpdateData = JSON.parse(body);
                 try {
-                    const updatedUser = await userRepo.updateById(userId, userUpdateData);
+
+                    if (userUpdateData.email) {
+                        const existingUser = await userRepo.findByEmail(userUpdateData.email);
+                        if (existingUser && existingUser._id.toString() !== userId) {
+                            response.writeHead(400, { 'Content-Type': 'application/json' });
+                            response.end(JSON.stringify({ message: 'Email already in use' }));
+                            return;
+                        }
+                    }
+
+                    const updatedUser = await userRepo.updateProfile(userId, userUpdateData);
 
                     if (!updatedUser) {
                         response.writeHead(404, { 'Content-Type': 'application/json' });
@@ -37,3 +47,4 @@ class ProfileController {
 }
 
 module.exports = new ProfileController();
+

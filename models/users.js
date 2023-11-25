@@ -42,7 +42,7 @@ const UserSchema = new mongoose.Schema({
         },
         state: {
             type: String,
-            default: null
+            default: "Select a State"
         },
         postalCode: {
             type: String,

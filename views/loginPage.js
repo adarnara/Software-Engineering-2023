@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     const loginButton = document.getElementById('loginButton');
 
     let alreadyLoggedIn = false;
+    let registrationRoute;
+
     const checkExistingToken = async () => {
         try {
             const existingToken = getCookieToken("token");
@@ -35,8 +37,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                             loginButton.textContent = 'Login';
                         }, 1500);
                         alreadyLoggedIn = true;
-                    }
-                    else{
+                    } else {
                         alreadyLoggedIn = false;
                     }
                 }
@@ -47,7 +48,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             showErrorMessage('Error Logging In');
         }
     };
-
 
     RegiBtn.addEventListener('click', () => {
         registerForm.classList.add('active');
@@ -109,8 +109,10 @@ document.addEventListener("DOMContentLoaded", async function () {
             } else {
                 const data = await response.json();
                 console.log(data.message);
-                document.getElementById("message").innerText = data.message;
                 loginButton.textContent = 'Invalid login';
+                setTimeout(() => {
+                    loginButton.textContent = 'Login';
+                }, 1500);
             }
         } catch (error) {
             console.error(error);
@@ -122,6 +124,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const removeCookie = (name) => {
         document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     };
+
     const setCookie = (name, value, days) => {
         const expires = new Date();
         expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
@@ -132,7 +135,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         loginButton.textContent = message;
         setTimeout(() => {
             loginButton.textContent = 'Login';
-        }, 1500); // Display for 2 seconds, adjust as needed
+        }, 1500);
     };
 
     const showAlert = (message) => {
@@ -157,32 +160,48 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Handle form submission
     const loginFormElement = document.getElementById('login-form');
+    const roleSelect = document.getElementById('role');
+
     loginFormElement.addEventListener('submit', async (e) => {
         e.preventDefault();
         await checkExistingToken();
 
         if (alreadyLoggedIn) {
-            // Skip the rest of the login process if already logged in
             return;
         }
-
 
         const email = document.getElementById("username").value;
         const password = document.getElementById("password").value;
 
         if (!email || !password) {
             showAlert('Missing fields. Please make sure to input all fields.');
+            loginButton.textContent = 'Error processing request';
+            setTimeout(() => {
+                loginButton.textContent = 'Login';
+            }, 1000);
             return;
+        }
+
+        // Move role-related logic inside the form submission event listener
+        const role = roleSelect.value;
+
+        if (role === "member") {
+            registrationRoute = "/member/login";
+        } else if (role === "seller") {
+            registrationRoute = "/seller/login";
+        } else {
+            registrationRoute = "/admin/login";
         }
 
         const loginData = {
             email: email,
-            password: password
+            password: password,
+            role: role
         };
 
         try {
-            // Authenticate user using /member/login route
-            const response = await fetch("http://localhost:3000/member/login", {
+            // Authenticate user using the selected registration route
+            const response = await fetch(`http://localhost:3000${registrationRoute}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -194,13 +213,12 @@ document.addEventListener("DOMContentLoaded", async function () {
         } catch (error) {
             console.error(error);
             // Handle error as needed
-            document.getElementById("message").innerText = "Internal Server Error";
             showErrorMessage('Error Logging In');
         }
     });
+
     const getCookieToken = (name) => {
         const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
         return cookieValue ? cookieValue.pop() : null;
     };
-
 });

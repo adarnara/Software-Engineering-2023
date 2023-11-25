@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile Page</title>
-    <link rel="stylesheet" href="profilePage.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="profilePage.css">
+
     <style>
         body {
             margin: 0;
@@ -145,7 +146,7 @@
     }
 </style>
 
-<body style="margin-top: 150px;">
+<body style="margin-top: 142px;">
 <div class="navbar">
     <div class="navbar-logo">
         <a href="landingPage.html">
@@ -168,6 +169,7 @@
                 <div class="list-group list-group-flush account-settings-links">
                     <a class="list-group-item list-group-item-action active" data-toggle="list" href="#account-general">General</a>
                     <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-info">Address Info</a>
+                    <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-seller">Seller Info</a>
                 </div>
             </div>
             <div class="col-md-9">
@@ -178,7 +180,7 @@
                                 <img id="profile-photo" src="../public/Images/default-Avatar-2.jpeg" alt class="d-block ui-w-80 rounded-circle">
                             </label> &nbsp;
                             <button id="reset-button" type="button" class="btn btn-default md-btn-flat">Reset</button>
-                            <div class="text-light small mt-1">Allowed JPG, GIF or PNG. Max size of 800K</div>
+                            <div class="text-light small mt-1"> Allowed: JPG, GIF, or PNG. Max size of 800K</div>
                         </div>
                         <input type="file" id="profile-photo-input" class="account-settings-fileinput" style="display: none;">
                         <hr class="border-light m-0">
@@ -205,6 +207,22 @@
                             </div>
                         </div>
                     </div>
+                    <div class="tab-pane fade" id="account-seller">
+                        <div class="card-body pb-2">
+                            <div class="form-group">
+                                <label class="form-label">Bio</label>
+                                <textarea class="form-control" rows="5" placeholder="Enter your bio"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Website URL</label>
+                                <input type="text" class="form-control" placeholder="Enter your website URL">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Company</label>
+                                <input type="text" class="form-control" placeholder="Enter your company name">
+                            </div>
+                        </div>
+                    </div>
                     <div class="tab-pane fade" id="account-info">
                         <div class="card-body pb-2">
                             <div class="form-group">
@@ -224,6 +242,7 @@
                                     <i class='bx bxs-map'></i>
                                     <label for="state">State</label>
                                     <select id="state" class="form-control" required>
+                                        <option value="SS">Select a State</option>
                                         <option value="AL">Alabama</option>
                                         <option value="AK">Alaska</option>
                                         <option value="AZ">Arizona</option>
@@ -284,15 +303,15 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="text-right mt-3">
-                    <button type="button" class="btn btn-primary">Save changes</button>&nbsp;
+                    <button type="button" class="btn btn-primary" onclick="saveChanges()">Save changes</button>&nbsp;
                     <button type="button" class="btn btn-default">Cancel</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!-- Change Profile Picture Modal -->
 <div class="modal fade" id="changeProfileModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -303,7 +322,6 @@
                 </button>
             </div>
             <div class="modal-body">
-                <!-- Add your file input for changing the profile picture -->
                 <input type="file" class="account-settings-fileinput">
             </div>
             <div class="modal-footer">
@@ -325,7 +343,7 @@
     </div>
 </section>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script src="profilePageSeller.js"></script>
 <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript"></script>
@@ -343,7 +361,7 @@
             reader.readAsDataURL(selectedFile);
         }
     });
-        document.getElementById('reset-button').addEventListener('click', function () {
+    document.getElementById('reset-button').addEventListener('click', function () {
         document.getElementById('profile-photo').src = '../public/Images/default-Avatar-2.jpeg';
         document.getElementById('profile-photo-input').value = '';
     });

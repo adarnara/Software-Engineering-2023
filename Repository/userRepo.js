@@ -44,6 +44,27 @@ class UserRepository {
     async findUserById(id) {
         return await user.findById(id);
     }
+    async updateProfile(userId, updateData) {
+        console.log('Updating user profile with ID:', userId);
+        console.log('Received update data:', updateData);
+
+        const existingUser = await user.findById(userId);
+        if (!existingUser) {
+            throw new Error('User not found');
+        }
+
+        let updatedUser;
+
+        if (existingUser.role === 'Member') {
+            updatedUser = await member.findByIdAndUpdate(userId, updateData, { new: true });
+        } else if (existingUser.role === 'Seller') {
+            updatedUser = await seller.findByIdAndUpdate(userId, updateData, { new: true });
+        } else {
+            updatedUser = await user.findByIdAndUpdate(userId, updateData, { new: true });
+        }
+
+        return updatedUser;
+    }
 }
 
 module.exports = new UserRepository();

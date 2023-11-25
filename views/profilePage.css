@@ -7,6 +7,7 @@
     font-family: 'Poppins', sans-serif;
 }
 
+
 section {
     position: static;
 
@@ -104,7 +105,6 @@ h2
 
 
 body {
-    margin-top: 20px;
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -240,4 +240,54 @@ html:not(.dark-style) .account-settings-links .list-group-item.active {
 .light-style .account-settings-links .list-group-item {
     padding     : 0.85rem 1.5rem;
     border-color: rgba(24, 28, 33, 0.03) !important;
+}
+
+.custom-alert {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background-color: white;
+    border: 1px solid red;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    text-align: center;
+    color: black;
+}
+
+.custom-alert p {
+    margin-bottom: 10px;
+}
+
+.custom-alert button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.custom-success-alert {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background-color: white;
+    border: 1px solid green; /* Change the border color to green for success */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    text-align: center;
+    color: black;
+}
+
+.custom-success-alert p {
+    margin-bottom: 10px;
+}
+
+.custom-success-alert button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
 }
