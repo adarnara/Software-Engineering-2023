@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>CSS Animation Effect</title>
+  <title>Reprua - Home Page</title>
   <link rel="stylesheet" href="landingPage.css">
   <style>
 
@@ -191,6 +191,23 @@
     .hidden {
       display: none;
     }
+
+    .redirect-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.redirect-button:hover {
+  background-color: #0056b3;
+  cursor: pointer;
+}
+
   </style>
 </head>
 <body>
@@ -241,6 +258,12 @@
     <img src="../public/Images/island.png" class="island">
   </div>
 </section>
+
+<div>
+  <button onclick="navigateToPage('ticketsPage.html')" class="button2">
+    Had experienced an issue with a product or seller. Click here.
+  </button>
+</div>
 
 <script>
   // JavaScript function to navigate to another page

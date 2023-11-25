@@ -11,6 +11,7 @@ const fs = require('fs')
 const path_m = require('path')
 
 const paymentRouter = require("./routes/paymentRoute");
+const ticketsRouter = require("./routes/ticketsRoute");
 
 
 connectDB();
@@ -110,6 +111,7 @@ const server = http.createServer(async (request, response) => {
         const adminRouteHandler = adminRouter[routeKey];
         const paymentRouteHandler = paymentRouter[routeKey];
         const shoppingCartRouteHandler = shoppingCartRouter[routeKey];
+        const ticketsRouteHandler = ticketsRouter[routeKey];
 
         if (userRouteHandler) {
             userRouteHandler(request, response);  
@@ -121,6 +123,9 @@ const server = http.createServer(async (request, response) => {
             // console.log(path);
             // const user_id = path.split("/")[2];
             shoppingCartRouteHandler(request, response);
+        } else if(ticketsRouteHandler){
+            console.log('Ticket router is working.')
+            ticketsRouteHandler(request, reponse);
         } else {
             // Might as well return something than
             // let the client get stuck fetching
