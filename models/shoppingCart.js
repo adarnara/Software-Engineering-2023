@@ -30,4 +30,8 @@ const shoppingCartSchema = new Schema({
     }
 });
 
+/*
+
+*/
+
 module.exports = mongoose.model('shoppingCart', shoppingCartSchema);

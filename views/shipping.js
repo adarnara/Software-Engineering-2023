@@ -688,33 +688,33 @@ async function confirmOrder() {
         
                         // fetch to set transaction and purchase cart and make new empty cart (NOTE: NEED TO EVENTUALLY PORT THIS TO AFTER STRIPE PAYMENT)
                 // can feed current data straight to the API
-        const transactionReq = {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(updatedShippingProducts)
-        };
+        // const transactionReq = {
+        //     method: "PATCH",
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify(updatedShippingProducts)
+        // };
 
-                console.log("UPDATE SHIPPING INFO - SUCCESS");
-                console.log();
+        //         console.log("UPDATE SHIPPING INFO - SUCCESS");
+        //         console.log();
 
-        console.log(transactionReq);
+        // console.log(transactionReq);
 
-        const purchasedCartEmptyCart = await fetch(`http://localhost:3000/cart/transaction?cart_id=${currMemberCart._id}`, transactionReq)
-            .then(async (response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }                        
-                return await response.json();
-            }).then(async (data) => {
-                purchasedCart = data.purchased_cart;
-                emptyCart = data.empty_cart;
+        // const purchasedCartEmptyCart = await fetch(`http://localhost:3000/cart/transaction?cart_id=${currMemberCart._id}`, transactionReq)
+        //     .then(async (response) => {
+        //         if (!response.ok) {
+        //             throw new Error(`HTTP error! Status: ${response.status}`);
+        //         }                        
+        //         return await response.json();
+        //     }).then(async (data) => {
+        //         purchasedCart = data.purchased_cart;
+        //         emptyCart = data.empty_cart;
 
-                console.log("UPDATE SHIPPING INFO - SUCCESS");
-                console.log(data);
-                console.log();
-            });
+        //         console.log("UPDATE SHIPPING INFO - SUCCESS");
+        //         console.log(data);
+        //         console.log();
+        //     });
 
         handleCheckout();
     }
