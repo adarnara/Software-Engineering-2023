@@ -32,6 +32,15 @@ function createProductHTML(product, currCartProduct) {
                 </ul>
             `;
   }
+  if (currCartProduct.transaction.tracking_status === "UNKNOWN")
+  {
+    currCartProduct.transaction.tracking_status = "Not Yet Shipped"
+  }
+let currStatus = "../public/Images/check.png";
+if (    currCartProduct.transaction.tracking_status !== "Shipped!")
+{
+  currStatus = "../public/Images/x.png";
+}
   const productHTML = `
         <div class="product-container">
             <div class="product-image">
@@ -64,9 +73,15 @@ function createProductHTML(product, currCartProduct) {
                   product._id
                 }', this)">Re-add to Current Cart</button>
                 </div>
-            </div>
+            </div><div class="shipment-status">
+            <img src="../public/Images/usps.png" style="width: 100px; height: 100px; margin-left: 30px" alt="USPS Logo" />
+            <p id = "tracking" margin-right: 100px;>Shipping Status: </br><a href = "${currCartProduct.transaction.tracking_url_provider}" class="shipped-icon" target="_blank">${currCartProduct.transaction.tracking_status}</a></p>
+            </br>
+            <img src="${currStatus}" style="width: 100px; height: 100px; margin-left: 30px" alt="USPS Logo" />
+        </div>
         </div>
     `;
+    console.log(currCartProduct)
   return productHTML;
 }
 
@@ -193,8 +208,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           (laterCart, earlierCart) =>  laterCart.purchaseTime - earlierCart.purchaseTime
           );
           data.reverse();
-          let numShipped = 0;
       data.forEach((e) => {
+        let numShipped = 0;
         console.log(e);
         // create buttons with shopping cart time
         var cartHistoryContainer = document.getElementById("products-history-container");
