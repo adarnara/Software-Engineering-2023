@@ -179,11 +179,6 @@ const server = http.createServer(async (request, response) => {
             response.writeHead(404);
             response.end("Could not find resource!");
         }
-        else {
-            // Fallback if no route is matched
-            response.writeHead(404);
-            response.end("Could not find resource!");
-          } 
     }
 
     try {

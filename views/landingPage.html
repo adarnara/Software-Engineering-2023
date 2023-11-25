@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Reprua: Where Dreams Come Right to Your Door</title>
-  <link rel="stylesheet" type="text/css" href="/Software-Engineering-2023/views/landingPage.css">
+  <link rel="stylesheet" type="text/css" href="/views/landingPage.css">
 
   <style>
 
@@ -203,9 +203,9 @@
 <body>
 
 <div class="navbar">
-  <a href="/Software-Engineering-2023/views/landingPage.html" style="text-decoration: none; color: inherit;">
+  <a href="/views/landingPage.html" style="text-decoration: none; color: inherit;">
     <div class="navbar-logo">
-      <img src="/Software-Engineering-2023/public/Images/logo.png" alt="Logo" />
+      <img src="/public/Images/logo.png" alt="Logo" />
       <span style="font-weight: bold; font-size: 20px;">Reprua</span>
     </div>
   </a>
@@ -249,8 +249,8 @@
     <div class="wave" id="wave2"></div>
     <div class="wave" id="wave3"></div>
     <div class="wave" id="wave4"></div>
-    <img src="/Software-Engineering-2023/public/Images/stars.jpg" class="stars">
-    <img src="/Software-Engineering-2023/public/Images/island.png" class="island">
+    <img src="../public/Images/stars.jpg" class="stars">
+    <img src="../public/Images/island.png" class="island">
   </div>
 </section>
 
@@ -277,7 +277,7 @@
 
   function logout() {
     deleteCookie("token");
-    navigateToPage("/Software-Engineering-2023/views/landingPage.html");
+    navigateToPage("/views/landingPage.html");
   }
 
   const token = getCookie("token");
@@ -291,7 +291,7 @@
     };
 
     document.getElementById("shopping-icon").innerHTML =
-            '<a href="/Software-Engineering-2023/views/profilePage.html" style="text-decoration: none; color: inherit;">' +
+            '<a href="/views/shoppingCart.html" style="text-decoration: none; color: inherit;">' +
             '<img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />' +
             '<span style="font-weight: bold; font-size: 20px;"></span>' +
             '</a>';
@@ -324,9 +324,9 @@
                 const role = data.role;
 
                 if (role === "Seller") {
-                  window.location.href = "/Software-Engineering-2023/views/profilePageSeller.html";
+                  window.location.href = "/views/profilePageSeller.html";
                 } else if (role === "Member") {
-                  window.location.href = "/Software-Engineering-2023/views/profilePageMember.html";
+                  window.location.href = "/views/profilePageMember.html";
                 } else {
                   console.error("Unknown role:", role);
                 }
@@ -343,7 +343,7 @@
 
 
 
-<script src="/Software-Engineering-2023/views/landingPageApp.js"></script>
+<script src="/views/landingPageApp.js"></script>
 
 
 </body>

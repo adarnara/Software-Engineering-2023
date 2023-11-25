@@ -3,6 +3,7 @@ const { generateToken } = require('../config/jwt');
 const { parseJwtHeader } = require("../middlewares/authmiddleware");
 const url = require('url');
 const fs = require('fs');
+const cartRepo = require('../Repository/cartRepo');
 
 const createUser = async (path, req, res) => {
     const email = req.body.email;
@@ -146,6 +147,9 @@ async function register(path, request, response) {
 
         const result = await createUser(path, reqData, response);
 
+        // Create empty cart when registered
+        const email = userData.email;
+        const newEmptyCart = await cartRepo.createEmptyCart(email);
     } catch (error) {
         response.writeHead(500, { 'Content-Type': 'application/json' });
         response.end(JSON.stringify({ message: 'Internal Server Error' }));
