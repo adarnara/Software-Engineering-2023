@@ -113,3 +113,29 @@ h2
     bottom: 0;
     pointer-events: none;
 }
+
+#product-detail-container {
+    background-color: #fff; /* Light background for the details */
+    padding: 20px;
+    margin: 20px auto;
+    width: 80%; /* Adjust width as needed */
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
+}
+
+#product-detail-container h2 {
+    color: #333; /* Dark text for readability */
+    font-size: 28px; /* Larger font size for title */
+    margin-bottom: 15px;
+}
+
+#product-detail-container img {
+    max-width: 100%; /* Ensure images are responsive */
+    height: auto;
+    border-radius: 5px; /* Slightly rounded corners for images */
+}
+
+#product-detail-container p {
+    color: #666; /* Slightly lighter text for regular paragraphs */
+    line-height: 1.6; /* More readable line spacing */
+}

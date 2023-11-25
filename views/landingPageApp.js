@@ -135,11 +135,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const productHTML = `
         <div class="product-container">
             <div class="product-image">
-                <img src="${product.images[0].large}" alt="${product.name}" />
-                <div class="image-navigation">
-                    <button onclick="changeImage('${product._id}', -1, this)">Previous</button>
-                    <button onclick="changeImage('${product._id}', 1, this)">Next</button>
-                </div>
+                <!-- Only the image is wrapped in the <a> tag -->
+                <a href="productDetailPage.html?productId=${product._id}">
+                    <img src="${product.images[0].large}" alt="${product.name}" />
+                </a>
+            </div>
+            <div class="image-navigation">
+                <button onclick="changeImage('${product._id}', -1, this)">Previous</button>
+                <button onclick="changeImage('${product._id}', 1, this)">Next</button>
             </div>
             <div class="product-info">
                 <h2>${product.name}</h2>
