@@ -179,11 +179,6 @@
       cursor: pointer;
     }
 
-    .go-to-page-button {
-      margin-left: auto; /* Pushes the button to the right */
-      white-space: nowrap; /* Prevents line breaks */
-    }
-
 
     .product-info ul {
       padding-left: 20px;
@@ -225,11 +220,12 @@
   <div id="shopping-icon" class="navbar-cart">
     <a href="/views/shoppingCart.html">
       <img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />
+
       <span style="font-weight: bold; font-size: 20px;"></span>
     </a>
     <div id="sign-in-user">
       <button class="go-to-page-button" onclick="navigateToPage('registerAndLoginPage.html')">
-        <img src="../public/Images/testing.jpeg" alt="Register/Login" />
+        <img src="../public/Images/image-button-two.png" alt="Register/Login" />
       </button>
     </div>
   </div>
@@ -289,7 +285,7 @@
   if (token) {
     const profileButton = document.createElement("button");
     profileButton.className = "go-to-page-button";
-    profileButton.innerHTML = '<img src="../public/Images/profile.jpeg" alt="Profile" />';
+    profileButton.innerHTML = '<img src="../public/Images/profile.png" alt="Profile" />';
     profileButton.onclick = function () {
       checkUserRoleAndRedirect();
     };
@@ -304,7 +300,7 @@
 
     const logoutButton = document.createElement("button");
     logoutButton.className = "go-to-page-button";
-    logoutButton.innerHTML = '<img src="../public/Images/logout-button.jpg" alt="Logout" />';
+    logoutButton.innerHTML = '<img src="../public/Images/logout-button-again.png" alt="Logout" />';
     logoutButton.onclick = logout;
 
     document.getElementById("shopping-icon").appendChild(logoutButton);
