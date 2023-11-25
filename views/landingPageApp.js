@@ -5,6 +5,51 @@ function checkPos(quantity) {
         quantity.value = 1;
 }
 
+/**
+ * Checks if the user is signed in. If the user is signed in, this
+ * function will return the username of the user to display in the
+ * top right corner of the screen (replacing the sign in button)
+ */
+function checkSignedIn() {
+    let token = sessionStorage.getItem("token");
+    if (token) {
+        // don't qualify domain; this will break if server is hosted
+        // non-locally or on a different port.
+        fetch("/token", {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+            }
+        }).then(response => {
+            console.log(`Response`);
+            console.log(response);
+            if (response.headers.get("Content-Type") === "application/json") {
+                response.json().then(x => {
+                    console.log("Body:");
+                    console.log(x);
+                });
+            }
+        }).catch(err => console.error(err));
+
+        // modify the DOM, specifically at a `<div>` element with:
+        // getElementById("sign-in-user")
+
+    } else {
+        return false;
+    }
+}
+function getCookie(cookieName) {
+    const cookies = document.cookie.split(";");
+
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.startsWith(cookieName + "=")) {
+            return cookie.substring(cookieName.length + 1);
+        }
+    }
+
+    return null;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
 
     const productsContainer = document.getElementById("products-container");
@@ -14,6 +59,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentPage = 1;
     const pageSize = 5; //how many products to display per page
     let lastFetchedProductCount = 0; //how many products we're fetched last
+
+    // Find out if the user is signed in.
+    checkSignedIn();
 
     //Set up event listener for search bar.
     const searchButton = document.querySelector('.search-bar .search-button');
@@ -210,4 +258,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     }
+
+}
 });

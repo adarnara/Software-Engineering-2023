@@ -1,3 +1,5 @@
+/// This file is actually not used for anything!
+
 // Instance of namespace class for functions interacting with user/member/seller
 // data
 const userRepo = require("../Repository/userRepo");
@@ -141,7 +143,6 @@ async function checkUsername(username) {
 }
 
 /**
- * TODO: actually implement this
  * @param accountType {string} Either "member", "seller", or "admin".
  * @param email {string} The email to check.
  * @returns {boolean} Whether the email is valid
@@ -153,7 +154,6 @@ async function checkEmail(accountType, email) {
     }
 
     // Check database
-    // TODO: based on accountType
     let searched = await userRepo.findByEmail(email);
     if (searched) {
         return false;
