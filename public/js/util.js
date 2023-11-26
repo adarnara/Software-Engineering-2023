@@ -98,6 +98,9 @@ function setJwtToken(value) {
 
 /**
  * An alterantive to `getJwtToken` that errors if the token is not found
+ *
+ * @returns {string?} The token if it exists.
+ * @throws {Error} If the JWT is not found, an error will be thrown.
  */
 function assertJwtToken() {
     let token = getJwtToken();
@@ -144,11 +147,7 @@ async function authorize(url, data = {}) {
     }
 
     // Check for token in local storage
-    const jwt_token = getJwtToken();
-    if (!jwt_token) {
-        return null;
-    }
-
+    const jwt_token = assertJwtToken();
     data.headers["Authorization"] = `Bearer ${jwt_token}`;
 
     if (!url.startsWith(SERVER_URL)) {
