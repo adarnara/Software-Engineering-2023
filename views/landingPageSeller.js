@@ -150,6 +150,94 @@ document.addEventListener("DOMContentLoaded", () => {
     //         console.error('Error fetching product data:', error);
     //     });
 
+    //event listener for create product button
+    document.getElementById("createProductBtn").addEventListener("click", function() {
+        document.getElementById("productModal").style.display = 'block';
+    });
+    
+   //modal pop up for creating product
+    var modal = document.getElementById("productModal");
+    var btn = document.getElementById("createProductBtn");
+    var span = document.getElementsByClassName("close")[0];
+    btn.onclick = function() { //clicked create button
+        modal.style.display = "block";
+    }
+    span.onclick = function() { //clicked X button
+        modal.style.display = "none";
+    }
+    window.onclick = function(event) { //clicked off of modal pop up
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    //event listener for submit button
+    const form = document.getElementById('productForm');
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        console.log('submit button clicked');
+        const productData = createProductJSON();
+       
+        fetch('http://localhost:3000/seller/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(productData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+    
+
+    function createProductJSON(){
+        const productData = {
+            "_id": "uniqueProductId1234567", //temporary <-will need to check what type of product is is and then increment by one to however many already exist.
+            "name": document.getElementById('productName').value,
+            "price": document.getElementById('productPrice').value,
+            "stars": document.getElementById('stars').value,
+            "rating_count": document.getElementById('ratingCount').value,
+            
+            "feature_bullets": [], 
+            "images": [], 
+            "variant_data": [], 
+            "seller_data": {
+                "Company": "Example Company", //temporary <-need to get this data from whatever seller is loggeed in using their token.
+                
+            },
+            "length": "5",
+            "width": "5",
+            "height": "5",
+            "distance_unit": "in",
+            "weight": "5",
+            "mass_unit": "lb",
+        };
+        
+
+        const imageFile = document.getElementById('images').files[0]; //assuming single file upload right now
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            console.log(e.target.result)
+            productData.images = [{ hiRes: e.target.result }]; //add the data URL to product 
+        }
+
+        //assuming featureBullets is a comma-separated input
+        const featureBulletInputs = document.getElementById('featureBullets').value.split(',');
+        productData.feature_bullets = featureBulletInputs.map(bullet => bullet.trim());
+
+        const variantDataInputs = document.getElementById('variantData').value.split(',');
+        productData.variant_data = variantDataInputs.map(variant => variant.trim());
+
+        console.log(productData);
+        return productData;
+    }
+
     function createProductHTML(product) {
         // Check if variant_data is empty
         let colorsHTML = '';
