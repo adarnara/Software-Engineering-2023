@@ -24,7 +24,7 @@ const server = http.createServer(async (request, response) => {
     const parsedUrl = url.parse(request.url, true);
     const path = parsedUrl.pathname;
     const method = request.method;
-    console.log(`Incoming request: ${request.method} ${request.url}`);
+    // console.log(`Incoming request: ${request.method} ${request.url}`);
 
 
     // Set the CORS headers to allow all origins (you can restrict it as needed)
@@ -42,19 +42,19 @@ const server = http.createServer(async (request, response) => {
 
     //handling dymanic routes like /user/{id}
     for (const route in userRouter) {
-        console.log(`Checking route: ${route}`);
+        // console.log(`Checking route: ${route}`);
         const methodPart = route.match(/^[A-Z]+/)[0]; // Match the HTTP method part
         const pathPart = route.substring(methodPart.length); // Get the path part
 
-        console.log(methodPart)
-        console.log(pathPart)
+        // console.log(methodPart)
+        // console.log(pathPart)
         if (methodPart !== method) continue;
 
         const params = matchDynamicRoute(pathPart, path);
         if (params) {
             // Found a matching dynamic route
             request.params = params;
-            console.log(params)
+            // console.log(params)
             try {
                 await userRouter[route](request, response);
                 return;
@@ -69,19 +69,19 @@ const server = http.createServer(async (request, response) => {
 
     // handling dynamic routes like /profile/updateProfile/{userId}
     for (const route in profileRouter) {
-        console.log(`Checking route: ${route}`);
+        // console.log(`Checking route: ${route}`);
         const methodPart = route.match(/^[A-Z]+/)[0]; // Match the HTTP method part
         const pathPart = route.substring(methodPart.length); // Get the path part
 
-        console.log(methodPart)
-        console.log(pathPart)
+        // console.log(methodPart)
+        // console.log(pathPart)
         if (methodPart !== method) continue;
 
         const params = matchDynamicRoute(pathPart, path);
         if (params) {
             // Found a matching dynamic route
             request.params = params;
-            console.log(params)
+            // console.log(params)
             try {
                 await profileRouter[route](request, response);
                 return;
