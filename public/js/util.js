@@ -46,7 +46,7 @@ const JWT_AUTH_ROUTE = "/token";
  * - This function may throw errors!
  * - This function does its best to log errors.
  *
- * @returns {Promise<object>} Is `null` if not signed in (or some nullish value)
+ * @returns {Promise<object | null>} Is `null` if not signed in (or some nullish value)
  *     and an object containing some user information if the user is signed in.
  * @throws {Error} Will throw an error on a status code above 300 from the server.
  */
@@ -59,9 +59,12 @@ async function checkToken() {
     // Check if there is a header for JSON.
     if (response.headers.get("Content-Type") === "application/json") {
         let body = response.json();
-        if (response.status > 300) {
+        if (response.status >= 300) {
+            let msg = body.message ?? "No additional information given";
             throw new Error(
-                `${response.status}: ${body.message ?? "No additional message given."}`
+                `An error occurred while accessing ${JWT_AUTH_ROUTE}\n`
+                    + `Status code ${response.status}: ${response.statusText}\n`
+                    + `${msg}`
             );
         }
         return body;
@@ -91,6 +94,25 @@ async function checkToken() {
  */
 function setJwtToken(value) {
     localStorage.setItem(JWT_LOCAL_STORAGE_NAME, value);
+}
+
+/**
+ * An alterantive to `getJwtToken` that errors if the token is not found
+ */
+function assertJwtToken() {
+    let token = getJwtToken();
+    if (!token) {
+        throw new Error("A JWT token was required but not found. Is the"
+            + " user signed in?");
+    }
+    return token;
+}
+
+/**
+ * Currently removes the JWT from local storage.
+ */
+function removeJwtToken() {
+    localStorage.removeItem(JWT_LOCAL_STORAGE_NAME);
 }
 
 /**
@@ -157,4 +179,84 @@ function getJwtToken() {
     } else {
         return null;
     }
+}
+
+/**
+ * Receives a response from the server and packages the body
+ * into the response. Does not authorize.
+ * Wraps `fetch`.
+ *
+ * @returns {Promise<Response>} The response of the fetch with the
+ *     body attached in the `body` field. Access with `response.body`,
+ *     for example.
+ */
+async function fetchBody(url, data = {}) {
+    let response = await fetch(url, data);
+
+    if (response.status >= 300) {
+        console.error(`An error occurred fetching from ${url}. Stopping`
+            + " processing of response.");
+        let msg = response.message ?? "No additional information given.";
+        throw new Error(`An error occured fetching from ${url}.\n`
+            + `Status ${response.status}: ${response.statusText}.\n`
+            + `${msg}`);
+    }
+
+    // Handle the body
+    const contentType = response.headers.get("Content-Type");
+    if (contentType === "application/json") {
+        const body = response.json();
+        response.body = body;
+    } else if (contentType === "text/plain") {
+        const body = response.text();
+        response.body = body;
+    }
+
+    return response;
+}
+
+/**
+ * Acts as `fetchBody`, except this adds the authorization headers.
+ *
+ * @param url {string} - The url to send the request to.
+ * @param data {object} - Leave blank if not intending to use. Otherwise
+ *     this is the Fetch API's data parameter.
+ * @returns {null | Promise<Response>} Is null if the token does not exist,
+ *     otherwise returns what the fetch request returns. Contains the body,
+ *     so subsequent `.json()` calls will fail.
+ */
+async function authorizeBody(url, data = {}) {
+    if (url.startsWith("/")) {
+        // send the request to the correct server by using the
+        // SERVER_URL constant
+        url = `${SERVER_URL}${url}`;
+    }
+
+    if (typeof data === "object") {
+        data.headers = data.headers ?? {};
+    } else {
+        console.error("Invalid usage of the `authorizeBody` function. Check"
+            + " that you didn't a non-object in the second parameter? If"
+            + " you're not setting anything there, remember to leave it"
+            + " blank!");
+        throw new Error(`Invalid type for data: ${typeof data}`);
+    }
+
+    // Check for token in local storage
+    const jwt_token = getJwtToken();
+    if (!jwt_token) {
+        return null;
+    }
+
+    data.headers["Authorization"] = `Bearer ${jwt_token}`;
+
+    if (!url.startsWith(SERVER_URL)) {
+        console.warn("Sending an authorization request to a url that does"
+            + " not correspond to the url for the server configured in this"
+            + " file (public/util.js). Either change the constant in this"
+            + " file, or remember to use the SERVER_URL constant from this"
+            + " file!");
+    }
+
+    return await fetchBody(url, data);
 }
