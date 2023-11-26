@@ -32,7 +32,26 @@ class ProductRepository {
     }
     return products;
   }
-  // ... other CRUD methods specific to products
+  
+  async getProductBySellerName(sellerId) {
+    const products = await Product.find({ "seller_data.sellerID": sellerId });
+
+    if (!products.length) {
+      throw new Error('No products found for this seller');
+    }
+
+    return products;
+  }
+
+  async create(productData) {
+    const newProduct = new Product(productData);
+    await newProduct.save();
+    return newProduct;
+  }
+  
+  async findByEmail(email){
+    return await user.findOne({email})
+  }
 }
 
 module.exports = new ProductRepository;
