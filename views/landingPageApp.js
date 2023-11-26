@@ -1,8 +1,6 @@
-
 function checkPos(quantity) {
     console.log(quantity.value)
-    if (quantity.value < 1)
-        quantity.value = 1;
+    if (quantity.value < 1) quantity.value = 1;
 }
 
 /**
@@ -11,23 +9,13 @@ function checkPos(quantity) {
  * top right corner of the screen (replacing the sign in button)
  */
 function checkSignedIn() {
-    let token = sessionStorage.getItem("token");
+    let token = getJwtToken(); 
     if (token) {
         // don't qualify domain; this will break if server is hosted
         // non-locally or on a different port.
-        fetch("/token", {
-            headers: {
-                "Authorization": `Bearer ${token}`,
-            }
-        }).then(response => {
-            console.log(`Response`);
-            console.log(response);
-            if (response.headers.get("Content-Type") === "application/json") {
-                response.json().then(x => {
-                    console.log("Body:");
-                    console.log(x);
-                });
-            }
+        checkToken().then(function checkResponse(body) {
+            console.info("The user is signed in!");
+            console.info(body)
         }).catch(err => console.error(err));
 
         // modify the DOM, specifically at a `<div>` element with:
@@ -37,6 +25,7 @@ function checkSignedIn() {
         return false;
     }
 }
+
 function getCookie(cookieName) {
     const cookies = document.cookie.split(";");
 
@@ -51,7 +40,6 @@ function getCookie(cookieName) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-
     const productsContainer = document.getElementById("products-container");
     const products = [];
 
@@ -60,13 +48,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const pageSize = 5; //how many products to display per page
     let lastFetchedProductCount = 0; //how many products we're fetched last
 
-    // Find out if the user is signed in.
-    checkSignedIn();
-
     //Set up event listener for search bar.
     const searchButton = document.querySelector('.search-bar .search-button');
     if (searchButton) {
-        searchButton.addEventListener('click', function () {
+        searchButton.addEventListener('click', function() {
             currentPage = 1
             const searchText = document.querySelector('.search-bar input[type="text"]').value;
             const pattern = /^(books|ipad|tshirts|laptop)\d*$/;
@@ -132,12 +117,12 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     }
 
-    window.nextPage = function () { //go to next page
+    window.nextPage = function() { //go to next page
         currentPage += 1;
         searchProducts(currentSearchText);
     };
 
-    window.previousPage = function () { //go to previous page
+    window.previousPage = function() { //go to previous page
         if (currentPage > 1) {
             currentPage -= 1;
             searchProducts(currentSearchText);
@@ -254,10 +239,54 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
             }).then(res => console.log(res))
         }
-
-
-
     }
+});
 
+function toProfile() {
+    checkToken().then(function redirect(data) {
+        const role = data.role;
+        if (role === "Seller") {
+            window.location.href = "/views/profilePageSeller.html";
+        } else if (role === "Member") {
+            window.location.href = "/views/profilePageMember.html";
+        } else {
+            console.error("Unknown role:", role);
+        }
+    });
 }
-);
+
+function logout() {
+    removeJwtToken();
+    window.location.href = "/views/landingPage.html";
+}
+
+function setup() {
+    const token = getJwtToken();
+
+    if (token) {
+        const profileButton = document.createElement("button");
+        profileButton.className = "go-to-page-button";
+        profileButton.innerHTML = '<img src="../public/Images/profile.png" alt="Profile" />';
+        profileButton.onclick = function() {
+            toProfile();
+        };
+
+        document.getElementById("shopping-icon").innerHTML =
+            '<a href="/views/shoppingCart.html" style="text-decoration: none; color: inherit;">' +
+            '<img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />' +
+            '<span style="font-weight: bold; font-size: 20px;"></span>' +
+            '</a>';
+
+        document.getElementById("shopping-icon").appendChild(profileButton);
+
+        const logoutButton = document.createElement("button");
+        logoutButton.className = "go-to-page-button";
+        logoutButton.innerHTML = '<img src="../public/Images/logout-button-again.png" alt="Logout" />';
+        logoutButton.onclick = logout;
+
+        document.getElementById("shopping-icon").appendChild(logoutButton);
+    }
+}
+
+// Set up the web page
+setup();
