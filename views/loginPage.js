@@ -72,8 +72,16 @@ document.addEventListener("DOMContentLoaded", async function () {
                         //     loginButton.textContent = 'Login';
                         // }, 200);
 
-                        // Redirect to landing page
-                        window.location.href = "landingPage.html";
+                        // Redirect to landing page depending on role
+                        const role = userData.role;
+                        if (role === "Seller") {
+                            window.location.href = "landingPageSeller.html";
+                        } else if (role === "Member") {
+                            window.location.href = "landingPage.html";
+                        } else {
+                            console.error("Unknown role:", role);
+                        }
+                        // window.location.href = "landingPage.html";
                     } else {
                         console.error("Failed to fetch user information");
                         // Handle error as needed
