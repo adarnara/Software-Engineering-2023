@@ -30,7 +30,24 @@ const productSchema = new mongoose.Schema({
     },
   ],
   variant_data: [String],
-
+  seller_data: {
+    Company: String,
+    Bio: String,
+    Website: String,
+    Email: String,
+    firstName: String,
+    lastName: String,
+    Warehouse_Address: [{
+      Street1: String,
+      
+    }],
+  },
+  length: String,
+  width: String,
+  height: String,
+  distance_unit: String,
+  weight: String,
+  mass_unit: String,
 });
 
 
