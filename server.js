@@ -6,6 +6,7 @@ const userRouter = require("./routes/userRoute");
 const adminRouter = require("./routes/adminRoute");
 const landingRouter = require('./routes/landingRoute');
 const shoppingCartRouter = require('./routes/shoppingCartRoute');
+const sellerRouter = require('./routes/sellerRoute');
 const shippingRouter = require('./routes/shippingRoute');
 const routes = require('./routes/landingRoute');
 
@@ -187,12 +188,11 @@ const server = http.createServer(async (request, response) => {
         const paymentRouteHandler = paymentRouter[routeKey];
         const shoppingCartRouteHandler = shoppingCartRouter[routeKey];
         const shippingRouteHandler = shippingRouter[routeKey];
+        const sellerRouteHandler = sellerRouter[routeKey];
+
 
         if (userRouteHandler) {
-
             userRouteHandler(request, response);
-
-
         } else if (adminRouteHandler) {
             adminRouteHandler(request, response);
         } else if (paymentRouteHandler) {
@@ -201,6 +201,8 @@ const server = http.createServer(async (request, response) => {
             shoppingCartRouteHandler(request, response);
         } else if (shippingRouteHandler) {
             shippingRouteHandler(request, response);
+        } else if (sellerRouteHandler){
+            sellerRouteHandler(request, response);
         } else {
             if (!landingRouter[routeKey]) {
                 response.writeHead(404);
@@ -210,8 +212,6 @@ const server = http.createServer(async (request, response) => {
     } catch (error) {
         console.error('Request Handling Error:', error);
     }
-
-
 });
 
 
