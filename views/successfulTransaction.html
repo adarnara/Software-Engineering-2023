@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Shipping Information</title>
+    <link rel="stylesheet" href="shippingPage.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .empty-cart {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -60%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border: 1px solid #ccc;
+        padding: 50px;
+        border-radius: 10px;
+        background-color: #f8f8f8;
+        width: 70%;
+        max-width: 600px; /* Set maximum width */
+        margin-left: 20px; /* Add padding on the left side */
+        z-index: 1000;
+      }
+
+      .empty-cart h1 {
+        margin-top: 0;
+        font-size: 50px;
+        z-index: 1000;
+      }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(0, 135, 255, 0.7);
+            color: #fff;
+            padding: 10px;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+            z-index: 2;
+        }
+    
+          .navbar-logo {
+            display: flex;
+            align-items: center;
+          }
+    
+          .navbar-logo img {
+            max-width: 60px;
+            margin-right: 10px;
+          }
+    
+          .navbar-cart {
+            display: flex;
+            align-items: center;
+          }
+    
+          .navbar-cart img {
+            max-width: 40px;
+            margin-right: 10px;
+          }
+        .right-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .search-bar {
+            text-align: center;
+        }
+
+        .search-bar input[type="text"] {
+            width: 60%;
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .search-bar button {
+            background-color: #fff;
+            color: #007BFF;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
+        .product-image img {
+            max-width: 100%;
+            height: auto;
+        }
+
+
+        .product-info h2, .product-info p, .product-info ul {
+            font-size: 14px;
+        }
+
+        .image-navigation button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-bar input[type="text"] {
+            width: 60%;
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .search-bar button {
+            background-color: #fff;
+            color: #007BFF;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
+        .product-info ul {
+            padding-left: 20px;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        #edit-address {
+            display: inline-block;
+            padding: 10px 200px;
+            background-color: #3498db;
+            margin-bottom: 10%;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 32px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            white-space: nowrap;
+          }
+          
+          #edit-address:hover {
+            background-color: #2980b9;
+          }
+          #edit-address1 {
+            display: inline-block;
+            padding: 10px 200px;
+            background-color: #3498db;
+            margin-left: 15%;
+            margin-bottom: 10%;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 32px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            white-space: nowrap;
+          }
+          
+          #edit-address:hover1 {
+            background-color: #2980b9;
+          }
+
+          #thank-you {
+            text-align: center;
+            justify-content: center;
+            font-size: 24px;
+          }
+
+          .continue-shopping-main {
+        padding: 50px 100px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 40px;
+      }
+
+      .continue-shopping-main:hover {
+        background-color: #2980b9;
+      }
+          
+        .price-text {
+            margin-top: 15%;
+            margin-left: 10%;
+            display: inline-block;
+            padding: 10px 200px;
+            color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 32px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            white-space: nowrap;
+          }
+          .confirm-button {
+            display: inline-block;
+            padding: 10px 200px;
+            background-color: #3498db;
+            margin-left: 13%;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 32px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            white-space: nowrap;
+          }
+          
+          .confirm-button:hover {
+            background-color: #29b96f;
+          }
+          .continue-shopping {
+            position: fixed;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 19px;
+            transform: translate(-60%, -55%);
+          }
+    
+          .continue-shopping:hover {
+            background-color: #2980b9;
+          }
+    
+          .continue-shopping-main {
+            padding: 25px 1px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 20px;
+            width: 180px;
+            height: 200px;
+          }
+    
+          .continue-shopping-main:hover {
+            background-color: #2980b9;
+          }
+          .image-navigation button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+          }
+
+          .loading-icon {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 10px;
+            /* Add styles for your loading text */
+        }
+
+        .checkmark-container {
+
+        }
+
+        .checkmark {
+            /* Add styles for your checkmark */
+            color: green;
+            font-size: 100px;
+            text-align: center;
+        }
+
+        .redirect-button {
+            margin-top: 10px;
+            /* Add styles for your redirect button */
+        }
+          
+          
+          
+          
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <a
+          href="http://127.0.0.1:5500/views/landingPage.html"
+          style="text-decoration: none; color: inherit"
+        >
+          <div class="navbar-logo">
+            <img src="../public/Images/logo.png" alt="Logo" />
+            <span style="font-weight: bold; font-size: 20px">Reprua</span>
+          </div>
+        </a>
+        <div>
+          <button class="continue-shopping" onclick="continueShopping()">
+            Continue Shopping
+          </button>
+        </div>
+        <div id="shopping-icon" class="navbar-cart">
+  
+          <a href="http://127.0.0.1:5500/views/shoppingCartHistory.html">
+            <img src="../public/Images/shoppingCartHistory.png" alt="shoppingCartHistory" />
+            <span style="font-weight: bold; font-size: 20px"></span>
+          </a>
+  
+  
+          <a href="http://127.0.0.1:5500/views/shoppingCart.html">
+            <img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />
+            <span style="font-weight: bold; font-size: 20px"></span>
+          </a>
+        </div>
+      </div>
+
+
+<section>
+    <div id="container" class="empty-cart">
+        <div id="loading-icon" class="loading-icon"></div>
+        <div id="making-purchase-text" class="loading-text">Making Purchase...</div>
+
+        <!-- Checkmark and Redirect Button -->
+        <div id="checkmark" class="checkmark-container" style="display: none;">
+            <span id="thank-you">Thank you for your purchase.</span>
+            <div class="checkmark">✔</div>
+            <button class="continue-shopping-main" id="redirect-history" onclick="redirectHistory()">View Purchase History</button>
+            <button class="continue-shopping-main" id="redirect-cart" onclick="redirectLandingPage()">Continue Shopping</button>
+        </div>
+    </div>
+    <div class="waves">
+        <div class="wave" id="wave1"></div>
+        <div class="wave" id="wave2"></div>
+        <div class="wave" id="wave3"></div>
+        <div class="wave" id="wave4"></div>
+        <img src="../public/Images/stars.jpg" class="stars">
+        <img src="../public/Images/island.png" class="island">
+    </div>
+
+</section>
+
+<script src="successfulTransaction.js"></script>
+
+
+
+</body>
+</html>

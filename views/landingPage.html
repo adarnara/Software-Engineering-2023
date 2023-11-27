@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Reprua - Home Page</title>
-  <link rel="stylesheet" href="landingPage.css">
+  <title>Reprua: Where Dreams Come Right to Your Door</title>
+  <link rel="stylesheet" type="text/css" href="/views/landingPage.css">
+  <script src="/public/js/util.js"></script>
+
   <style>
 
     body {
@@ -178,11 +180,6 @@
       cursor: pointer;
     }
 
-    .go-to-page-button {
-      margin-left: auto; /* Pushes the button to the right */
-      white-space: nowrap; /* Prevents line breaks */
-    }
-
 
     .product-info ul {
       padding-left: 20px;
@@ -191,6 +188,17 @@
     .hidden {
       display: none;
     }
+    .go-to-page-button {
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .go-to-page-button.login-button {
+      background-color: transparent;
+    }
+
 
     .redirect-button {
   display: inline-block;
@@ -234,9 +242,9 @@
 <body>
 
 <div class="navbar">
-  <a href="http://127.0.0.1:5500/views/landingPage.html" style="text-decoration: none; color: inherit;">
+  <a href="/views/landingPage.html" style="text-decoration: none; color: inherit;">
     <div class="navbar-logo">
-      <img src="../public/Images/logo.png" alt="Logo" />
+      <img src="/public/Images/logo.png" alt="Logo" />
       <span style="font-weight: bold; font-size: 20px;">Reprua</span>
     </div>
   </a>
@@ -249,11 +257,18 @@
     <button class="search-button">Search</button>
   </div>
   <div id="shopping-icon" class="navbar-cart">
-    <a href = "http://127.0.0.1:5500/views/shoppingCart.html">
-    <img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />
-    <span style="font-weight: bold; font-size: 20px;"></span>
-  </a>
-    <button class="go-to-page-button" onclick="navigateToPage('registerAndLoginPage.html')">Register/Sign In</button>
+    <a href="/views/shoppingCart.html">
+      <img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />
+
+      <span style="font-weight: bold; font-size: 20px;"></span>
+    </a>
+    <div id="sign-in-user">
+      <a href="registerAndLoginPage.html">
+        <button class="go-to-page-button">
+          <img src="../public/Images/image-button-two.png" alt="Register/Login" />
+        </button>
+      </a>
+    </div>
   </div>
 </div>
 

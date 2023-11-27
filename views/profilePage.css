@@ -1,0 +1,293 @@
+@import url('http://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap');
+*
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+
+section {
+    position: static;
+
+    z-index: 0;
+}
+
+section .waves .wave
+{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100px;
+    background: url(../public/Images/wave.png);
+    background-size: 1000px 100px;
+}
+section .waves .wave#wave1
+{
+    opacity: 1;
+    bottom: 0;
+    z-index: 1000;
+    animation: animate 4s linear infinite;
+}
+section .waves .wave#wave2
+{
+    opacity: 0.5;
+    bottom: 10px;
+    z-index: 999;
+    animation: animate2 4s linear infinite;
+}
+section .waves .wave#wave3
+{
+    opacity: 0.2;
+    bottom: 15px;
+    z-index: 998;
+    animation: animate 2s linear infinite;
+}
+section .waves .wave#wave4
+{
+    opacity: 0.7;
+    bottom: 20px;
+    z-index: 999;
+    animation: animate2 2s linear infinite;
+}
+@keyframes animate
+{
+    0% {
+        background-position-x: 1000px;
+    }
+    100% {
+        background-position-x: 0px;
+    }
+}
+@keyframes animate2
+{
+    0% {
+        background-position-x: 0px;
+    }
+    100% {
+        background-position-x: 1000px;
+    }
+}
+.stars {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    mix-blend-mode: screen;
+}
+/*
+h2
+{
+    position: absolute;
+    bottom: 60vh;
+    transform: translateY(50%);
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    font-size: 10em;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+*/
+.island
+{
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    bottom: 0;
+    pointer-events: none;
+}
+
+
+body {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-direction: column;
+    min-height: 100vh;
+    background: #1f2028;
+}
+
+h4.font-weight-bold {
+    position: relative;
+    z-index: 1005; /* Adjusted z-index */
+    color: #fff; /* Set text color to white for visibility */
+}
+
+.ui-w-80 {
+    width: 80px !important;
+    height: auto;
+    z-index: 1005; /* Adjusted z-index */
+}
+
+.btn-default {
+    border-color: rgba(24, 28, 33, 0.1);
+    background: rgba(0, 0, 0, 0);
+    color: #4E5155;
+    z-index: 1005; /* Adjusted z-index */
+}
+
+label.btn {
+    margin-bottom: 0;
+}
+
+.btn-outline-primary {
+    border-color: #26B4FF;
+    background: transparent;
+    color: #26B4FF;
+    z-index: 1005; /* Adjusted z-index */
+}
+
+.btn {
+    cursor: pointer;
+}
+
+.text-light {
+    color: #babbbc !important;
+    z-index: 1005; /* Adjusted z-index */
+}
+
+.btn-facebook {
+    border-color: rgba(0, 0, 0, 0);
+    background: #3B5998;
+    color: #fff;
+    z-index: 1005; /* Adjusted z-index */
+}
+
+.btn-instagram {
+    border-color: rgba(0, 0, 0, 0);
+    background: #000;
+    color: #fff;
+    z-index: 1005; /* Adjusted z-index */
+}
+
+.card {
+    background-clip: padding-box;
+    box-shadow: 0 1px 4px rgba(24, 28, 33, 0.012);
+    z-index: 1005; /* Adjusted z-index */
+}
+
+.row-bordered {
+    overflow: hidden;
+}
+
+.account-settings-fileinput {
+    position: absolute;
+    visibility: hidden;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    z-index: 1005; /* Adjusted z-index */
+}
+
+.account-settings-links .list-group-item.active {
+    font-weight: bold !important;
+}
+
+html:not(.dark-style) .account-settings-links .list-group-item.active {
+    background: transparent !important;
+}
+
+.account-settings-multiselect~.select2-container {
+    width: 100% !important;
+}
+
+.light-style .account-settings-links .list-group-item {
+    padding: 0.85rem 1.5rem;
+    border-color: rgba(24, 28, 33, 0.03) !important;
+}
+
+.light-style .account-settings-links .list-group-item.active {
+    color: #4E5155 !important;
+}
+.container.light-style.flex-grow-1.container-p-y {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+
+.text-right.mt-3 button {
+    margin-top: -50px;
+    margin-right: 20px;
+}
+
+.material-style .account-settings-links .list-group-item {
+    padding     : 0.85rem 1.5rem;
+    border-color: rgba(24, 28, 33, 0.03) !important;
+}
+
+.material-style .account-settings-links .list-group-item.active {
+    color: #4e5155 !important;
+}
+
+.dark-style .account-settings-links .list-group-item {
+    padding     : 0.85rem 1.5rem;
+    border-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+.dark-style .account-settings-links .list-group-item.active {
+    color: #fff !important;
+}
+
+.light-style .account-settings-links .list-group-item.active {
+    color: #4E5155 !important;
+}
+
+.light-style .account-settings-links .list-group-item {
+    padding     : 0.85rem 1.5rem;
+    border-color: rgba(24, 28, 33, 0.03) !important;
+}
+
+.custom-alert {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background-color: white;
+    border: 1px solid red;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    text-align: center;
+    color: black;
+}
+
+.custom-alert p {
+    margin-bottom: 10px;
+}
+
+.custom-alert button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.custom-success-alert {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background-color: white;
+    border: 1px solid green; /* Change the border color to green for success */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    text-align: center;
+    color: black;
+}
+
+.custom-success-alert p {
+    margin-bottom: 10px;
+}
+
+.custom-success-alert button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}

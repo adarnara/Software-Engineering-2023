@@ -163,8 +163,9 @@
                 </div>
                 <div class="forgot-section">
                     <span><input type="checkbox" name="" id="checked">Remember Me</span>
-                    <span><a href="#">Forgot Password ?</a></span>
+                    <span><a href="forgetpassword.html">Change Password ?</a></span> <!-- Updated line -->
                 </div>
+
 
                 <button class="btn" id="loginButton">Login</button>
             </form>
@@ -188,6 +189,8 @@
                     <label for="reg-username">Email</label>
                     <input type="text" id="reg-username" placeholder="Enter Your Email*">
                 </div>
+
+
                 <div class="input-box">
                     <i class='bx bxs-key'></i>
                     <label for="reg-password">Password</label>
@@ -215,7 +218,7 @@
 
                 <div class="forgot-section">
                     <span><input type="checkbox" name="" id="reg-checked">Remember Me</span>
-                    <span><a href="#">Forgot Password ?</a></span>
+                    <span><a href="forgetpassword.html">Change Password?</a></span> <!-- Updated line -->
                 </div>
                 <button class="btn" id="registerButton">Register</button>
             </form>
@@ -233,8 +236,11 @@
 
 </section>
 
+<script src="/public/js/util.js"></script>
 <script src="loginPage.js"></script>
 <script src="registerPage.js"></script>
+
+
 <script>
     const container = document.querySelector(".container");
     const loginForm = document.querySelector('.login-form');
