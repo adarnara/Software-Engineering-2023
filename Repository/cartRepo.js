@@ -142,6 +142,9 @@ class ShoppingCart {
 
     async updateProductsAndPriceInCurrCart(currCart_id, newProductList, newPrice) {
         return new Promise(async (resolve) => {
+
+            console.log("SHEEEEEEEEE");
+
             const updatedProduct = await shoppingCartCollection.findOneAndUpdate(
                 { _id: currCart_id.toString(), purchaseTime: null },
                 { $set: { 
@@ -155,10 +158,22 @@ class ShoppingCart {
         });
     }
 
+
     async getCurrCart(email) {
         return new Promise(async (resolve) => {
             const currMemberCart = await shoppingCartCollection.findOne({
                 email: email,
+                purchaseTime: null
+            });
+            resolve(currMemberCart);
+            return;
+        });
+    }
+
+    async getCurrCartWithCartID(currCartID) {
+        return new Promise(async (resolve) => {
+            const currMemberCart = await shoppingCartCollection.findOne({
+                _id: currCartID.toString(),
                 purchaseTime: null
             });
             resolve(currMemberCart);

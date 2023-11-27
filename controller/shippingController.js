@@ -467,7 +467,7 @@ async function setCartProductTransaction(req, res) {
                 const shipRate = product.shipping_rate;
                 const transactionObject = await shippingRepo.createTransactionObject(shipRate, "PDF", false);
                 lastTransactionTime = transactionObject.object_updated;
-                const updatedCartProduct = await shippingRepo.updateCartProductTransaction(email, cartID, productID, transactionObject);
+                const updatedCartProduct = await shippingRepo.updateCartProductTransaction(email, cartID, productID, transactionObject, shipRate);
                 transactionProducts.push(updatedCartProduct);
                 // set transaction property of current cart product
             }

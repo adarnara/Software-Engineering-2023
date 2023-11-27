@@ -808,6 +808,17 @@ async function handleCheckout() {
     //     "__v": cartDetails.__v,
     //     "totalPrice": cartDetails.totalPrice
     //   };
+
+    await authorize(`http://localhost:3000/cart`)
+    .then(async (response) => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        currMemberCart = await response.json();
+        return;
+    });
+
       const checkoutResponse = await authorize("http://localhost:3000/checkout", {
         method: "POST",
         headers: {

@@ -21,6 +21,10 @@ async function getStripePaymentRedirect(req, res){
             return;
         }
         let items = await getFormatedStripeJSON(json.products);
+
+        console.log("LINE ITEMS:");
+        console.log(JSON.stringify(items));
+
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
             mode: "payment",
@@ -50,7 +54,11 @@ async function getFormatedStripeJSON(array){
         console.log(productdata);
         if(productdata.name === undefined || productdata.price === undefined)
             return undefined;
-        const cents = strToCents(productdata.price);
+        const totalShippingPrice = parseFloat(item.shipping_rate.amount)
+        const cents = ((parseFloat((totalShippingPrice / item.quantity))) + parseFloat(productdata.price.substring(1)))*100;
+
+        console.log("CENTS = " + cents);
+
         if(cents === -1)
             return undefined;
         return {
@@ -59,7 +67,7 @@ async function getFormatedStripeJSON(array){
                 product_data:{
                     name: productdata.name
                 },
-                unit_amount: cents,
+                unit_amount: Math.floor(cents.toFixed(2)),
             },
             quantity: item.quantity
         };
