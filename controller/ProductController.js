@@ -1,3 +1,4 @@
+const ProductRepo = require('../Repository/ProductRepo');
 const ProductRepository = require('../Repository/ProductRepo');
 
 class ProductController {
@@ -40,6 +41,12 @@ class ProductController {
     } catch (error) {
       res.status(500).json({ message: 'Failed to fetch category.' });
     }
+  }
+
+  async getLargestCategoryId(req) {
+    const category = req.query.category;
+    const largestId = await ProductRepository.getLargestCategoryId(category);
+    resolve(largestId);
   }
 }
 

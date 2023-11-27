@@ -193,12 +193,15 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch(error => {
             console.error('Error:', error);
         });
+        modal.style.display = "none";
     });
     
 
     function createProductJSON(){
+        const selectedProductType = document.getElementById('productType').value;
+
         const productData = {
-            "_id": "uniqueProductId1234567", //temporary <-will need to check what type of product is is and then increment by one to however many already exist.
+            "_id": "uniqueProductId12345678", //temporary <-will need to check what type of product is is and then increment by one to however many already exist.
             "name": document.getElementById('productName').value,
             "price": document.getElementById('productPrice').value,
             "stars": document.getElementById('stars').value,
@@ -219,13 +222,31 @@ document.addEventListener("DOMContentLoaded", () => {
             "mass_unit": "lb",
         };
         
-
-        const imageFile = document.getElementById('images').files[0]; //assuming single file upload right now
-        const reader = new FileReader();
-        reader.onload = async function(e) {
-            console.log(e.target.result)
-            productData.images = [{ hiRes: e.target.result }]; //add the data URL to product 
-        }
+        const imageFiles = document.getElementById('images').files; //assuming single file upload right now
+        if(imageFiles){
+            for(let i = 0; i < imageFiles.length; i++){
+                const imageFile = imageFiles[i];
+                const reader = new FileReader();
+                reader.onload = async function(event) {
+                    const base64String = event.target.result;
+                    console.log(base64String);
+                    productData.images[i] = [
+                        { 
+                            hiRes: null,
+                            thumb: null,
+                            large: base64String,
+                            main: [null],
+                            variant: null,
+                            lowRes: null,
+                            shoppableScene: null,
+                        }
+                    ]; //add the base 64 encoding to large param in image  
+                }
+                reader.readAsDataURL(imageFile);
+            }
+        } else {
+            console.log("There were no images input.");
+        }        
 
         //assuming featureBullets is a comma-separated input
         const featureBulletInputs = document.getElementById('featureBullets').value.split(',');
