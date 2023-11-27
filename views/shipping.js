@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     cartProductSet = new Set();
     cartProductShippingInfo = {};
 
-    await fetch(`http://localhost:3000/cart?user_id=655f9963f9cbae2c21c3bb60`)
+    await authorize(`http://localhost:3000/cart`)
         .then(async (response) => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 
         try {
-            await fetch('http://localhost:3000/cart/ship', req)
+            await authorize('http://localhost:3000/cart/ship', req)
                 .then(async (res) => {
                     if (res.status == 422) {
                         console.log("HI");
@@ -326,14 +326,14 @@ document.addEventListener('DOMContentLoaded', async function () {
 
                         // get quantity of the product
                         let quantity;
-                        await fetch(`http://localhost:3000/cart/product?user_id=655f9963f9cbae2c21c3bb60&product_id=${product.product_id}`)
+                        await authorize(`http://localhost:3000/cart/product?product_id=${product.product_id}`)
                             .then(async (response) => {
                                 response = await response.json();
                                 quantity = response.quantity;
                         });
                         
                         
-                        await fetch(
+                        await authorize(
                             `http://localhost:3000/search?productId=${product.product_id}`
                           ).then(async (response) => {
                             // console.log(response);
@@ -672,7 +672,7 @@ async function confirmOrder() {
         let purchasedCart;
         let emptyCart;
         // fetch to set shipping Prices, cart total price, to/from (PATCH)
-        const updatedShippingInfo = await fetch(`http://localhost:3000/cart/info-confirmation?cart_id=${currMemberCart._id}`, req)
+        const updatedShippingInfo = await authorize(`http://localhost:3000/cart/info-confirmation?cart_id=${currMemberCart._id}`, req)
             .then(async (res) => {
                 if (!res.ok) {
                     throw new Error(`HTTP error! Status: ${res.status}`);
@@ -808,7 +808,7 @@ async function handleCheckout() {
     //     "__v": cartDetails.__v,
     //     "totalPrice": cartDetails.totalPrice
     //   };
-      const checkoutResponse = await fetch("http://localhost:3000/checkout", {
+      const checkoutResponse = await authorize("http://localhost:3000/checkout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -154,10 +154,11 @@ function toggleCart(purchaseTime) {
 
 async function addProductToCart(product, button) {
   let quantity = 1;
+  const currUser = await checkToken()
 
     console.log("Sending");
-    await fetch(
-      `http://localhost:3000/cart/add?user_id=655f9963f9cbae2c21c3bb60`,
+    await authorize(
+      `http://localhost:3000/cart/add`,
       {
         method: "POST",
         headers: {
@@ -165,7 +166,7 @@ async function addProductToCart(product, button) {
         },
         body: JSON.stringify({
           quantity: parseInt(quantity),
-          email: currMemberEmail,
+          email: currUser.email,
           product_id: product,
         }),
       }
@@ -178,7 +179,7 @@ async function addProductToCart(product, button) {
 document.addEventListener("DOMContentLoaded", async () => {
   const products = [];
 
-  await fetch("http://localhost:3000/cartHistory?user_id=655f9963f9cbae2c21c3bb60")
+  await authorize("http://localhost:3000/cartHistory")
     .then((response) => {
       // console.log(
       //   "***********************************************************************"
@@ -239,7 +240,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         for (let i = 0; i < e.products.length; i++) {
           var product = e.products[i];
 
-          fetch(
+          authorize(
             `http://localhost:3000/search?productId=${product.product_id}`
           ).then(async (response) => {
             
