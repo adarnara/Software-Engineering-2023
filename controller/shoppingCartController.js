@@ -244,7 +244,7 @@ async function changeProductQuantityFromCart(req, res) {
                 parsedRequestBody.product_id,
                 currMemberCart._id
               );
-              resCode = 200;
+              resCode = 202;
               resMsg = JSON.stringify(updatedProductInfo);
               resType = "application/json";
             } catch (err) {
@@ -253,7 +253,7 @@ async function changeProductQuantityFromCart(req, res) {
               resCode = 500;
               resType = "text/plain";
             }
-            resCode = 200;
+            resCode = 202;
             resType = "application/json";
           }
         }
@@ -400,7 +400,7 @@ async function addProductToCart(req, res) {
               } else {
                 resType = "text/plain";
               }
-              resCode = 200;
+              resCode = 201;
               res.writeHead(resCode, { "Content-Type": resType });
               res.end(resMsg);
               resolve(resMsg);
@@ -450,7 +450,7 @@ async function addProductToCart(req, res) {
                     productPrice * parseFloat(quantity)
                 );
 
-                resCode = 200;
+                resCode = 201;
                 resMsg = JSON.stringify(savedNewProduct);
                 resType = "application/json";
                 res.writeHead(resCode, { "Content-Type": resType });
@@ -513,7 +513,7 @@ async function getProducts(req, res) {
 
       if (currMemberCart == null) {
         //No items found in shopping cart
-        resCode = 200;
+        resCode = 204;
         resType = "text/plain";
         resMsg = "There are no items in your shopping cart!";
       } else {
@@ -638,7 +638,7 @@ async function removeProductFromCart(req, res) {
         ).toFixed(2)
       );
 
-      resCode = 200;
+      resCode = 202;
       resMsg = JSON.stringify(removedCartProduct);
       resType = "application/json";
       res.writeHead(resCode, { "Content-Type": resType });
@@ -727,7 +727,7 @@ async function getCartHistory(req, res) {
 
       if (currMemberCartHistory == null) {
         //No shopping carts purchased
-        resCode = 200;
+        resCode = 204;
         resType = "text/plain";
         resMsg = "You haven't checkout out yet!";
       } else {
@@ -754,7 +754,6 @@ async function getCartHistory(req, res) {
 // retrieve specific cart product based on ID
 async function getCartProduct(req, res) {
   // // take a get request with uri of /cartHistory?userId=___
-  console.log("\n\n\n\nhi\n\n")
   return new Promise(async (resolve) => {
     let resMsg = "";
     let resCode, resType;
@@ -799,7 +798,7 @@ async function getCartProduct(req, res) {
 
       if (cartProductInfo == null) {
         //No shopping carts purchased
-        resCode = 200;
+        resCode = 204;
         resType = "text/plain";
         resMsg = "You don't have this product in your cart!";
       } else {

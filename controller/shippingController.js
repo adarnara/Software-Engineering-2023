@@ -61,7 +61,7 @@ async function createAddress(req, res) {
         const email = parsedRequestBody['email'];
 
         const addressObj = await shippingRepo.createAddressObject(name, company, street1, city, state, zip, country, phone, email);
-        resCode = 200;
+        resCode = 201;
         resMsg = JSON.stringify(addressObj);
         resType = "application/json";
         res.writeHead(resCode, { "Content-Type": resType });
@@ -107,7 +107,7 @@ async function createShipment(req, res) {
         parcel = parsedRequestBody['parcel'];
         
         const shipmentObj = await shippingRepo.createShipmentObject(addressFrom, addressTo, parcel);
-        resCode = 200;
+        resCode = 201;
         resMsg = JSON.stringify(shipmentObj);
         resType = "application/json";
         res.writeHead(resCode, { "Content-Type": resType });
@@ -270,7 +270,7 @@ async function calculateTotalCostEachProduct(req, res) {
                 });
             }
             // console.log(productShipmentInfo);
-            resCode = 200;
+            resCode = 202;
             resType = "application/json";
             resMsg = JSON.stringify({
                 "address_from": addressFrom,
@@ -475,7 +475,7 @@ async function setCartProductTransaction(req, res) {
             console.log(typeof lastTransactionTime);
             const updatedShoppingCart = await shippingRepo.purchaseCart(email, cartID, lastTransactionTime);
             console.log(parsedRequestBody);
-            resCode = 200;
+            resCode = 202;
             resType = "application/json";
             resMsg = null;
             // make new empty shopping cart
