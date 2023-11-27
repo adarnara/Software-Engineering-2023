@@ -1,28 +1,13 @@
 const mongoose = require('mongoose');
 
 const ticketSchema = new mongoose.Schema({
-    account_id:{
-        type: String,
-        required: true,
-        trim: true
-    },
-    status: {
-        type: Boolean,
-        required: true,
-        default: false
-    }, 
-    timeOfCreation:{
-        type: String,
-        required: true,
-        trim: true
-    },
-    description: {
-        type: String,
-        required: true,
-        trim: true
-    }
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    description: String,
+    status: { type: String, enum: ['Open', 'In Progress', 'Resolved'], default: 'Open' },
+    createdDate: { type: Date, default: Date.now },
+    adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' },
+    resolutionDescription: String,
+    closureDate: Date
 });
 
-const Ticket = mongoose.model('Ticket', ticketSchema);
-
-module.exports = Ticket;
+module.exports = mongoose.model('Ticket', ticketSchema);
