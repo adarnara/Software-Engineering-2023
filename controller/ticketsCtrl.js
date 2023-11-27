@@ -1,7 +1,7 @@
 const Ticket = require("../models/ticketModel");
 const mongoose = require('mongoose');
+const middleware = require('../middlewares/authmiddleware.js');
 
-// Helper function to parse JSON from request
 async function getJSON(req) {
     return new Promise((resolve, reject) => {
         try {
@@ -18,12 +18,7 @@ async function getJSON(req) {
     });
 }
 
-// Helper function to validate if an ID is a valid MongoDB ObjectId
-function isValidObjectId(json) {
-    return mongoose.Types.ObjectId.isValid(json.userId);
-}
 
-// Controller function to handle ticket creation
 async function createTicket(req, res) {
     try {
         if (req.headers["content-type"] !== 'application/json') {
@@ -33,20 +28,13 @@ async function createTicket(req, res) {
         }
 
         let json = await getJSON(req);
-
-        if (!isValidObjectId(json)) {
-            res.writeHead(406);
-            res.end('Invalid ObjectId');
-            return;
-        }
+        const userData = middleware.parseJwtHeader(req);
+        const userID = userData.id;
 
         // Create a new ticket
         const newTicket = new Ticket({
-            userId: json.userId,
-            //productId: json.productId,
-            //sellerId: json.sellerId,
+            userId: userID,
             description: json.description,
-            // other fields can be added as per the requirement
         });
 
         await newTicket.save();

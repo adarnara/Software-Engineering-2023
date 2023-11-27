@@ -1,24 +1,15 @@
+//const authorization = require("../public/js/util.js")
+
 document.getElementById('Tickets').addEventListener('submit', async function(event){
     event.preventDefault();
 
     var userInput = document.getElementById('userInput').value;
 
-    
-    var userId = 'userId'; // Replace with actual userId
-    //var productId = 'productId'; // Replace with actual productId
-    //var sellerId = 'sellerId'; // Replace with actual sellerId
-
-    fetch('http://localhost:3000/submit-form', {
+    var userId = 'userId';
+    authorize('http://localhost:3000/submit-form', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            userId: userId,
-            //productId: productId,
-            //sellerId: sellerId,
-            description: userInput,
-        }),
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ description: userInput }),
     })
     .then(response => {
         if (!response.ok) {

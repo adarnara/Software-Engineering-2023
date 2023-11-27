@@ -1,5 +1,5 @@
 const TicketsController = require("../controller/ticketsCtrl");
 
 module.exports = {
-    'POST/submit-form': TicketsController.getTicketsRedirect
+    'POST/submit-form': TicketsController.createTicket
 };
