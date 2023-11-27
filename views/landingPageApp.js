@@ -214,11 +214,10 @@ document.addEventListener("DOMContentLoaded", () => {
     window.changeImage = changeImage;
     window.addProductToCart = addProductToCart;
 
-    const currMemberEmail = "mm3201@scarletmail.rutgers.edu";
-    function addProductToCart(product) {
-
+    async function addProductToCart(product) {
+        const currUser = await checkToken()
         let quantity = document.getElementById(product).value;
-
+        console.log(currUser)
         console.log(quantity);
         if (
             isNaN(parseInt(quantity)) ||
@@ -227,14 +226,14 @@ document.addEventListener("DOMContentLoaded", () => {
             quantity = 1;
         } else {
             console.log("Sending")
-            fetch(`http://localhost:3000/cart/add?user_id=655f9963f9cbae2c21c3bb60`, {
+            fetch(`http://localhost:3000/cart/add`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     quantity: parseInt(quantity),
-                    email: currMemberEmail,
+                    email: currUser.email,
                     product_id: product
                 })
             }).then(res => console.log(res))

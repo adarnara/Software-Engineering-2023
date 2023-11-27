@@ -18,6 +18,60 @@ const { parseJwtHeader } = require("../middlewares/authmiddleware.js");
 
 const parseProductPrice = /\$([\d.]+)/;
 
+
+async function getID(req, res)
+{
+  return new Promise(async (resolve) => {
+    console.log("\n\n\n\n\nhiiii\n\n\n\n\n")
+    let userData = parseJwtHeader(req, res);
+    console.log(userData)
+    if (userData) resolve(userData["id"]);
+    else resolve(null);
+    // let resCode, resMsg;
+    // let resType = 'application/json';
+
+    // if (userData) {
+    //   const userID = userData['id'];
+    //   resCode = 200;
+    //   resMsg = JSON.stringify({
+        
+    //   })
+    // }
+
+
+    // console.log("\n\n\n\n\n")
+    // console.log(token);
+    // console.log("\n\n\n\n\n")
+    // let currToken = await parseJwtHeader();
+    resolve(userData['id']);
+  })
+}
+async function getEmail(req, res)
+{
+  return new Promise(async (resolve) => {
+    console.log("\n\n\n\n\nhiiii\n\n\n\n\n")
+    let userData = parseJwtHeader(req, res);
+    if (userData) resolve(userData["email"]);
+    else resolve(null);
+    // let resCode, resMsg;
+    // let resType = 'application/json';
+
+    // if (userData) {
+    //   const userID = userData['id'];
+    //   resCode = 200;
+    //   resMsg = JSON.stringify({
+        
+    //   })
+    // }
+
+
+    // console.log("\n\n\n\n\n")
+    // console.log(token);
+    // console.log("\n\n\n\n\n")
+    // let currToken = await parseJwtHeader();
+    resolve(userData['email']);
+  })
+}
 async function changeProductQuantityFromCatalog(
   parsedRequestBody,
   res,
@@ -99,26 +153,17 @@ async function changeProductQuantityFromCart(req, res) {
     const queryParams = parsedUrl.query;
 
     // ensure that only one query parameter (the user_id)
-    if (Object.keys(queryParams).length !== 1) {
+    if (Object.keys(queryParams).length !== 0) {
       resCode = 400;
       resMsg =
-        "Bad Request: Please Ensure only one query param for user_id is specified";
+        "Bad Request: Please ensure there are no query parameters in the URI";
       resType = "text/plain";
       res.writeHead(resCode, { "Content-Type": resType });
       res.end(resMsg);
       resolve(resMsg);
       return;
     }
-    if (!("user_id" in queryParams)) {
-      resCode = 400;
-      resType = "text/plain";
-      resMsg = "Bad Request: Single query param must have the key 'user_id'";
-      res.writeHead(resCode, { "Content-Type": resType });
-      res.end(resMsg);
-      resolve(resMsg);
-      return;
-    }
-    const user_id = queryParams["user_id"];
+    const user_id = await getID(req, res);
 
     try {
       await req.on("data", (chunk) => {
@@ -273,6 +318,7 @@ async function changeProductQuantityFromCart(req, res) {
 
 const regExpURIAddProduct = /^\/cart\/add\/[^/]+$/;
 async function addProductToCart(req, res) {
+  console.log("michael")
   return new Promise(async (resolve) => {
     if (req.method !== "POST") {
       let resMsg =
@@ -318,6 +364,7 @@ async function addProductToCart(req, res) {
     ) {
       const reqBodyKeys = Object.keys(parsedRequestBody);
       // Check it has exactly three properties
+      console.log("\n\n\nhi\n\n")
       if (reqBodyKeys.length !== 3) {
         resCode = 400;
         resMsg =
@@ -378,7 +425,7 @@ async function addProductToCart(req, res) {
             const quantity = parsedRequestBody.quantity;
             const product_id = parsedRequestBody.product_id;
             const email = parsedRequestBody.email;
-
+              console.log(product_id);
             const existingProduct = await cartRepo.getCurrProduct(
               product_id,
               currMemberCart._id
@@ -495,30 +542,20 @@ async function getProducts(req, res) {
     const queryParams = parsedUrl.query;
 
     // ensure that only one query parameter (the user_id)
-    if (Object.keys(queryParams).length !== 1) {
+    if (Object.keys(queryParams).length !== 0) {
       resCode = 400;
       resMsg =
-        "Bad Request: Please Ensure exactly one query params for user_id is specified";
+        "Bad Request: Please ensure there are no query parameters in the URI";
       resType = "text/plain";
       res.writeHead(resCode, { "Content-Type": resType });
       res.end(resMsg);
       resolve(resMsg);
       return;
     }
-    if (!("user_id" in queryParams)) {
-      resCode = 400;
-      resMsg =
-        "Bad Request: Must have exactly one query param with key 'user_id'";
-      resType = "text/plain";
-      res.writeHead(resCode, { "Content-Type": resType });
-      res.end(resMsg);
-      resolve(resMsg);
-      return;
-    }
-    const currUser = queryParams["user_id"];
 
     try {
-      const currMember = await cartRepo.getMember(currUser);
+      const user_id = await getID(req, res);
+      const currMember = await cartRepo.getMember(user_id);
 
       const currMemberCart = await cartRepo.getCurrCart(currMember.email);
 
@@ -565,11 +602,11 @@ async function removeProductFromCart(req, res) {
       const queryParams = parsedUrl.query;
 
       // ensure that only one query parameter (the user_id)
-      if (Object.keys(queryParams).length !== 2) {
+      if (Object.keys(queryParams).length !== 1) {
         resCode = 400;
         resMsg = JSON.stringify({
           message:
-            "Bad Request: Please Ensure exactly two query params for user_id and product_id are specified",
+            "Bad Request: Please ensure exactly 1 query param for product_id is specified",
         });
         resType = "application/json";
         res.writeHead(resCode, { "Content-Type": resType });
@@ -577,17 +614,17 @@ async function removeProductFromCart(req, res) {
         resolve(resMsg);
         return;
       }
-      if (!("user_id" in queryParams) || !("product_id" in queryParams)) {
+      if (!("product_id" in queryParams)) {
         resCode = 400;
         resMsg =
-          "Bad Request: Must have exactly two query params with keys 'user_id' and 'product_id'";
+          "Bad Request: Must have exactly one query params with key 'product_id'";
         resType = "text/plain";
         res.writeHead(resCode, { "Content-Type": resType });
         res.end(resMsg);
         resolve(resMsg);
         return;
       }
-      const user_id = queryParams["user_id"];
+      const user_id = await getID(req, res);
       const product_id = queryParams["product_id"];
       const currMember = await cartRepo.getMember(user_id);
       const currMemberCart = await cartRepo.getCurrCart(currMember.email);
@@ -714,27 +751,18 @@ async function getCartHistory(req, res) {
     const queryParams = parsedUrl.query;
 
     // ensure that only one query parameter (the user_id)
-    if (Object.keys(queryParams).length !== 1) {
+    if (Object.keys(queryParams).length !== 0) {
       resCode = 400;
       resMsg =
-        "Bad Request: Please Ensure exactly one query params for user_id is specified";
+        "Bad Request: Please ensure no params are in the URI";
       resType = "text/plain";
       res.writeHead(resCode, { "Content-Type": resType });
       res.end(resMsg);
       resolve(resMsg);
       return;
     }
-    if (!("user_id" in queryParams)) {
-      resCode = 400;
-      resMsg =
-        "Bad Request: Must have exactly one query param with key 'user_id'";
-      resType = "text/plain";
-      res.writeHead(resCode, { "Content-Type": resType });
-      res.end(resMsg);
-      resolve(resMsg);
-      return;
-    }
-    const currUser = queryParams["user_id"];
+    
+    const currUser = await getID(req, res);
 
     try {
       const currMember = await cartRepo.getMember(currUser);
@@ -774,6 +802,7 @@ async function getCartHistory(req, res) {
 // retrieve specific cart product based on ID
 async function getCartProduct(req, res) {
   // // take a get request with uri of /cartHistory?userId=___
+  console.log("\n\n\n\nhi\n\n")
   return new Promise(async (resolve) => {
     let resMsg = "";
     let resCode, resType;
@@ -782,26 +811,17 @@ async function getCartProduct(req, res) {
     const queryParams = parsedUrl.query;
 
     // ensure that only one query parameter (the user_id)
-    if (Object.keys(queryParams).length !== 2) {
+    if (Object.keys(queryParams).length !== 1) {
       resCode = 400;
       resMsg =
-        "Bad Request: Please Ensure user_id and product_id are specified.";
+        "Bad Request: Please ensure product_id is specified.";
       resType = "text/plain";
       res.writeHead(resCode, { "Content-Type": resType });
       res.end(resMsg);
       resolve(resMsg);
       return;
     }
-    if (!("user_id" in queryParams)) {
-      resCode = 400;
-      resMsg =
-        "Bad Request: Must specify user_id.";
-      resType = "text/plain";
-      res.writeHead(resCode, { "Content-Type": resType });
-      res.end(resMsg);
-      resolve(resMsg);
-      return;
-    }
+    
     if (!("product_id" in queryParams)) {
       resCode = 400;
       resMsg =
@@ -812,7 +832,7 @@ async function getCartProduct(req, res) {
       resolve(resMsg);
       return;
     }
-    const currUser = queryParams["user_id"];
+    const currUser = await getID(req, res);
     const productID = queryParams["product_id"];
 
     console.log("*** " + productID);

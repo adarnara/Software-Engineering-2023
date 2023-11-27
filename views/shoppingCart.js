@@ -1,4 +1,3 @@
-const currMemberEmail = "mm3201@scarletmail.rutgers.edu";
 function checkPos(quantity) {
   console.log(quantity.value);
   if (quantity.value < 1) quantity.value = 1;
@@ -40,14 +39,15 @@ function handleKeyPress(event, productId, inputElement) {
 
 async function addProductToCart(product, button) {
   let quantity = document.getElementById(product).value;
-
+  const currUser = await checkToken();
   console.log(quantity);
   if (isNaN(parseInt(quantity)) || parseInt(quantity) < 1) {
     quantity = 1;
   } else {
     console.log("Sending");
-    await fetch(
-      `http://localhost:3000/cart/add?user_id=655f9963f9cbae2c21c3bb60`,
+
+    await authorize(
+      `http://localhost:3000/cart/add`,
       {
         method: "POST",
         headers: {
@@ -55,7 +55,7 @@ async function addProductToCart(product, button) {
         },
         body: JSON.stringify({
           quantity: parseInt(quantity),
-          email: currMemberEmail,
+          email: currUser.email,
           product_id: product,
         }),
       }
@@ -68,7 +68,7 @@ async function addProductToCart(product, button) {
     quantity: quantity,
   };
   productContainer.remove();
-  await fetch(`http://localhost:3000/search?productId=${product}`).then(
+  await authorize(`http://localhost:3000/search?productId=${product}`).then(
     async (response) => {
       // console.log(response);
       response = await response.json();
@@ -77,7 +77,7 @@ async function addProductToCart(product, button) {
       prods.innerHTML += productHTML;
     }
   );
-  await fetch("http://localhost:3000/cart?user_id=655f9963f9cbae2c21c3bb60")
+  await authorize("http://localhost:3000/cart")
     .then((response) => {
       console.log(
         "***********************************************************************"
@@ -130,11 +130,11 @@ async function changeNumber(productId, displayNumber) {
   ) {
     displayNumber.value = 1;
   } else {
-    await fetch(
-      `http://localhost:3000/cart?user_id=655f9963f9cbae2c21c3bb60`,
+    await authorize(
+      `http://localhost:3000/cart`,
       req
     ).then((res) => console.log(res));
-    await fetch("http://localhost:3000/cart?user_id=655f9963f9cbae2c21c3bb60")
+    await authorize("http://localhost:3000/cart")
       .then((response) => {
         console.log(
           "***********************************************************************"
@@ -158,8 +158,8 @@ async function changeNumber(productId, displayNumber) {
 async function deleteProduct(productId, button) {
   console.log(productId);
 
-  await fetch(
-    `http://localhost:3000/cart/remove?user_id=655f9963f9cbae2c21c3bb60&product_id=${productId}`,
+  await authorize(
+    `http://localhost:3000/cart/remove?product_id=${productId}`,
     {
       method: "DELETE",
     }
@@ -169,7 +169,7 @@ async function deleteProduct(productId, button) {
   var productContainer = button.closest(".product-container");
 
   productContainer.remove();
-  await fetch(`http://localhost:3000/search?productId=${productId}`).then(
+  await authorize(`http://localhost:3000/search?productId=${productId}`).then(
     async (response) => {
       // console.log(response);
       response = await response.json();
@@ -178,7 +178,7 @@ async function deleteProduct(productId, button) {
       deletedContainer.innerHTML += productHTML;
     }
   );
-  await fetch("http://localhost:3000/cart?user_id=655f9963f9cbae2c21c3bb60")
+  await authorize("http://localhost:3000/cart")
     .then((response) => {
       console.log(
         "***********************************************************************"
@@ -329,6 +329,7 @@ function createSubTotalHTML(data) {
       </div>
      </div>
       `;
+      console.log(data.products.length == 0 && data.deletedProducts.length == 0);
   if (data.products.length == 0 && data.deletedProducts.length == 0) {
     return emptyWithoutDeleted;
   }
@@ -342,8 +343,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   );
 
   const products = [];
-
-  await fetch("http://localhost:3000/cart?user_id=655f9963f9cbae2c21c3bb60")
+    await authorize("http://localhost:3000/cart")
     .then((response) => {
       console.log(
         "***********************************************************************"
@@ -369,7 +369,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       for (let i = 0; i < data.products.length; i++) {
         const product = data.products[i];
-        await fetch(
+        await authorize(
           `http://localhost:3000/search?productId=${product.product_id}`
         ).then(async (response) => {
           // console.log(response);
@@ -382,7 +382,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log(data);
       for (let i = 0; i < data.deletedProducts.length; i++) {
         const product = data.deletedProducts[i];
-        await fetch(`http://localhost:3000/search?productId=${product}`).then(
+        await authorize(`http://localhost:3000/search?productId=${product}`).then(
           async (response) => {
             // console.log(response);
             response = await response.json();
