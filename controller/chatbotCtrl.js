@@ -93,35 +93,35 @@ function processProduct(product) {
 
     if (_id.toLowerCase().includes('laptop')) {
         manager.addDocument('en', `Recommend me a laptop`, `recommend_laptop`);
-        manager.addAnswer('en', 'recommend_laptop', `A recommended laptop would be ${name}. Here are some details:
-        - Price: ${price}
-        - Stars: ${stars}
-        - Rating Count: ${rating_count}
+        manager.addAnswer('en', 'recommend_laptop', `A recommended laptop would be ${name}. Here are some details:\n
+        - Price: ${price}\n
+        - Stars: ${stars}\n
+        - Rating Count: ${rating_count}\n
         - Features:\n${feature_bullets.map(feature => `  - ${feature}`).join('\n')}`);
     }
 
     if (_id.toLowerCase().includes('tshirts')) {
         manager.addDocument('en', `Recommend me a t-shirt`, `recommend_tshirt`);
-        manager.addAnswer('en', 'recommend_tshirt', `A recommended t-shirt would be ${name}. Here are some details:
-        - Price: ${price}
-        - Stars: ${stars}
-        - Rating Count: ${rating_count}
+        manager.addAnswer('en', 'recommend_tshirt', `A recommended t-shirt would be ${name}. Here are some details:\n
+        - Price: ${price}\n
+        - Stars: ${stars}\n
+        - Rating Count: ${rating_count}\n
         - Features:\n${feature_bullets.map(feature => `  - ${feature}`).join('\n')}`);
     }
     if (_id.toLowerCase().includes('books')) {
         manager.addDocument('en', `Recommend me a book`, `recommend_books`);
-        manager.addAnswer('en', 'recommend_books', `A recommended book would be ${name}. Here are some details:
-        - Price: ${price}
-        - Stars: ${stars}
-        - Rating Count: ${rating_count}
+        manager.addAnswer('en', 'recommend_books', `A recommended book would be ${name}. Here are some details:\n
+        - Price: ${price}\n
+        - Stars: ${stars}\n
+        - Rating Count: ${rating_count}\n
         - Features:\n${feature_bullets.map(feature => `  - ${feature}`).join('\n')}`);
     }
     if (_id.toLowerCase().includes('ipad')) {
         manager.addDocument('en', `Recommend me a ipad`, `recommend_ipad`);
-        manager.addAnswer('en', 'recommend_ipad', `A recommended ipad would be ${name}. Here are some details:
-        - Price: ${price}
-        - Stars: ${stars}
-        - Rating Count: ${rating_count}
+        manager.addAnswer('en', 'recommend_ipad', `A recommended ipad would be ${name}. Here are some details:\n
+        - Price: ${price}\n
+        - Stars: ${stars}\n
+        - Rating Count: ${rating_count}\n
         - Features:\n${feature_bullets.map(feature => `  - ${feature}`).join('\n')}`);
     }
 

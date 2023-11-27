@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Reprua: Where Dreams Come Right to Your Door</title>
-  <link rel="stylesheet" type="text/css" href="/views/landingPage.css">
+  <link rel="stylesheet" type="text/css" href="/Software-Engineering-2023/views/landingPage.css">
+  <link rel="stylesheet" type="text/css" href="/Software-Engineering-2023/views/chatbot.css">
   <script src="/public/js/util.js"></script>
 
   <style>
@@ -203,10 +204,33 @@
 </head>
 <body>
 
+<div class="container">
+  <div class="chatbox">
+    <div class="chatbox__support">
+      <div class="chatbox__header">
+        <div class="chatbox__content--header">
+          <h4 class="chatbox__heading--header">Chat support</h4>
+          <p class="chatbox__description--header">Hi. I'm Sally the Chatbot. How may I help you?</p>
+        </div>
+      </div>
+      <div class="chatbox__messages">
+        <div></div>
+      </div>
+      <div class="chatbox__footer">
+        <input type="text" placeholder="Write a message...">
+        <button class="chatbox__send--footer send__button">Send</button>
+      </div>
+    </div>
+    <div class="chatbox__button">
+      <button><img src="../public/Images/chatbox-icon.svg" /></button>
+    </div>
+  </div>
+</div>
+
 <div class="navbar">
-  <a href="/views/landingPage.html" style="text-decoration: none; color: inherit;">
+  <a href="/Software-Engineering-2023/views/landingPage.html" style="text-decoration: none; color: inherit;">
     <div class="navbar-logo">
-      <img src="/public/Images/logo.png" alt="Logo" />
+      <img src="/Software-Engineering-2023/public/Images/logo.png" alt="Logo" />
       <span style="font-weight: bold; font-size: 20px;">Reprua</span>
     </div>
   </a>
@@ -220,16 +244,14 @@
   </div>
   <div id="shopping-icon" class="navbar-cart">
     <a href="/views/shoppingCart.html">
-      <img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />
+      <img src="/public/Images/shoppingCartIcon.png" alt="shoppingCart" />
 
       <span style="font-weight: bold; font-size: 20px;"></span>
     </a>
     <div id="sign-in-user">
-      <a href="registerAndLoginPage.html">
-        <button class="go-to-page-button">
-          <img src="../public/Images/image-button-two.png" alt="Register/Login" />
-        </button>
-      </a>
+      <button class="go-to-page-button" onclick="navigateToPage('/Software-Engineering-2023/views/registerAndLoginPage.html')">
+        <img src="/Software-Engineering-2023/public/Images/image-button-two.png" alt="Register/Login" />
+      </button>
     </div>
   </div>
 </div>
@@ -252,12 +274,102 @@
     <div class="wave" id="wave2"></div>
     <div class="wave" id="wave3"></div>
     <div class="wave" id="wave4"></div>
-    <img src="../public/Images/stars.jpg" class="stars">
-    <img src="../public/Images/island.png" class="island">
+    <img src="/Software-Engineering-2023/public/Images/stars.jpg" class="stars">
+    <img src="/Software-Engineering-2023/public/Images/island.png" class="island">
   </div>
 </section>
 
-<script src="/views/landingPageApp.js"></script>
+<script>
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  }
+
+  function setCookie(name, value, days) {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+  }
+
+  function deleteCookie(name) {
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+  }
+
+  function navigateToPage(route) {
+    window.location.href = route;
+  }
+
+  function logout() {
+    deleteCookie("token");
+    navigateToPage("/views/landingPage.html");
+  }
+
+  const token = getCookie("token");
+
+  if (token) {
+    const profileButton = document.createElement("button");
+    profileButton.className = "go-to-page-button";
+    profileButton.innerHTML = '<img src="../public/Images/profile.png" alt="Profile" />';
+    profileButton.onclick = function () {
+      checkUserRoleAndRedirect();
+    };
+
+    document.getElementById("shopping-icon").innerHTML =
+            '<a href="/views/shoppingCart.html" style="text-decoration: none; color: inherit;">' +
+            '<img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />' +
+            '<span style="font-weight: bold; font-size: 20px;"></span>' +
+            '</a>';
+
+    document.getElementById("shopping-icon").appendChild(profileButton);
+
+    const logoutButton = document.createElement("button");
+    logoutButton.className = "go-to-page-button";
+    logoutButton.innerHTML = '<img src="../public/Images/logout-button-again.png" alt="Logout" />';
+    logoutButton.onclick = logout;
+
+    document.getElementById("shopping-icon").appendChild(logoutButton);
+  }
+</script>
+
+<script>
+  function checkUserRoleAndRedirect() {
+
+    const token = getCookie("token");
+
+    if (token) {
+      fetch("http://localhost:3000/token", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+              .then(response => response.json())
+              .then(data => {
+                const role = data.role;
+
+                if (role === "Seller") {
+                  window.location.href = "/Software-Engineering-2023/views/profilePageSeller.html";
+                } else if (role === "Member") {
+                  window.location.href = "/Software-Engineering-2023/views/profilePageMember.html";
+                } else {
+                  console.error("Unknown role:", role);
+                }
+              })
+              .catch(error => {
+                console.error("Error fetching user role:", error);
+              });
+    } else {
+      console.error("JWT token not found in cookies.");
+    }
+  }
+</script>
+
+<script src="/Software-Engineering-2023/views/chatbot.js"></script>
+
+
+
+<script src="/Software-Engineering-2023/views/landingPageApp.js"></script>
 
 </body>
 </html>
