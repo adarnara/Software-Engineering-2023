@@ -14,6 +14,7 @@ const shippingRepo = require("../Repository/shippingRepo.js");
 const url = require("url");
 const { request } = require("http");
 const { parse } = require("path");
+const { parseJwtHeader } = require("../middlewares/authmiddleware.js");
 
 const parseProductPrice = /\$([\d.]+)/;
 
@@ -134,9 +135,6 @@ async function calculateTotalCostEachProduct(req, res) {
         let requestBody = "";
         let parsedRequestBody;
 
-        const parsedUrl = url.parse(req.url, true);
-        const queryParams = parsedUrl.query;
-
         // if (Object.keys(queryParams).length != 1) {
         //     resCode = 400;
         //     resMsg =
@@ -202,7 +200,11 @@ async function calculateTotalCostEachProduct(req, res) {
         };
         const addressTo = parsedRequestBody.address_to;
         const parcels = parsedRequestBody.parcels;
-        const email = addressTo.email;  // how to check email is valid, since it comes from form?
+
+        const user_id = await getID(req, res);
+        const currMember = await cartRepo.getMember(user_id);
+        // const email = addressTo.email;  // how to check email is valid, since it comes from form?
+        const email = currMember.email;
 
         try {
             const currMemberCart = await cartRepo.getCurrCart(email);
@@ -305,29 +307,6 @@ async function setCartProductShippingInfo(req, res) {
         let requestBody = "";
         let parsedRequestBody;
 
-        const parsedUrl = url.parse(req.url, true);
-        const queryParams = parsedUrl.query;
-
-        if (Object.keys(queryParams).length != 1) {
-            resCode = 400;
-            resMsg =
-              "Bad Request: Please Ensure only one query param for cart_id is specified";
-            resType = "text/plain";
-            res.writeHead(resCode, { "Content-Type": resType });
-            res.end(resMsg);
-            resolve(resMsg);
-            return;
-        }
-        if (!("cart_id" in queryParams)) {
-            resCode = 400;
-            resType = "text/plain";
-            resMsg = "Bad Request: Single query param must have the key 'cart_id'";
-            res.writeHead(resCode, { "Content-Type": resType });
-            res.end(resMsg);
-            resolve(resMsg);
-            return;
-        }
-        const cart_id = queryParams["user_id"];
         try {
             requestBody = await handleData(req);
             console.log("REQUEST BODY !!!!!");
@@ -351,13 +330,14 @@ async function setCartProductShippingInfo(req, res) {
             "email": "softwareEngineeringF23@gmail.com"
         };
 
-
-
         try {
             let updatedProducts = [];
             console.log(parsedRequestBody);
             let email;
             let currMemberCart;
+            const user_id = await getID(req, res);
+            const currMember = await cartRepo.getMember(user_id);
+            currMemberCart = await cartRepo.getCurrCart(currMember.email);
 
             for (const product_id in parsedRequestBody) {
                 const chosenRate = parsedRequestBody[product_id].chosen_rate;
@@ -365,9 +345,11 @@ async function setCartProductShippingInfo(req, res) {
                 const fastestRate = parsedRequestBody[product_id].fastest_rate;
                 const bestValueRate = parsedRequestBody[product_id].best_value_rate;
                 const cheapestRate = parsedRequestBody[product_id].cheapest_rate;
-                email = addressTo.email;          // maybe change later?
 
-                currMemberCart = await cartRepo.getCurrCart(email);
+                // email = addressTo.email;          // maybe change later?
+                email = currMember.email;
+
+                // currMemberCart = await cartRepo.getCurrCart(email);
                 if (!currMemberCart) {
                     resCode = 401;
                     resType = "text/plain";
@@ -450,30 +432,6 @@ async function setCartProductTransaction(req, res) {
         let requestBody = "";
         let parsedRequestBody;
 
-        const parsedUrl = url.parse(req.url, true);
-        const queryParams = parsedUrl.query;
-
-        if (Object.keys(queryParams).length != 1) {
-            resCode = 400;
-            resMsg =
-              "Bad Request: Please Ensure only one query param for cart_id is specified";
-            resType = "text/plain";
-            res.writeHead(resCode, { "Content-Type": resType });
-            res.end(resMsg);
-            resolve(resMsg);
-            return;
-        }
-        if (!("cart_id" in queryParams)) {
-            resCode = 400;
-            resType = "text/plain";
-            resMsg = "Bad Request: Single query param must have the key 'cart_id'";
-            res.writeHead(resCode, { "Content-Type": resType });
-            res.end(resMsg);
-            resolve(resMsg);
-            return;
-        }
-        const cart_id = queryParams["user_id"];
-
         try {
             
             requestBody = await handleData(req);
@@ -488,14 +446,19 @@ async function setCartProductTransaction(req, res) {
             return;
         }
 
-
-
         try {
 
             console.log("1: " + "    " + JSON.stringify(requestBody));
             parsedRequestBody = JSON.parse(requestBody);
-            const email = parsedRequestBody.email;
-            const cartID = parsedRequestBody.cart_id;
+
+            const user_id = await getID(req, res);
+            const currMember = await cartRepo.getMember(user_id);
+            const email = currMember.email;
+            const currMemberCart = await cartRepo.getCurrCart(email);
+            const cartID = currMemberCart._id;
+
+            // const email = parsedRequestBody.email;
+            // const cartID = parsedRequestBody.cart_id;
             let lastTransactionTime = null;
 
             let transactionProducts = [];
@@ -533,6 +496,16 @@ async function setCartProductTransaction(req, res) {
             return;
         }
     });
+}
+
+async function getID(req, res)
+{
+  return new Promise(async (resolve) => {
+    let userData = parseJwtHeader(req, res);
+    if (userData) resolve(userData["id"]);
+    else resolve(null);
+    resolve(userData['id']);
+  })
 }
 
 

@@ -108,6 +108,7 @@ async function changeProductQuantityFromCart(req, res) {
     const parsedUrl = url.parse(req.url, true);
     const queryParams = parsedUrl.query;
 
+
     // ensure that only one query parameter (the user_id)
     if (Object.keys(queryParams).length !== 0) {
       resCode = 400;
@@ -121,6 +122,7 @@ async function changeProductQuantityFromCart(req, res) {
     }
     const user_id = await getID(req, res);
 
+    const currMember = await cartRepo.getMember(user_id);
     try {
       await req.on("data", (chunk) => {
         requestBody += chunk;
@@ -137,35 +139,32 @@ async function changeProductQuantityFromCart(req, res) {
     ) {
       const reqBodyKeys = Object.keys(parsedRequestBody);
       // Check it has exactly three properties
-      if (reqBodyKeys.length !== 3) {
+      if (reqBodyKeys.length !== 2) {
         resCode = 400;
         resMsg =
-          "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String, email: String}";
+          "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String}";
         resType = "text/plain";
       } else {
         if (
           !reqBodyKeys.includes("quantity") ||
-          !reqBodyKeys.includes("product_id") ||
-          !reqBodyKeys.includes("email")
+          !reqBodyKeys.includes("product_id") 
         ) {
           resCode = 400;
           resMsg =
-            "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String, email: String}";
+            "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String}";
           resType = "text/plain";
         } else {
           if (
             typeof parsedRequestBody.quantity !== "number" ||
-            typeof parsedRequestBody.product_id !== "string" ||
-            typeof parsedRequestBody.email !== "string"
+            typeof parsedRequestBody.product_id !== "string"
           ) {
             resCode = 400;
             resMsg =
-              "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String, email: String}";
+              "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String}";
             resType = "text/plain";
           } else if (
             parsedRequestBody.quantity == null ||
-            parsedRequestBody.product_id == null ||
-            parsedRequestBody.email == null
+            parsedRequestBody.product_id == null
           ) {
             resCode = 400;
             resMsg =
@@ -176,7 +175,7 @@ async function changeProductQuantityFromCart(req, res) {
             // Get JSON body
             const quantity = parsedRequestBody.quantity;
             const product_id = parsedRequestBody.product_id;
-            const email = parsedRequestBody.email;
+            const email = currMember.email;
 
             // Get query params in the URI (should just be user_id)
 
@@ -274,7 +273,6 @@ async function changeProductQuantityFromCart(req, res) {
 
 const regExpURIAddProduct = /^\/cart\/add\/[^/]+$/;
 async function addProductToCart(req, res) {
-  console.log("michael")
   return new Promise(async (resolve) => {
     if (req.method !== "POST") {
       let resMsg =
@@ -320,11 +318,12 @@ async function addProductToCart(req, res) {
     ) {
       const reqBodyKeys = Object.keys(parsedRequestBody);
       // Check it has exactly three properties
-      console.log("\n\n\nhi\n\n")
-      if (reqBodyKeys.length !== 3) {
+      const user_id = await getID(req, res);
+      const currMember = await cartRepo.getMember(user_id);
+      if (reqBodyKeys.length !== 2) {
         resCode = 400;
         resMsg =
-          "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String, email: String}";
+          "Bad Request: Please ensure request body has two keys {quantity: Number, product_id: String}";
         resType = "text/plain";
         res.writeHead(resCode, { "Content-Type": resType });
         res.end(resMsg);
@@ -333,12 +332,11 @@ async function addProductToCart(req, res) {
       } else {
         if (
           !reqBodyKeys.includes("quantity") ||
-          !reqBodyKeys.includes("product_id") ||
-          !reqBodyKeys.includes("email")
+          !reqBodyKeys.includes("product_id")
         ) {
           resCode = 400;
           resMsg =
-            "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String, email: String}";
+            "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String}";
           resType = "text/plain";
           res.writeHead(resCode, { "Content-Type": resType });
           res.end(resMsg);
@@ -347,12 +345,11 @@ async function addProductToCart(req, res) {
         } else {
           if (
             typeof parsedRequestBody.quantity !== "number" ||
-            typeof parsedRequestBody.product_id !== "string" ||
-            typeof parsedRequestBody.email !== "string"
+            typeof parsedRequestBody.product_id !== "string"
           ) {
             resCode = 400;
             resMsg =
-              "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String, email: String}";
+              "Bad Request: Please ensure request body has two keys {quantity: Number, product_id: String}";
             resType = "text/plain";
             res.writeHead(resCode, { "Content-Type": resType });
             res.end(resMsg);
@@ -361,12 +358,11 @@ async function addProductToCart(req, res) {
           } // Reaching this else means the request body is good to go
           else if (
             parsedRequestBody.quantity == null ||
-            parsedRequestBody.product_id == null ||
-            parsedRequestBody.email == null
+            parsedRequestBody.product_id == null 
           ) {
             resCode = 400;
             resMsg =
-              "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String, email: String} that are not null";
+              "Bad Request: Please ensure request body has two keys {quantity: Number, product_id: String} that are not null";
             resType = "text/plain";
             res.writeHead(resCode, { "Content-Type": resType });
             res.end(resMsg);
@@ -375,12 +371,12 @@ async function addProductToCart(req, res) {
           } // Reaching this else means the request body is good to go
           else {
             const currMemberCart = await cartRepo.getCurrCart(
-              parsedRequestBody.email
+              currMember.email
             );
 
             const quantity = parsedRequestBody.quantity;
             const product_id = parsedRequestBody.product_id;
-            const email = parsedRequestBody.email;
+            const email = currMember.email;
               console.log(product_id);
             const existingProduct = await cartRepo.getCurrProduct(
               product_id,

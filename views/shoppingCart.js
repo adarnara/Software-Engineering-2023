@@ -3,17 +3,6 @@ function checkPos(quantity) {
   if (quantity.value < 1) quantity.value = 1;
 }
 let subtotal;
-// Get the current Member's cart
-const getCurrMemberCart = async () => {
-  try {
-    const currMemberCart = await cartRepo.getUserCurrentCart(currMemberEmail);
-
-    console.log("Curr Member: ", JSON.stringify(currMemberCart));
-    return currMemberCart;
-  } catch (err) {
-    console.log(err);
-  }
-};
 
 // Go to checkout page when 'Proceed to Checkout' button is clicked
 function proceedToCheckout() {
@@ -55,7 +44,6 @@ async function addProductToCart(product, button) {
         },
         body: JSON.stringify({
           quantity: parseInt(quantity),
-          email: currUser.email,
           product_id: product,
         }),
       }
@@ -119,7 +107,6 @@ async function changeNumber(productId, displayNumber) {
     },
     body: JSON.stringify({
       quantity: parseInt(displayNumber.value),
-      email: currMemberEmail,
       product_id: productId,
     }),
   };
@@ -363,7 +350,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const hiddenButton = document.getElementById(
         "hidden-button"
       );
-      if (data.deletedProducts.length == 0)
+      if (data.deletedProducts.length == 0 && data.products.length == 0)
         {
           hiddenButton.remove();
         }
