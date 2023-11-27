@@ -43,10 +43,15 @@ class ProductController {
     }
   }
 
-  async getLargestCategoryId(req) {
-    const category = req.query.category;
-    const largestId = await ProductRepository.getLargestCategoryId(category);
-    resolve(largestId);
+  async getLargestCategoryId(req, res) {
+    try{
+      const category = req.query.category;
+      const largestId = await ProductRepository.getLargestCategoryId(category);
+      console.log(largestId, "largestId print from ProductController")
+      res.status(200).json(largestId);
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to fetch largest id in category.' });
+    }
   }
 }
 
