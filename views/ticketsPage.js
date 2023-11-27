@@ -1,11 +1,8 @@
-//const authorization = require("../public/js/util.js")
-
 document.getElementById('Tickets').addEventListener('submit', async function(event){
     event.preventDefault();
 
     var userInput = document.getElementById('userInput').value;
 
-    var userId = 'userId';
     authorize('http://localhost:3000/submit-form', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -19,7 +16,7 @@ document.getElementById('Tickets').addEventListener('submit', async function(eve
     })
     .then(data => {
         console.log('Ticket has been posted:', data);
-        // Here you can handle what happens after a successful submission
+        window.location.href = "http://localhost:5500/views/landingPage.html";
     })
     .catch((error) => {
         console.error("Error: ", error);

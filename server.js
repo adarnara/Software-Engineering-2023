@@ -203,7 +203,7 @@ const server = http.createServer(async (request, response) => {
             shoppingCartRouteHandler(request, response);
         } else if(ticketsRouteHandler){
             console.log('Ticket router is working.')
-            ticketsRouteHandler(request, reponse);
+            ticketsRouteHandler(request, response);
         } else if (shippingRouteHandler) {
             shippingRouteHandler(request, response);
         } else {
