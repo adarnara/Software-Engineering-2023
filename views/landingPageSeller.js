@@ -173,12 +173,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //event listener for submit button
     const form = document.getElementById('productForm');
-    form.addEventListener('submit', function(event) {
+    form.addEventListener('submit', async function(event) {
         event.preventDefault();
 
         console.log('submit button clicked');
-        const productData = createProductJSON();
-       
+        const productData = await createProductJSON();
+       console.log(productData);
         fetch('http://localhost:3000/seller/create', {
             method: 'POST',
             headers: {
@@ -188,7 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Success:', data);
+            console.log('Result:', data);
         })
         .catch(error => {
             console.error('Error:', error);
@@ -196,68 +196,82 @@ document.addEventListener("DOMContentLoaded", () => {
         modal.style.display = "none";
     });
     
-
-    function createProductJSON(){
+    //create a product JSON based on the currently inputted parameters. 
+    async function createProductJSON() {
+        let productData = {};
         const selectedProductType = document.getElementById('productType').value;
-
-        const productData = {
-            "_id": "uniqueProductId12345678", //temporary <-will need to check what type of product is is and then increment by one to however many already exist.
-            "name": document.getElementById('productName').value,
-            "price": document.getElementById('productPrice').value,
-            "stars": document.getElementById('stars').value,
-            "rating_count": document.getElementById('ratingCount').value,
-            
-            "feature_bullets": [], 
-            "images": [], 
-            "variant_data": [], 
-            "seller_data": {
-                "Company": "Example Company", //temporary <-need to get this data from whatever seller is loggeed in using their token.
-                
-            },
-            "length": "5",
-            "width": "5",
-            "height": "5",
-            "distance_unit": "in",
-            "weight": "5",
-            "mass_unit": "lb",
-        };
-        
-        const imageFiles = document.getElementById('images').files; //assuming single file upload right now
-        if(imageFiles){
-            for(let i = 0; i < imageFiles.length; i++){
-                const imageFile = imageFiles[i];
-                const reader = new FileReader();
-                reader.onload = async function(event) {
-                    const base64String = event.target.result;
-                    console.log(base64String);
-                    productData.images[i] = [
-                        { 
-                            hiRes: null,
-                            thumb: null,
-                            large: base64String,
-                            main: [null],
-                            variant: null,
-                            lowRes: null,
-                            shoppableScene: null,
-                        }
-                    ]; //add the base 64 encoding to large param in image  
+    
+        try {
+            const response = await fetch(`http://localhost:3000/search/categoryLargest?category=${selectedProductType}`);
+            const largestId = await response.json() + 1;
+            const fullId = selectedProductType + largestId;
+    
+            // Initialize productData with default values
+            productData = {
+                "_id": fullId,
+                "name": document.getElementById('productName').value,
+                "price": document.getElementById('productPrice').value,
+                "stars": document.getElementById('stars').value,
+                "rating_count": document.getElementById('ratingCount').value,
+                "feature_bullets": [],
+                "images": [],
+                "variant_data": [],
+                "seller_data": {
+                    "Company": "Example Company", //need t replace with actual seller data
+                },
+                "length": "5",
+                "width": "5",
+                "height": "5",
+                "distance_unit": "in",
+                "weight": "5",
+                "mass_unit": "lb",
+            };
+    
+            //handle image files
+            const imageFiles = document.getElementById('images').files;
+            if (imageFiles) {
+                for (let i = 0; i < imageFiles.length; i++) {
+                    const base64String = await readFileAsDataURL(imageFiles[i]);
+                    productData.images.push({
+                        hiRes: null,
+                        thumb: null,
+                        large: base64String,
+                        main: [null],
+                        variant: null,
+                        lowRes: null,
+                        shoppableScene: null,
+                    });
                 }
-                reader.readAsDataURL(imageFile);
+            } else {
+                console.log("There were no images input.");
             }
-        } else {
-            console.log("There were no images input.");
-        }        
-
-        //assuming featureBullets is a comma-separated input
-        const featureBulletInputs = document.getElementById('featureBullets').value.split(',');
-        productData.feature_bullets = featureBulletInputs.map(bullet => bullet.trim());
-
-        const variantDataInputs = document.getElementById('variantData').value.split(',');
-        productData.variant_data = variantDataInputs.map(variant => variant.trim());
-
-        console.log(productData);
-        return productData;
+    
+            //handling feature bullets -> assuming featureBullets is a comma-separated input
+            const featureBulletInputs = document.getElementById('featureBullets').value.split(',');
+            productData.feature_bullets = featureBulletInputs.map(bullet => bullet.trim());
+    
+            //variant data similar to feature bullets
+            const variantDataInputs = document.getElementById('variantData').value.split(',');
+            productData.variant_data = variantDataInputs.map(variant => variant.trim());
+    
+            console.log(productData);
+            return productData;
+        } catch (error) {
+            console.error('Error:', error);
+            return null;
+        }
     }
+    
+    function readFileAsDataURL(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = event => resolve(event.target.result);
+            reader.onerror = error => reject(error);
+            reader.readAsDataURL(file);
+        });
+    }
+    
+    
 
     function createProductHTML(product) {
         // Check if variant_data is empty

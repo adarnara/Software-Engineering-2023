@@ -40,8 +40,15 @@ class ProductRepository {
     if (!products) {
       throw new Error('No products found');
     }
-    const largestId = products[products.length]._id;
-    console.log(largestId);
+    let largestId = 0;
+    for(let i = 0; i < products.length; i++){
+      const match = products[i]._id.match(/\d+/); 
+      const id = match ? parseInt(match[0]) : null; 
+      if(id > largestId){
+        largestId = id;
+      }
+    }
+    console.log(largestId, "largestId print from ProductRepo");
     return largestId;
   }
 
