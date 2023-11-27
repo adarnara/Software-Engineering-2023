@@ -217,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
     async function addProductToCart(product) {
         const currUser = await checkToken()
         let quantity = document.getElementById(product).value;
-        console.log(currUser)
+        console.log(currUser);
         console.log(quantity);
         if (
             isNaN(parseInt(quantity)) ||

@@ -22,54 +22,10 @@ const parseProductPrice = /\$([\d.]+)/;
 async function getID(req, res)
 {
   return new Promise(async (resolve) => {
-    console.log("\n\n\n\n\nhiiii\n\n\n\n\n")
     let userData = parseJwtHeader(req, res);
-    console.log(userData)
     if (userData) resolve(userData["id"]);
     else resolve(null);
-    // let resCode, resMsg;
-    // let resType = 'application/json';
-
-    // if (userData) {
-    //   const userID = userData['id'];
-    //   resCode = 200;
-    //   resMsg = JSON.stringify({
-        
-    //   })
-    // }
-
-
-    // console.log("\n\n\n\n\n")
-    // console.log(token);
-    // console.log("\n\n\n\n\n")
-    // let currToken = await parseJwtHeader();
     resolve(userData['id']);
-  })
-}
-async function getEmail(req, res)
-{
-  return new Promise(async (resolve) => {
-    console.log("\n\n\n\n\nhiiii\n\n\n\n\n")
-    let userData = parseJwtHeader(req, res);
-    if (userData) resolve(userData["email"]);
-    else resolve(null);
-    // let resCode, resMsg;
-    // let resType = 'application/json';
-
-    // if (userData) {
-    //   const userID = userData['id'];
-    //   resCode = 200;
-    //   resMsg = JSON.stringify({
-        
-    //   })
-    // }
-
-
-    // console.log("\n\n\n\n\n")
-    // console.log(token);
-    // console.log("\n\n\n\n\n")
-    // let currToken = await parseJwtHeader();
-    resolve(userData['email']);
   })
 }
 async function changeProductQuantityFromCatalog(
