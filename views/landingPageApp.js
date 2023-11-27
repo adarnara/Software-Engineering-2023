@@ -169,14 +169,25 @@ document.addEventListener("DOMContentLoaded", () => {
         // Check if variant_data is empty
         let colorsHTML = '';
         if (product.variant_data.length > 0) {
-            const variantData = JSON.parse(product.variant_data[0]);
-            const colors = Object.values(variantData).flat();
-            colorsHTML = `
-                <p>Variants:</p>
-                <ul>
-                    ${colors.map((color) => `<li>${color}</li>`).join('')}
-                </ul>
-            `;
+            try {
+                // Attempt to parse the first item as JSON
+                const variantData = JSON.parse(product.variant_data[0]);
+                const colors = Object.values(variantData).flat();
+                colorsHTML = `
+                    <p>Variants:</p>
+                    <ul>
+                        ${colors.map(color => `<li>${color}</li>`).join('')}
+                    </ul>
+                `;
+            } catch (error) {
+                // If JSON.parse fails, handle variant_data as an array of strings
+                colorsHTML = `
+                    <p>Variants:</p>
+                    <ul>
+                        ${product.variant_data.map(variant => `<li>${variant}</li>`).join('')}
+                    </ul>
+                `;
+            }
         }
 
         const productHTML = `
