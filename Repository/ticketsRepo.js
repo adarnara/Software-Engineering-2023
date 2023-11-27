@@ -1,7 +1,50 @@
-const ticket = require('../models/ticketModel.js');
+const Ticket = require('../models/ticketModel.js');
 
-//function to change the status of the ticket
+const ticketsRepository = {
+  
+  async changeStatus(ticketId, newStatus) {
+    try {
+      const updatedTicket = await Ticket.findByIdAndUpdate(
+        ticketId,
+        { status: newStatus },
+        { new: true }
+      );
+      return updatedTicket;
+    } catch (error) {
+      console.error('Error updating ticket status:', error);
+      throw error;
+    }
+  },
 
-//function to add the resolutionDescription
+  
+  async addResolutionDescription(ticketId, resolutionDescription) {
+    try {
+      const updatedTicket = await Ticket.findByIdAndUpdate(
+        ticketId,
+        { resolutionDescription: resolutionDescription },
+        { new: true }
+      );
+      return updatedTicket;
+    } catch (error) {
+      console.error('Error adding resolution description:', error);
+      throw error;
+    }
+  },
 
-//Function to add the closureDate
+  
+  async addClosureDate(ticketId, closureDate) {
+    try {
+      const updatedTicket = await Ticket.findByIdAndUpdate(
+        ticketId,
+        { closureDate: closureDate },
+        { new: true }
+      );
+      return updatedTicket;
+    } catch (error) {
+      console.error('Error adding closure date:', error);
+      throw error;
+    }
+  },
+};
+
+module.exports = ticketsRepository;
