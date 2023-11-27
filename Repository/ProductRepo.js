@@ -32,15 +32,17 @@ class ProductRepository {
     }
     return products;
   }
-  
-  async getProductBySellerName(sellerId) {
-    const products = await Product.find({ "seller_data.sellerID": sellerId });
 
-    if (!products.length) {
-      throw new Error('No products found for this seller');
+  async getLargestCategoryId(category) {
+    const products = await Product.find({
+      _id: { $regex: new RegExp(category) } //RegExp will filter the products out that don't belong to the right category.
+    })
+    if (!products) {
+      throw new Error('No products found');
     }
-
-    return products;
+    const largestId = products[products.length]._id;
+    console.log(largestId);
+    return largestId;
   }
 
   async create(productData) {

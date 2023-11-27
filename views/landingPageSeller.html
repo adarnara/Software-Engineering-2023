@@ -296,6 +296,15 @@
       <span class="close">&times;</span>
       <h2>Enter Product Details</h2>
       <form id="productForm">
+
+        <label for="productType">Product Type:</label>
+        <select name="productType" id="productType">
+          <option value="ipad">Ipad</option>
+          <option value="laptop">Laptop</option>
+          <option value="tshirts">T-Shirt</option>
+          <option value="books">Book</option>
+        </select><br><br>
+
         <label for="productName">Product Name:</label>
         <input type="text" id="productName" name="productName"><br><br>
 
@@ -312,7 +321,8 @@
         <input type="text" id="featureBullets" name="featureBullets"><br><br>
 
         <label for="images">Images:</label>
-        <input type="file" id="images" name="images"><br><br>
+        <input type="file" id="images" name="images" accept="image/*" multiple><br><br>
+
 
         <label for="variantData">Variant Data:</label>
         <input type="text" id="variantData" name="variantData"><br><br>
