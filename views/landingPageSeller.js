@@ -185,6 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
         event.preventDefault();
         console.log('submit button clicked');
         const productData = await createProductJSON();
+        console.log( JSON.stringify(productData), '<--------------- BODY FOR CREATE');
         authorize('http://localhost:3000/seller/create', {
             method: 'POST',
             headers: {

@@ -323,6 +323,22 @@ body {
 
 
   </style>
+
+  <script>
+    function checkForNegativeNumber(input) {
+        if (input.value < 0) {
+            input.value = 0;
+        }
+    }
+  </script>
+
+  <script>
+    function checkForInvalidRating(input) {
+        if (input.value < 0 || input.value > 5) {
+            input.value = 0;
+        }
+    }
+  </script>
 </head>
 <body>
 
@@ -389,13 +405,13 @@ body {
         <input type="text" id="productName" name="productName" required><br><br>
 
         <label for="productPrice">Product Price:</label>
-        <input type="number" id="productPrice" name="productPrice" required><br><br>
+        <input type="number" id="productPrice" name="productPrice" required min="0"><br><br>
 
         <label for="stars">Stars:</label>
-        <input type="number" id="stars" name="stars" required><br><br>
+        <input type="number" id="stars" name="stars" required min="0" max = "5" oninput="checkForInvalidRating(this)"><br><br>
 
         <label for="ratingCount">Total Ratings:</label>
-        <input type="number" id="ratingCount" name="ratingCount" required><br><br>
+        <input type="number" id="ratingCount" name="ratingCount" required min="0" oninput="checkForNegativeNumber(this)"><br><br>
 
         <label for="featureBullets">Feature Bullets:</label>
         <input type="text" id="featureBullets" name="featureBullets" required><br><br>
@@ -428,13 +444,13 @@ body {
       <input type="text" id="editproductName" name="editproductName" required><br><br>
 
       <label for="productPrice">Product Price:</label>
-      <input type="number" id="editproductPrice" name="editproductPrice" required><br><br>
+      <input type="number" id="editproductPrice" name="editproductPrice" required min="0" oninput="checkForNegativeNumber(this)"><br><br>
 
       <label for="stars">Stars:</label>
-      <input type="number" id="editstars" name="editstars" required><br><br>
+      <input type="number" id="editstars" name="editstars" required min="0" max = "5" oninput="checkForInvalidRating(this)"><br><br>
 
       <label for="ratingCount">Total Ratings:</label>
-      <input type="number" id="editratingCount" name="editratingCount" required><br><br>
+      <input type="number" id="editratingCount" name="editratingCount" required min="0"  oninput="checkForNegativeNumber(this)"><br><br>
 
       <label for="featureBullets">Feature Bullets:</label>
       <input type="text" id="editfeatureBullets" name="editfeatureBullets" required><br><br>
