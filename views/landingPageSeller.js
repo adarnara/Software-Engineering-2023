@@ -178,8 +178,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         console.log('submit button clicked');
         const productData = await createProductJSON();
-       console.log(productData);
-        fetch('http://localhost:3000/seller/create', {
+        console.log(productData);
+        authorize('http://localhost:3000/seller/create', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -202,9 +202,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const selectedProductType = document.getElementById('productType').value;
     
         try {
-            const response = await fetch(`http://localhost:3000/search/categoryLargest?category=${selectedProductType}`);
-            const largestId = await response.json() + 1;
-            const fullId = selectedProductType + largestId;
+            const response = await fetch(`http://localhost:3000/search/categoryLargest?category=${selectedProductType}`); //gets the id of the last product in the categoru
+            const largestId = await response.json() + 1; //add one to largest id to get new unique id
+            const fullId = selectedProductType + largestId; //combine category name and id number
 
             // Initialize productData with default values
             productData = {
@@ -217,13 +217,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 "images": [],
                 "variant_data": [],
                 "seller_data": {
-                    "Company": "Example Company", //need t replace with actual seller data
+                    "company": "",
+                    "bio": "",
+                    "website": "",
+                    "phone": "",
+                    "email": "",
+                    "firstName": "",
+                    "lastName": "",
+                    "warehouse_address": {
+                        "street": "",
+                        "city": "",
+                        "state": "",
+                        "zip": "",
+                        "country": "",
+                    },
                 },
-                "length": "5",
-                "width": "5",
-                "height": "5",
+                "length": Math.floor((Math.random() * 400 + 100)) / 100,
+                "width": Math.floor((Math.random() * 400 + 100)) / 100,
+                "height": Math.floor((Math.random() * 400 + 100)) / 100,
                 "distance_unit": "in",
-                "weight": "5",
+                "weight": Math.floor((Math.random() * 400 + 100)) / 100,
                 "mass_unit": "lb",
             };
 
@@ -274,11 +287,11 @@ document.addEventListener("DOMContentLoaded", () => {
     
 
     function createProductHTML(product) {
-        // Check if variant_data is empty
+        //check if variant_data is empty
         let colorsHTML = '';
         if (product.variant_data.length > 0) {
             try {
-                // Attempt to parse the first item as JSON
+                //attempt to parse the first item as JSON
                 const variantData = JSON.parse(product.variant_data[0]);
                 const colors = Object.values(variantData).flat();
                 colorsHTML = `
@@ -288,7 +301,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     </ul>
                 `;
             } catch (error) {
-                // If JSON.parse fails, handle variant_data as an array of strings
+                //if JSON.parse fails, handle variant_data as an array of strings (this is what it is like when you create a new product as a seller)
                 colorsHTML = `
                     <p>Variants:</p>
                     <ul>
