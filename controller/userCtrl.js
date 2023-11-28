@@ -173,7 +173,6 @@ async function login(path, request, response) {
     }
 
 }
-
 async function allUsers(request, response) {
     try {
         getAllUsers(request, response)
@@ -185,10 +184,7 @@ async function allUsers(request, response) {
 }
 
 const updateUser = async (request, response) => {
-    const token = parseJwtHeader(request, response);
-    if (!token) return;
-    const id = token.id;
-
+    const { id } = request.params
     const putData = await getPostData(request);
     const userUpdateData = JSON.parse(putData);
     try {
@@ -203,10 +199,9 @@ const updateUser = async (request, response) => {
 };
 
 async function removeUser(request, response) {
-    const token = parseJwtHeader(request, response);
-    if (!token) return;
-    const id = token.id;
-
+    const { id } = request.params;
+    console.log(id)
+    console.log("hello")
     try {
         const user = await userRepo.findUserById(id);
         if (!user) {
@@ -224,10 +219,7 @@ async function removeUser(request, response) {
 }
 
 const getAUser = async (request, response) => {
-    const token = parseJwtHeader(request, response);
-    if (!token) return;
-    const id = token.id;
-
+    const { id } = request.params;
     try {
         const user = await userRepo.findUserById(id);
         if (!user) {

@@ -13,7 +13,7 @@ function fetchUserInformation() {
     checkToken().then(data => {
         const userId = data.id;
 
-        authorize(`${SERVER_URL}/user`)
+        authorize(`${SERVER_URL}/user/${userId}`)
             .then(response => response.json())
             .then(userData => {
                 // Populate the form with retrieved user information

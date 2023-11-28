@@ -118,7 +118,12 @@ function fetchUserInformation(jwtToken) {
         .then(data => {
             const userId = data.id;
 
-            authorize(`http://localhost:3000/user`)
+            fetch(`http://localhost:3000/user/${userId}`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${jwtToken}`,
+                },
+            })
                 .then(response => response.json())
                 .then(userData => {
                     // Populate the form with retrieved user information
