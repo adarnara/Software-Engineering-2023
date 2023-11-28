@@ -7,7 +7,7 @@
 
   <style>
 
-    body {
+body {
       margin: 0;
       padding: 0;
       overflow: hidden;
@@ -56,7 +56,6 @@
       border-bottom-left-radius: 10px;
       border-bottom-right-radius: 10px;
       box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-      height: 60px;
     }
 
 
@@ -119,7 +118,15 @@
       background-color: #f8f8f8;
       width: 100%;
     }
- 
+    .navbar-cart {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-cart img {
+      max-width: 40px;
+      margin-right: 10px;
+    }
     .product-image {
       flex: 1;
       margin-right: 20px;
@@ -185,8 +192,6 @@
       border: none;
       padding: 0;
       cursor: pointer;
-      max-width: 40px;
-      height: auto;
     }
 
     .go-to-page-button.login-button {
@@ -255,27 +260,36 @@
 </head>
 <body>
 
-<div class="navbar">
-  <a href="/views/landingPageSeller.html" style="text-decoration: none; color: inherit;">
-    <div class="navbar-logo">
-      <img src="/public/Images/logo.png" alt="Logo" />
-      <span style="font-weight: bold; font-size: 20px;">Reprua</span>
+  <div class="navbar">
+    <a href="/views/landingPage.html" style="text-decoration: none; color: inherit;">
+      <div class="navbar-logo">
+        <img src="/public/Images/logo.png" alt="Logo" />
+        <span style="font-weight: bold; font-size: 20px;">Reprua</span>
+      </div>
+    </a>
+    <div>
+      <button class="hidden previous-button" onclick="previousPage()">Previous</button>
+      <button class="hidden next-button" onclick="nextPage()">Next</button>
     </div>
-  </a>
-  <div>
-    <button class="hidden previous-button" onclick="previousPage()">Previous</button>
-    <button class="hidden next-button" onclick="nextPage()">Next</button>
-  </div>
-  <div class="search-bar">
-    <input type="text" placeholder="Search Bar" />
-    <button class="search-button">Search</button>
-  </div>
-  <div id="sign-in-user">
-      <button class="go-to-page-button" onclick="navigateToPage('registerAndLoginPage.html')">
-        <img src="../public/Images/image-button-two.png" alt="Register/Login" />
-      </button>
+    <div class="search-bar">
+      <input type="text" placeholder="Search Bar" />
+      <button class="search-button">Search</button>
     </div>
-</div>
+    <div id="shopping-icon" class="navbar-cart">
+      <a href="/views/shoppingCart.html">
+        <img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />
+  
+        <span style="font-weight: bold; font-size: 20px;"></span>
+      </a>
+      <div id="sign-in-user">
+        <a href="registerAndLoginPage.html">
+          <button class="go-to-page-button">
+            <img src="../public/Images/image-button-two.png" alt="Register/Login" />
+          </button>
+        </a>
+      </div>
+    </div>
+  </div>
 
 <div
   id="error-message" class="hidden">Failed to load products. Please try again later.
