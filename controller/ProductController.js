@@ -1,4 +1,3 @@
-const ProductRepo = require('../Repository/ProductRepo');
 const ProductRepository = require('../Repository/ProductRepo');
 
 class ProductController {
