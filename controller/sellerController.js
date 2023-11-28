@@ -28,16 +28,25 @@ function parseRequestBody(req) {
 class SellerController {
     async getAllSellersProducts(req, res) {
         try {
-            // let userData = parseJwtHeader(req, res);
-            // user = await userRepo.findUserById(userData["id"]);
-            // const sellerEmail = user["email"];
-            let sellerEmail = "testtt@gmail.com"
-            const products = await ProductRepository.getAllFromSellerEmail(sellerEmail);
-            if(!products){
-                throw new Error("No products found from that email.");
+            console.log("made it to seller controller")
+            let userData = parseJwtHeader(req, res); console.log(userData, "<---- user data");
+            if(userData){
+                let user = await userRepo.findUserById(userData["id"]); console.log(user, "<---- user ");
+                const sellerEmail = user["email"];  console.log(sellerEmail, "<---- seller email");
+                const products = await ProductRepository.getAllFromSellerEmail(sellerEmail);  console.log(products, "<---- products from repo");
+                if(!products){
+                    console.log('no products found');
+                    throw new Error("No products found from that email.");
+                }
+                console.log('finished in sellerController');
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                res.end(JSON.stringify(products));
+            } else {
+                throw new Error("Not authorized.")
             }
-            res.writeHead(200, {'Content-Type': 'application/json'});
-            res.end(JSON.stringify(products));
+            // const queryObject = url.parse(req.url, true).query; <---- for sending email through url
+            // const sellerEmail = queryObject.email;
+            // let sellerEmail = "testtt@gmail.com"
         } catch (error) {
             res.writeHead(500, {'Content-Type': 'application/json'});
             res.end(JSON.stringify({ message: "Failed to fetch products from seller.", error: error.message }));
