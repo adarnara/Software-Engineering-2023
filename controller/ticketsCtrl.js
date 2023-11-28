@@ -4,48 +4,48 @@ const middleware = require('../middlewares/authmiddleware.js');
 
 async function getJSON(req) {
     return new Promise((resolve, reject) => {
-        try {
-            let body = '';
-            req.on('data', chunk => {
-                body += chunk.toString();
-            });
-            req.on('end', () => {
+        let body = '';
+        req.on('data', chunk => {
+            body += chunk.toString();
+        });
+        req.on('end', () => {
+            try {
                 resolve(JSON.parse(body));
-            });
-        } catch (error) {
+            } catch (error) {
+                reject(error);
+            }
+        });
+        req.on('error', error => {
             reject(error);
-        }
+        });
     });
 }
-
 
 async function createTicket(req, res) {
     try {
         if (req.headers["content-type"] !== 'application/json') {
-            res.writeHead(415);
-            res.end('Unsupported Media Type');
+            res.writeHead(415).end('Unsupported Media Type');
             return;
         }
 
         let json = await getJSON(req);
         const userData = middleware.parseJwtHeader(req);
-        const userID = userData.id;
+        if (!userData || !userData.id) {
+            res.writeHead(401).end('Unauthorized');
+            return;
+        }
 
-        // Create a new ticket
         const newTicket = new Ticket({
-            userId: userID,
+            userId: userData.id,
             description: json.description,
         });
 
         await newTicket.save();
-
-        res.writeHead(201, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(newTicket));
+        res.writeHead(201, { 'Content-Type': 'application/json' }).end(JSON.stringify(newTicket));
 
     } catch (error) {
         console.error(error);
-        res.writeHead(500);
-        res.end('Internal Server Error');
+        res.writeHead(500).end('Internal Server Error');
     }
 }
 

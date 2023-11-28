@@ -1,4 +1,4 @@
-document.getElementById('Tickets').addEventListener('submit', async function(event){
+document.getElementById('Tickets').addEventListener('submit', function(event){
     event.preventDefault();
 
     var userInput = document.getElementById('userInput').value;
@@ -9,6 +9,9 @@ document.getElementById('Tickets').addEventListener('submit', async function(eve
         body: JSON.stringify({ description: userInput }),
     })
     .then(response => {
+        if (!response) {
+            throw new Error('User is not authenticated');
+        }
         if (!response.ok) {
             throw new Error('Network response was not ok: ' + response.statusText);
         }
@@ -19,6 +22,11 @@ document.getElementById('Tickets').addEventListener('submit', async function(eve
         window.location.href = "http://localhost:5500/views/landingPage.html";
     })
     .catch((error) => {
-        console.error("Error: ", error);
+        if (error.message === 'User is not authenticated') {
+            console.error(error.message);
+            window.location.href = "http://localhost:5500/views/registerAndLoginPage.html";
+        } else {
+            console.error("Error: ", error.message);
+        }
     });
 });
