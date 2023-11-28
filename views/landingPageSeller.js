@@ -130,7 +130,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function displaySellerProducts(){
-        console.log("display function called in landingPageSeller")
         authorize('http://localhost:3000/seller')
         .then((response) => {
             if (!response.ok) {
@@ -139,7 +138,6 @@ document.addEventListener("DOMContentLoaded", () => {
             return response.json();
         })
         .then(data => {
-            console.log("attempting to display fetched products")
             productsContainer.innerHTML = ''; //Clear the products container
             products.length = 0; //Reset the products array
             if(!Array.isArray(data)){
@@ -183,9 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById('productForm');
     form.addEventListener('submit', async function(event) {
         event.preventDefault();
-        console.log('submit button clicked');
         const productData = await createProductJSON();
-        console.log( JSON.stringify(productData), '<--------------- BODY FOR CREATE');
         authorize('http://localhost:3000/seller/create', {
             method: 'POST',
             headers: {
@@ -354,8 +350,6 @@ document.addEventListener("DOMContentLoaded", () => {
     window.editProduct = editProduct;
 
     function deleteProduct(product){
-        // console.log('clicked delete button');
-        // console.log(product, "<----- product _id");
         authorize('http://localhost:3000/seller/delete', {
             method: 'DELETE',
             headers: {
@@ -385,7 +379,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function editProduct(productId){
-        console.log('clicked edit button');
         editmodal.style.display = "block";
         currentEditProduct = productId;
     }
@@ -394,9 +387,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const editform = document.getElementById('editForm');
     editform.addEventListener('submit', async function(event) {
         event.preventDefault();
-        console.log('edit submit button clicked');
         const editFormData = await getEditFormInputs(currentEditProduct);
-        console.log(editFormData, "<------ form data");
         authorize('http://localhost:3000/seller/update', {
             method: 'PUT',
             headers: {
