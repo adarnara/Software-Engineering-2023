@@ -56,11 +56,13 @@ async function changeProductQuantityFromCatalog(
       }
 
       // get current price of product and update totalPrice of cart as well
-      const productInfo = await productRepo.getProductById(
+      let productInfo = await productRepo.getProductById(
         parsedRequestBody.product_id
       );
+      productInfo = productInfo[0];
 
       let productPrice = productInfo.price;
+      console.log("\n\n\n\n\nHi\n\n\n\n")
       productPrice = parseFloat(productPrice.match(parseProductPrice)[1]);
 
       const updatedPOSTproduct =
@@ -124,9 +126,7 @@ async function changeProductQuantityFromCart(req, res) {
 
     const currMember = await cartRepo.getMember(user_id);
     try {
-      await req.on("data", (chunk) => {
-        requestBody += chunk;
-      });
+      requestBody = await handleData(req)
       parsedRequestBody = JSON.parse(requestBody);
     } catch (err) {
       console.error(err);
@@ -220,10 +220,12 @@ async function changeProductQuantityFromCart(req, res) {
                 }
               }
 
-              const productInfo = await productRepo.getProductById(
-                parsedRequestBody.product_id
+              let productInfo = await productRepo.getProductById(
+                product_id
               );
+              productInfo = productInfo[0];
               let productPrice = productInfo.price;
+              console.log("\n\n\n\n\nHi\n\n\n\n")
               productPrice = parseFloat(
                 productPrice.match(parseProductPrice)[1]
               );
@@ -302,9 +304,7 @@ async function addProductToCart(req, res) {
     // Reg Exp test for URI to correct resource *
 
     try {
-      await req.on("data", (chunk) => {
-        requestBody += chunk;
-      });
+      requestBody = await handleData(req);
       parsedRequestBody = JSON.parse(requestBody);
     } catch (err) {
       console.error(err);
@@ -434,11 +434,14 @@ async function addProductToCart(req, res) {
 
 
 
-
-                const productInfo = await productRepo.getProductById(
+                  console.log(product_id)
+                let productInfo = await productRepo.getProductById(
                   product_id
                 );
+                productInfo = productInfo[0];
                 let productPrice = productInfo.price;
+                console.log(productInfo.price)
+                console.log("\n\n\n\nooga\n\n\n")
                 productPrice = parseFloat(
                   productPrice.match(parseProductPrice)[1]
                 );
@@ -624,8 +627,12 @@ async function removeProductFromCart(req, res) {
         }
       }
       
-      const productInfo = await productRepo.getProductById(product_id);
-
+      let productInfo = await productRepo.getProductById(
+        product_id
+      );
+      productInfo = productInfo[0];
+      console.log(productInfo.price)
+      console.log("\n\n\n\n\nHi\n\n\n\n")
       let productPrice = productInfo.price;
       productPrice = parseFloat(productPrice.match(parseProductPrice)[1]);
 
@@ -821,7 +828,21 @@ async function getCartProduct(req, res) {
     resolve(resMsg);
   });
 }
-
+function handleData(req) {
+  return new Promise((resolve, reject) => {
+    let requestBody = '';
+    req.on("data", function (chunk) {
+      requestBody += chunk;
+      console.log("ooga");
+    });
+    req.on("end", function () {
+      resolve(requestBody);
+    });
+    req.on("error", function (error) {
+      reject(error);
+    });
+  });
+}
 module.exports = {
   getProducts,
   removeProductFromCart,

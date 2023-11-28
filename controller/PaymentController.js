@@ -50,7 +50,7 @@ module.exports = {getStripePaymentRedirect};
  */
 async function getFormatedStripeJSON(array){
     let newarray = await Promise.all(array.map(async (item) => {
-        const productdata = await Product.findOne({"_id": item.product_id}, "name price");
+        const productdata = await Product.findOne({"category": item.product_id}, "name price");
         console.log(productdata);
         if(productdata.name === undefined || productdata.price === undefined)
             return undefined;

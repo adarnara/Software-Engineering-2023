@@ -12,8 +12,8 @@ class ProductRepository {
   }
 
   async getProductById(id) {
-    const product = await Product.findById(id)
-
+    const product =  Product.find({category: id});
+    console.log(id);
     if(!product) {
       throw new Error('Product not found');
     }

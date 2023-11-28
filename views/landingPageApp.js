@@ -169,8 +169,8 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="product-image">
                 <img src="${product.images[0].large}" alt="${product.name}" />
                 <div class="image-navigation">
-                    <button onclick="changeImage('${product._id}', -1, this)">Previous</button>
-                    <button onclick="changeImage('${product._id}', 1, this)">Next</button>
+                    <button onclick="changeImage('${product.category}', -1, this)">Previous</button>
+                    <button onclick="changeImage('${product.category}', 1, this)">Next</button>
                 </div>
             </div>
             <div class="product-info">
@@ -184,10 +184,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 ${colorsHTML}
             </div>
             <div class="add-to-cart-button">
-                <button class= "add-button" onclick="addProductToCart('${product._id}')">Add to Cart</button>
+                <button class= "add-button" onclick="addProductToCart('${product.category}')">Add to Cart</button>
             </div>
             <div class="number-control">
-                <input type="number" id='${product._id}' onclick="checkPos(this)" class="display-number" value="1">
+                <input type="number" id='${product.category}' onclick="checkPos(this)" class="display-number" value="1">
             </div>
         </div>
     `;

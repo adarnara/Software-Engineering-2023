@@ -61,7 +61,7 @@ async function addProductToCart(product, button) {
       // console.log(response);
       response = await response.json();
       console.log(response);
-      const productHTML = createProductHTML(response, quant);
+      const productHTML = createProductHTML(response[0], quant);
       prods.innerHTML += productHTML;
     }
   );
@@ -161,7 +161,7 @@ async function deleteProduct(productId, button) {
       // console.log(response);
       response = await response.json();
       console.log(response);
-      const productHTML = createDeletedProductHTML(response);
+      const productHTML = createDeletedProductHTML(response[0]);
       deletedContainer.innerHTML += productHTML;
     }
   );
@@ -202,10 +202,10 @@ function createProductHTML(product, currCartProduct) {
                 <img src="${product.images[0].large}" alt="${product.name}" />
                 <div class="image-navigation">
                     <button onclick="changeImage('${
-                      product._id
+                      product.category
                     }', -1, this)">Previous</button>
                     <button onclick="changeImage('${
-                      product._id
+                      product.category
                     }', 1, this)">Next</button>
                 </div>
             </div>
@@ -226,10 +226,10 @@ function createProductHTML(product, currCartProduct) {
                 <input type="number" class="display-number" value="${
                   currCartProduct.quantity
                 }" oninput="changeNumber('${
-    product._id
-  }', this)" onkeyup="handleKeyPress(event, '${product._id}', this)">
+    product.category
+  }', this)" onkeyup="handleKeyPress(event, '${product.category}', this)">
                 <button class= "delete-button" onclick="deleteProduct('${
-                  product._id
+                  product.category
                 }', this)">Remove Item From Cart</button>
                 </div>
             </div>
@@ -258,10 +258,10 @@ function createDeletedProductHTML(product) {
           <img src="${product.images[0].large}" alt="${product.name}" />
           <div class="image-navigation">
               <button onclick="changeImage('${
-                product._id
+                product.category
               }', -1, this)">Previous</button>
               <button onclick="changeImage('${
-                product._id
+                product.category
               }', 1, this)">Next</button>
           </div>
       </div>
@@ -279,12 +279,12 @@ function createDeletedProductHTML(product) {
       </div>
       <div class="add-to-cart-button">
           <button class= "add-button" onclick="addProductToCart('${
-            product._id
+            product.category
           }', this)">Add Quantity</br> to Cart</button>
       </div>
       <div class="number-control">
           <input type="number" id='${
-            product._id
+            product.category
           }' onclick="checkPos(this)" class="display-number" value="1">
       </div>
   </div>
@@ -355,14 +355,16 @@ document.addEventListener("DOMContentLoaded", async () => {
           hiddenButton.remove();
         }
       for (let i = 0; i < data.products.length; i++) {
-        const product = data.products[i];
+        let product = data.products[i];
+        console.log(product)
         await authorize(
           `http://localhost:3000/search?productId=${product.product_id}`
         ).then(async (response) => {
           // console.log(response);
           response = await response.json();
+          console.log(response);
           products.push(response);
-          const productHTML = createProductHTML(response, product);
+          const productHTML = createProductHTML(response[0], product);
           productsContainer.innerHTML += productHTML;
         });
       }
@@ -376,7 +378,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             products.push(response);
             console.log(response);
             console.log(product);
-            const productHTML = createDeletedProductHTML(response);
+            const productHTML = createDeletedProductHTML(response[0]);
             deletedProductsContainer.innerHTML += productHTML;
           }
         );

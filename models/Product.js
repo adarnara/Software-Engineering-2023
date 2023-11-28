@@ -30,7 +30,28 @@ const productSchema = new mongoose.Schema({
     },
   ],
   variant_data: [String],
-
+  seller_data: {
+    company: String,
+    bio: String,
+    website: String,
+    phone: String,
+    email: String,
+    firstName: String,
+    lastName: String,
+    warehouse_address: [{
+      street: String,
+      city: String,
+      state: String,
+      zip: String,
+      country: String,      
+    }],
+  },
+  length: String,
+  width: String,
+  height: String,
+  distance_unit: String,
+  weight: String,
+  mass_unit: String,
 });
 
 
@@ -43,4 +64,3 @@ Product.createWithCustomId = function (id, productData, callback) {
 };
 
 module.exports = Product;
-

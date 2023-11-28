@@ -111,8 +111,9 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     cartPrice = currMemberCart.totalPrice;
     numProducts = currMemberCart.products.length;
-
+        console.log(currMemberCart.products)
     for (let product of currMemberCart.products) {
+        console.log(product);
         cartProductShippingInfo[product.product_id] = {
             "chosen_rate": null,
             "from": null,
@@ -121,6 +122,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             "best_value_rate": null,
             "cheapest_rate": null
         };
+        console.log(cartProductShippingInfo[product.product_id])
         cartProductSet.add(product.product_id);
     }
 
@@ -339,7 +341,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                             // console.log(response);
                             response = await response.json();
                             products.push(response);
-                            const productHTML = createProductHTML(response, product, etaArr, shipArr, quantity);
+                            const productHTML = createProductHTML(response[0], product, etaArr, shipArr, quantity);
                             prods.innerHTML += productHTML;
                           });
 
@@ -457,7 +459,7 @@ function createProductHTML(product, currCartProduct, etaArr, shippingPriceArr, q
     }
 
     console.log("*****!*!*!");
-    console.log(product._id);
+    console.log(product.category);
 
     const productHTML = `
           <div class="product-container">
@@ -474,8 +476,8 @@ function createProductHTML(product, currCartProduct, etaArr, shippingPriceArr, q
                   <span class="display-number">${
                     quantity
                   }     </span>
-                  <button id="fastest_btn_${product._id}" class= "option-button" onclick="toggleShipmentOption('${
-                    product._id
+                  <button id="fastest_btn_${product.category}" class= "option-button" onclick="toggleShipmentOption('${
+                    product.category
                   }','${
                     shippingPriceArr[0]
                   }','${
@@ -488,8 +490,8 @@ function createProductHTML(product, currCartProduct, etaArr, shippingPriceArr, q
                         <span class="extra-cost"> + $${shippingPriceArr[0]}</span>
                     </div></button>
 
-                  <button id="best_value_btn_${product._id}" class= "option-button" onclick="toggleShipmentOption('${
-                    product._id
+                  <button id="best_value_btn_${product.category}" class= "option-button" onclick="toggleShipmentOption('${
+                    product.category
                   }','${
                     shippingPriceArr[0]
                   }','${
@@ -502,8 +504,8 @@ function createProductHTML(product, currCartProduct, etaArr, shippingPriceArr, q
                         <span class="extra-cost"> + $${shippingPriceArr[1]}</span>
                     </div></button>
 
-                    <button id="cheapest_btn_${product._id}" class= "option-button" onclick="toggleShipmentOption('${
-                        product._id
+                    <button id="cheapest_btn_${product.category}" class= "option-button" onclick="toggleShipmentOption('${
+                        product.category
                       }','${
                         shippingPriceArr[0]
                       }','${
@@ -641,6 +643,7 @@ async function confirmOrder() {
                         console.log("prodID = " + prodID);
                         console.log("matchOption = " + matchOption[1]);
                         console.log(" ");
+                        console.log(prodID)
                         if (option === 'fastest') {
                             cartProductShippingInfo[prodID].chosen_rate = "fastest";
                         } else if (option === 'best_value') {
@@ -849,7 +852,7 @@ function refreshPrice(price) {
 function changeImage(productId, offset, button) {
     const productContainer = button.closest(".product-container");
     const productImage = productContainer.querySelector(".product-image img");
-    const product = products.find((p) => p._id === productId);
+    const product = products.find((p) => p.category === productId);
 
     let currentImageIndex = product.images.findIndex(
       (image) => image.large === productImage.src

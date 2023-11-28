@@ -247,7 +247,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             response = await response.json();
             // console.log(response);
             products.push(response);
-            var productHTML = createProductHTML(response, product);
+            var productHTML = createProductHTML(response[0], product);
             document.getElementById(e.purchaseTime).innerHTML += productHTML;
             // cartHistoryProductContainer.innerHTML += "brog";
 

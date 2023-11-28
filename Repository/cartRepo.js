@@ -86,6 +86,7 @@ class ShoppingCart {
                 product_id: product_id,
                 parent_cart: currCart_id.toString(),
             });
+            console.log(currProduct);
             resolve(currProduct);
             return;
         });
