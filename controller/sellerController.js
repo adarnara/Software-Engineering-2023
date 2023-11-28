@@ -29,29 +29,19 @@ function parseRequestBody(req) {
 class SellerController {
     async getAllSellersProducts(req, res) {
         try {
-            // console.log("made it to seller controller")
             let userData = parseJwtHeader(req, res); 
-            // console.log(userData, "<---- user data");
             if(userData){
                 let user = await userRepo.findUserById(userData["id"]); 
-                // console.log(user, "<---- user ");
                 const sellerEmail = user["email"];  
-                // console.log(sellerEmail, "<---- seller email");
                 const products = await ProductRepository.getAllFromSellerEmail(sellerEmail); 
-                // console.log(products, "<---- products from repo");
                 if(!products){
-                    // console.log('no products found');
                     throw new Error("No products found from that email.");
                 }
-                // console.log('finished in sellerController');
                 res.writeHead(200, {'Content-Type': 'application/json'});
                 res.end(JSON.stringify(products));
             } else {
                 throw new Error("Not authorized.")
             }
-            // const queryObject = url.parse(req.url, true).query; <---- for sending email through url
-            // const sellerEmail = queryObject.email;
-            // let sellerEmail = "testtt@gmail.com"
         } catch (error) {
             res.writeHead(500, {'Content-Type': 'application/json'});
             res.end(JSON.stringify({ message: "Failed to fetch products from seller.", error: error.message }));
@@ -93,12 +83,9 @@ class SellerController {
     }
 
     async updateSellerProduct(req, res) {
-        console.log('made it to seller controller')
         try {
             const requestBody = await parseRequestBody(req); 
-            console.log(requestBody, "<----- request body")
             let userData = parseJwtHeader(req, res); 
-            console.log(userData, "<_------- user data")
             if(userData){
                 const filter = { _id: requestBody["_id"] };
                 const update = {
@@ -112,18 +99,12 @@ class SellerController {
                         variant_data: requestBody["variant_data"],
                     }
                 };
-                console.log(filter, "<------ flter");
-
-                console.log(update, "<------ to be update data");
-
+        
                 ProductRepository.updateSellerProduct(filter, update);
                 
                 res.writeHead(200, {'Content-Type': 'application/json'});
-                res.end(JSON.stringify({ message: "Updated product:"}));
-            } else {
-                console.log('not autorized sjdhasjdhjasfkahjfk')
+                res.end(JSON.stringify({ message: "Updated product!"}));
             }
-            
         } catch (error) {
             res.writeHead(500, {'Content-Type': 'application/json'});
             res.end(JSON.stringify({ message: "Failed to update product from seller.", error: error.message }));
