@@ -1,6 +1,7 @@
 const ProductRepository = require('../Repository/ProductRepo');
 const { parseJwtHeader } = require("../middlewares/authmiddleware.js");
 const userRepo = require("../Repository/userRepo.js");
+const url = require('url');
 
 
 
@@ -27,10 +28,14 @@ function parseRequestBody(req) {
 class SellerController {
     async getAllSellersProducts(req, res) {
         try {
-            //   TODO: 
-            //   based on the 
-            //       
-
+            // let userData = parseJwtHeader(req, res);
+            // user = await userRepo.findUserById(userData["id"]);
+            // const sellerEmail = user["email"];
+            let sellerEmail = "testtt@gmail.com"
+            const products = await ProductRepository.getAllFromSellerEmail(sellerEmail);
+            if(!products){
+                throw new Error("No products found from that email.");
+            }
             res.writeHead(200, {'Content-Type': 'application/json'});
             res.end(JSON.stringify(products));
         } catch (error) {
@@ -59,14 +64,14 @@ class SellerController {
                 requestBody["seller_data"]["warehouse_address"]["street2"] = user["address"]["address2"];
                 requestBody["seller_data"]["warehouse_address"]["street3"] = user["address"]["address3"];
 
-                // requestBody["seller_data"][warehouse_address]["city"] = user["email"];
+                // requestBody["seller_data"][warehouse_address]["city"] = user["email"];     //----these are not currently being stored to my knowledge
                 requestBody["seller_data"]["warehouse_address"]["state"] = user["address"]["state"];
                 requestBody["seller_data"]["warehouse_address"]["zip"] = user["address"]["postalCode"];
-                // requestBody["seller_data"][warehouse_address]["country"] = user[""];
+                // requestBody["seller_data"][warehouse_address]["country"] = user[""];      //----these are not currently being stored to my knowledge
 
             }
             const newProduct = await ProductRepository.create(requestBody);
-            
+            getAllSellersProducts();
             res.writeHead(201, {'Content-Type': 'application/json'});
             res.end(JSON.stringify({ message: "Created new product:", newProduct}));
         } catch (error) {

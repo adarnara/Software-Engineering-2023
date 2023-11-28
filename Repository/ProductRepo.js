@@ -11,8 +11,13 @@ class ProductRepository {
     return products;
   }
 
+  async getAllFromSellerEmail(email) {
+      const products = await Product.find({"seller_data.email": email});      
+      return products;
+  }
+
   async getProductById(id) {
-    const product = await Product.find({category: id})
+    const product = await Product.find({"category": id})
 
     if(!product) {
       throw new Error('Product not found');
@@ -37,7 +42,6 @@ class ProductRepository {
     const products = await Product.find({
       category: { $regex: new RegExp(category) } //RegExp will filter the products out that don't belong to the right category.
     })
-    console.log(products);
     if (!products) {
       throw new Error('No products found');
     }
@@ -49,7 +53,6 @@ class ProductRepository {
         largestId = id;
       }
     }
-    console.log(largestId, "largestId print from ProductRepo");
     return largestId;
   } 
 
