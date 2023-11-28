@@ -2,6 +2,7 @@ const ProductRepository = require('../Repository/ProductRepo');
 const { parseJwtHeader } = require("../middlewares/authmiddleware.js");
 const userRepo = require("../Repository/userRepo.js");
 const url = require('url');
+const Product = require('../models/Product.js');
 
 
 
@@ -92,10 +93,37 @@ class SellerController {
     }
 
     async updateSellerProduct(req, res) {
+        console.log('made it to seller controller')
         try {
+            const requestBody = await parseRequestBody(req); 
+            console.log(requestBody, "<----- request body")
+            let userData = parseJwtHeader(req, res); 
+            console.log(userData, "<_------- user data")
+            if(userData){
+                const filter = { _id: requestBody["_id"] };
+                const update = {
+                    $set: {
+                        name:  requestBody["name"],
+                        price: requestBody["price"],
+                        stars: requestBody["stars"],
+                        rating_count: requestBody["rating_count"],
+                        feature_bullets: requestBody["feature_bullets"],
+                        images: requestBody["images"],
+                        variant_data: requestBody["variant_data"],
+                    }
+                };
+                console.log(filter, "<------ flter");
 
-            res.writeHead(200, {'Content-Type': 'application/json'});
-            res.end(JSON.stringify(updatedProduct));
+                console.log(update, "<------ to be update data");
+
+                ProductRepository.updateSellerProduct(filter, update);
+                
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                res.end(JSON.stringify({ message: "Updated product:"}));
+            } else {
+                console.log('not autorized sjdhasjdhjasfkahjfk')
+            }
+            
         } catch (error) {
             res.writeHead(500, {'Content-Type': 'application/json'});
             res.end(JSON.stringify({ message: "Failed to update product from seller.", error: error.message }));

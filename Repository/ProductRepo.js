@@ -76,6 +76,19 @@ class ProductRepository {
     }
   }
 
+  async updateSellerProduct(filter, update){
+    try {
+      const result = await Product.updateOne(filter,update);
+      if (!result) {
+        throw new Error('Product not updated correctly');
+      }
+        return { success: true, message: 'Product successfully updated', deletedProduct: result};
+    } catch (error) {
+        console.error('Error updating product:', error);
+        return { success: false, message: 'Error updating product', error: error.message };
+    }
+  }
+
   
   async findByEmail(email){
     return await user.findOne({email})
