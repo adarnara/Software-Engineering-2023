@@ -1,4 +1,18 @@
 const ProductRepository = require('../Repository/ProductRepo');
+const { parseJwtHeader } = require("../middlewares/authmiddleware.js");
+
+
+async function getUserData(req, res)
+{
+  return new Promise(async (resolve) => {
+    let userData = parseJwtHeader(req, res);
+    if (userData) {
+        resolve(userData);
+    } else {
+        resolve(null);
+    }
+  })
+}
 
 function parseRequestBody(req) {
   return new Promise((resolve, reject) => {
@@ -21,7 +35,6 @@ function parseRequestBody(req) {
 }
 
 class SellerController {
-
     async getAllSellersProducts(req, res) {
         try {
             //   TODO: 
@@ -39,11 +52,10 @@ class SellerController {
 
     async createSellerProduct(req, res) {
         try {
-            const requestBody = await parseRequestBody(req);
-            //   TODO: 
-            //   ensure correct data was supplied, no missing values
-            //   make sure it doesnt already exist        
+            const requestBody = await parseRequestBody(req);   
             const newProduct = await ProductRepository.create(requestBody);
+            const userData = await getUserData(req,res);
+            console.log(userData, "askdjnaskjfnajskfn");
     
             res.writeHead(201, {'Content-Type': 'application/json'});
             res.end(JSON.stringify({ message: "Created new product:", newProduct}));
