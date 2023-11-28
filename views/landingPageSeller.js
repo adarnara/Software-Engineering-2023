@@ -128,27 +128,27 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     }
 
-    
-    // fetch('http://localhost:3000/')
-    //     .then((response) => {
-    //         if (!response.ok) {
-    //             throw new Error(`HTTP error! Status: ${response.status}`);
-    //         }
-    //         return response.json();
-    //     })
-    //     .then(data => {
-    //         // console.log('Response from /:', JSON.stringify(data, null, 2));
-
-    //         data.forEach((product) => {
-    //             // Push each product into the products array
-    //             products.push(product);
-    //             const productHTML = createProductHTML(product);
-    //             productsContainer.innerHTML += productHTML;
-    //         });
-    //     })
-    //     .catch(error => {
-    //         console.error('Error fetching product data:', error);
-    //     });
+    fetch('http://localhost:3000/seller')
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if(!Array.isArray(data)){
+                // display HTML to say no products
+            }
+            data.forEach((product) => {
+                // Push each product into the products array
+                products.push(product);
+                const productHTML = createProductHTML(product);
+                productsContainer.innerHTML += productHTML;
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching product data:', error);
+        });
 
     //event listener for create product button
     document.getElementById("createProductBtn").addEventListener("click", function() {
@@ -330,14 +330,24 @@ document.addEventListener("DOMContentLoaded", () => {
                 ${colorsHTML}
             </div>
             <div class="add-to-cart-button">
-                <button class= "add-button" onclick="addProductToCart('${product._id}')">Add to Cart</button>
+                <button class= "delete-button" onclick="deleteProduct('${product._id}')">Delete Product</button>
             </div>
-            <div class="number-control">
-                <input type="number" id='${product._id}' onclick="checkPos(this)" class="display-number" value="1">
+            <div class="add-to-cart-button">
+                <button class= "edit-button" onclick="editProduct('${product._id}')">Edit Product</button>
             </div>
         </div>
     `;
         return productHTML;
+    }
+    window.deleteProduct = deleteProduct;
+    window.editProduct = editProduct;
+
+    function deleteProduct(product){
+        console.log('clicked delete button');
+    }
+
+    function editProduct(product){
+        console.log('clicked edit button');
     }
 
     function changeImage(productId, offset, button) {
