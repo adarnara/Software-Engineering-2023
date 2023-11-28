@@ -28,17 +28,21 @@ function parseRequestBody(req) {
 class SellerController {
     async getAllSellersProducts(req, res) {
         try {
-            console.log("made it to seller controller")
-            let userData = parseJwtHeader(req, res); console.log(userData, "<---- user data");
+            // console.log("made it to seller controller")
+            let userData = parseJwtHeader(req, res); 
+            // console.log(userData, "<---- user data");
             if(userData){
-                let user = await userRepo.findUserById(userData["id"]); console.log(user, "<---- user ");
-                const sellerEmail = user["email"];  console.log(sellerEmail, "<---- seller email");
-                const products = await ProductRepository.getAllFromSellerEmail(sellerEmail);  console.log(products, "<---- products from repo");
+                let user = await userRepo.findUserById(userData["id"]); 
+                // console.log(user, "<---- user ");
+                const sellerEmail = user["email"];  
+                // console.log(sellerEmail, "<---- seller email");
+                const products = await ProductRepository.getAllFromSellerEmail(sellerEmail); 
+                // console.log(products, "<---- products from repo");
                 if(!products){
-                    console.log('no products found');
+                    // console.log('no products found');
                     throw new Error("No products found from that email.");
                 }
-                console.log('finished in sellerController');
+                // console.log('finished in sellerController');
                 res.writeHead(200, {'Content-Type': 'application/json'});
                 res.end(JSON.stringify(products));
             } else {
@@ -77,11 +81,10 @@ class SellerController {
                 requestBody["seller_data"]["warehouse_address"]["state"] = user["address"]["state"];
                 requestBody["seller_data"]["warehouse_address"]["zip"] = user["address"]["postalCode"];
                 // requestBody["seller_data"][warehouse_address]["country"] = user[""];      //----these are not currently being stored to my knowledge
-
+                const newProduct = await ProductRepository.create(requestBody);
+                res.writeHead(201, {'Content-Type': 'application/json'});
+                res.end(JSON.stringify({ message: "Created new product:", newProduct}));
             }
-            const newProduct = await ProductRepository.create(requestBody);
-            res.writeHead(201, {'Content-Type': 'application/json'});
-            res.end(JSON.stringify({ message: "Created new product:", newProduct}));
         } catch (error) {
             res.writeHead(500, {'Content-Type': 'application/json'});
             res.end(JSON.stringify({ message: "Failed to create product.", error: error.message }));
@@ -101,9 +104,13 @@ class SellerController {
 
     async deleteSellerProduct(req, res) {
         try {    
-
-            res.writeHead(200, {'Content-Type': 'application/json'});
-            res.end(JSON.stringify({ message: "Product deleted successfully." }));
+            let productId = await parseRequestBody(req);
+            let userData = parseJwtHeader(req, res);
+            if(userData){
+                ProductRepository.delete(productId);
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                res.end(JSON.stringify({ message: "Product deleted successfully." }));
+            }
         } catch (error) {
             res.writeHead(500, {'Content-Type': 'application/json'});
             res.end(JSON.stringify({ message: "Failed to delete product from seller.", error: error.message }));

@@ -140,6 +140,8 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .then(data => {
             console.log("attempting to display fetched products")
+            productsContainer.innerHTML = ''; //Clear the products container
+            products.length = 0; //Reset the products array
             if(!Array.isArray(data)){
                 // display HTML to say no products
             }
@@ -182,8 +184,6 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener('submit', async function(event) {
         event.preventDefault();
         console.log('submit button clicked');
-        productsContainer.innerHTML = ''; //Clear the products container
-        products.length = 0; //Reset the products array
         const productData = await createProductJSON();
         authorize('http://localhost:3000/seller/create', {
             method: 'POST',
@@ -292,7 +292,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
     
-        
+    
 
     function createProductHTML(product) {
         //check if variant_data is empty
@@ -352,7 +352,22 @@ document.addEventListener("DOMContentLoaded", () => {
     window.editProduct = editProduct;
 
     function deleteProduct(product){
-        console.log('clicked delete button');
+        // console.log('clicked delete button');
+        // console.log(product, "<----- product _id");
+        authorize('http://localhost:3000/seller/delete', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(product)
+        })
+        .then(response => response.json())
+        .then(data => {
+            displaySellerProducts();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
 
     function editProduct(product){
