@@ -1,0 +1,31 @@
+{
+  carrier: 'fedex',
+  object_id: 'fe917508d49a4ab28e8f8b59ce4f1225',
+  object_owner: 'softwareengineeringf23@gmail.com',
+  account_id: 'dfsjksfdljlk2349872438907324987234kjhdfskjhdsflkjhdfskjlh3249870y',
+  parameters: { meter: '******' },
+  test: true,
+  active: true,
+  is_shippo_account: false,
+  metadata: '',
+  carrier_name: 'FedEx',
+  carrier_images: {
+    '75': 'https://shippo-static-v2.s3.amazonaws.com/providers/75/FedEx.png',
+    '200': 'https://shippo-static-v2.s3.amazonaws.com/providers/200/FedEx.png'
+  }
+}
+
+shippo.carrieraccount.create({
+    "carrier": "ups",
+    "account_id": "reprua_ups", // UPS user ID
+    "parameters": {
+        "password": "SWE_F2023", // UPS password
+        "account_number": "SWEF23", // UPS account number
+    },
+    "active": true
+}, function(err, account) {
+    if (err) {
+        console.error(err);
+    } else console.log(account);
+});
+

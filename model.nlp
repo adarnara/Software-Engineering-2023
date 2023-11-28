@@ -2,173 +2,173 @@
   "settings": {
     "languages": [
       "en"
-    ]
+    ],
+    "tag": "nlp",
+    "threshold": 0.5,
+    "autoLoad": true,
+    "autoSave": true,
+    "modelFileName": "model.nlp",
+    "executeActionsBeforeAnswers": false,
+    "calculateSentiment": true
   },
   "nluManager": {
-    "settings": {},
-    "languages": [
+    "settings": {
+      "tag": "nlu-manager"
+    },
+    "locales": [
       "en"
     ],
-    "intentDomains": {},
+    "languageNames": {},
     "domainManagers": {
       "en": {
         "settings": {
-          "language": "en",
-          "useNoneFeature": true,
-          "config": {
-            "activation": "leaky-relu",
-            "hiddenLayers": [],
-            "iterations": 20000,
-            "learningRate": 0.7,
-            "errorThresh": 0.00005,
-            "momentum": 0.5,
-            "deltaErrorThresh": 0.000001,
-            "maxDecimals": 9,
-            "leakyReluAlpha": 0.08,
-            "timeout": 120000
-          }
+          "locale": "en",
+          "trainByDomain": false,
+          "tag": "domain-manager-en",
+          "nluByDomain": {
+            "default": {
+              "className": "NeuralNlu",
+              "settings": {}
+            }
+          },
+          "useStemDict": true
         },
-        "language": "en",
-        "nluClassName": "BrainNLU",
-        "useMasterDomain": true,
-        "trainByDomain": false,
-        "keepStopwords": true,
         "stemDict": {
           "hello": {
-            "domain": "default",
-            "intent": "greeting"
+            "intent": "greeting",
+            "domain": "default"
           },
           "hi": {
-            "domain": "default",
-            "intent": "greeting"
+            "intent": "greeting",
+            "domain": "default"
           },
           "hey": {
-            "domain": "default",
-            "intent": "greeting"
+            "intent": "greeting",
+            "domain": "default"
           },
           "hey,you": {
-            "domain": "default",
-            "intent": "greeting"
+            "intent": "greeting",
+            "domain": "default"
           },
           "yo": {
-            "domain": "default",
-            "intent": "greeting"
+            "intent": "greeting",
+            "domain": "default"
           },
           "goodmorn": {
-            "domain": "default",
-            "intent": "greeting"
+            "intent": "greeting",
+            "domain": "default"
           },
           "goodafternoon": {
-            "domain": "default",
-            "intent": "greeting"
+            "intent": "greeting",
+            "domain": "default"
           },
           "day,good": {
-            "domain": "default",
-            "intent": "greeting"
+            "intent": "greeting",
+            "domain": "default"
           },
           "a,is,macbook,of,price,pro,the,what": {
-            "domain": "default",
-            "intent": "product_price_macbook"
+            "intent": "product_price_macbook",
+            "domain": "default"
           },
           "an,cost,doe,how,ipad,much": {
-            "domain": "default",
-            "intent": "product_price_ipad"
+            "intent": "product_price_ipad",
+            "domain": "default"
           },
           "a,can,laptop,me,new,of,price,tell,the,you": {
-            "domain": "default",
-            "intent": "product_price_laptop"
+            "intent": "product_price_laptop",
+            "domain": "default"
           },
-          "a,averag,is,of,price,shirt,t,the,what": {
-            "domain": "default",
-            "intent": "product_price_shirts"
+          "a,averag,is,of,price,t-shirt,the,what": {
+            "intent": "product_price_shirts",
+            "domain": "default"
           },
           "a,book,cost,me,of,popular,tell,the": {
-            "domain": "default",
-            "intent": "product_price_book"
+            "intent": "product_price_book",
+            "domain": "default"
           },
           "about,featur,latest,macbook,me,tell,the": {
-            "domain": "default",
-            "intent": "product_info_macbook"
+            "intent": "product_info_macbook",
+            "domain": "default"
           },
-          "are,ipad,newest,of,specif,the,the,what": {
-            "domain": "default",
-            "intent": "product_info_ipad"
+          "are,ipad,newest,of,specif,the,what": {
+            "intent": "product_info_ipad",
+            "domain": "default"
           },
           "are,for,game,good,laptop,which": {
-            "domain": "default",
-            "intent": "product_info_laptop"
+            "intent": "product_info_laptop",
+            "domain": "default"
           },
           "a,book,classic,read,recommend,to": {
-            "domain": "default",
-            "intent": "product_info_book"
+            "intent": "product_info_book",
+            "domain": "default"
           },
-          "are,design,shirt,some,t,trendi,what": {
-            "domain": "default",
-            "intent": "product_info_tshirt"
+          "are,design,some,t-shirt,trendi,what": {
+            "intent": "product_info_tshirt",
+            "domain": "default"
           },
-          "13,about,inch,macbook,me,pro,tell,the": {
-            "domain": "default",
-            "intent": "product_info_macbook"
+          "13-inch,about,macbook,me,pro,tell,the": {
+            "intent": "product_info_macbook",
+            "domain": "default"
           },
-          "air,capac,is,macbook,of,storag,the,the,what": {
-            "domain": "default",
-            "intent": "product_info_macbook"
+          "air,capac,is,macbook,of,storag,the,what": {
+            "intent": "product_info_macbook",
+            "domain": "default"
           },
-          "compar,doe,how,macbook,new,previous,the,the,to,version": {
-            "domain": "default",
-            "intent": "product_info_macbook"
+          "compar,doe,how,macbook,new,previous,the,to,version": {
+            "intent": "product_info_macbook",
+            "domain": "default"
           },
           "2023,about,ipad,me,pro,tell,the": {
-            "domain": "default",
-            "intent": "product_info_ipad"
+            "intent": "product_info_ipad",
+            "domain": "default"
           },
-          "are,color,for,ipad,mini,option,the,the,what": {
-            "domain": "default",
-            "intent": "product_info_ipad"
+          "are,color,for,ipad,mini,option,the,what": {
+            "intent": "product_info_ipad",
+            "domain": "default"
           },
-          "differ,doe,from,how,ipad,ipad,pro,standard,the,the": {
-            "domain": "default",
-            "intent": "product_info_ipad"
+          "differ,doe,from,how,ipad,pro,standard,the": {
+            "intent": "product_info_ipad",
+            "domain": "default"
           },
           "2023,are,game,in,laptop,the,top,what": {
-            "domain": "default",
-            "intent": "product_info_laptop"
+            "intent": "product_info_laptop",
+            "domain": "default"
           },
           "about,dell,laptop,latest,me,tell,the,xps": {
-            "domain": "default",
-            "intent": "product_info_laptop"
+            "intent": "product_info_laptop",
+            "domain": "default"
           },
-          "asus,batteri,is,laptop,life,of,rog,the,the,what": {
-            "domain": "default",
-            "intent": "product_info_laptop"
+          "asus,batteri,is,laptop,life,of,rog,the,what": {
+            "intent": "product_info_laptop",
+            "domain": "default"
           },
-          "can,eco,find,friend,i,option,shirt,t,where": {
-            "domain": "default",
-            "intent": "product_info_tshirt"
+          "can,eco-friend,find,i,option,t-shirt,where": {
+            "intent": "product_info_tshirt",
+            "domain": "default"
           },
-          "about,custom,me,print,shirt,t,tell": {
-            "domain": "default",
-            "intent": "product_info_tshirt"
+          "about,custom,me,print,t-shirt,tell": {
+            "intent": "product_info_tshirt",
+            "domain": "default"
           },
-          "2023,are,brand,in,popular,shirt,t,the,what": {
-            "domain": "default",
-            "intent": "product_info_tshirt"
+          "2023,are,brand,in,popular,t-shirt,the,what": {
+            "intent": "product_info_tshirt",
+            "domain": "default"
           },
-          "about,author,gatsbi,great,me,of,tell,the,the": {
-            "domain": "default",
-            "intent": "product_info_book"
+          "about,author,gatsbi,great,me,of,tell,the": {
+            "intent": "product_info_book",
+            "domain": "default"
           },
-          "genr,harri,is,of,potter,seri,the,the,what": {
-            "domain": "default",
-            "intent": "product_info_book"
+          "genr,harri,is,of,potter,seri,the,what": {
+            "intent": "product_info_book",
+            "domain": "default"
           },
           "a,for,me,mysteri,novel,recommend": {
-            "domain": "default",
-            "intent": "product_info_book"
+            "intent": "product_info_book",
+            "domain": "default"
           },
           "a,averag,book,hardcov,is,of,price,the,what": {
-            "domain": "default",
-            "intent": "product_price_book"
+            "intent": "product_price_book",
+            "domain": "default"
           }
         },
         "intentDict": {
@@ -184,474 +184,242 @@
           "product_info_book": "default",
           "product_info_tshirt": "default"
         },
-        "useStemDict": true,
+        "sentences": [
+          {
+            "domain": "default",
+            "utterance": "hello",
+            "intent": "greeting"
+          },
+          {
+            "domain": "default",
+            "utterance": "hi",
+            "intent": "greeting"
+          },
+          {
+            "domain": "default",
+            "utterance": "hey",
+            "intent": "greeting"
+          },
+          {
+            "domain": "default",
+            "utterance": "hey you",
+            "intent": "greeting"
+          },
+          {
+            "domain": "default",
+            "utterance": "yo",
+            "intent": "greeting"
+          },
+          {
+            "domain": "default",
+            "utterance": "goodmorning",
+            "intent": "greeting"
+          },
+          {
+            "domain": "default",
+            "utterance": "goodafternoon",
+            "intent": "greeting"
+          },
+          {
+            "domain": "default",
+            "utterance": "good day",
+            "intent": "greeting"
+          },
+          {
+            "domain": "default",
+            "utterance": "What is the price of a MacBook Pro?",
+            "intent": "product_price_macbook"
+          },
+          {
+            "domain": "default",
+            "utterance": "How much does an iPad cost?",
+            "intent": "product_price_ipad"
+          },
+          {
+            "domain": "default",
+            "utterance": "Can you tell me the price of a new laptop?",
+            "intent": "product_price_laptop"
+          },
+          {
+            "domain": "default",
+            "utterance": "What is the average price of a T-shirt?",
+            "intent": "product_price_shirts"
+          },
+          {
+            "domain": "default",
+            "utterance": "Tell me the cost of a popular book.",
+            "intent": "product_price_book"
+          },
+          {
+            "domain": "default",
+            "utterance": "Tell me about the latest MacBook features.",
+            "intent": "product_info_macbook"
+          },
+          {
+            "domain": "default",
+            "utterance": "What are the specifications of the newest iPad?",
+            "intent": "product_info_ipad"
+          },
+          {
+            "domain": "default",
+            "utterance": "Which laptops are good for gaming?",
+            "intent": "product_info_laptop"
+          },
+          {
+            "domain": "default",
+            "utterance": "Recommend a classic book to read.",
+            "intent": "product_info_book"
+          },
+          {
+            "domain": "default",
+            "utterance": "What are some trendy T-shirt designs?",
+            "intent": "product_info_tshirt"
+          },
+          {
+            "domain": "default",
+            "utterance": "Tell me about the MacBook Pro 13-inch.",
+            "intent": "product_info_macbook"
+          },
+          {
+            "domain": "default",
+            "utterance": "What is the storage capacity of the MacBook Air?",
+            "intent": "product_info_macbook"
+          },
+          {
+            "domain": "default",
+            "utterance": "How does the new MacBook compare to the previous version?",
+            "intent": "product_info_macbook"
+          },
+          {
+            "domain": "default",
+            "utterance": "Tell me about the iPad Pro 2023.",
+            "intent": "product_info_ipad"
+          },
+          {
+            "domain": "default",
+            "utterance": "What are the color options for the iPad Mini?",
+            "intent": "product_info_ipad"
+          },
+          {
+            "domain": "default",
+            "utterance": "How does the iPad Pro differ from the standard iPad?",
+            "intent": "product_info_ipad"
+          },
+          {
+            "domain": "default",
+            "utterance": "What are the top gaming laptops in 2023?",
+            "intent": "product_info_laptop"
+          },
+          {
+            "domain": "default",
+            "utterance": "Tell me about the latest Dell XPS laptop.",
+            "intent": "product_info_laptop"
+          },
+          {
+            "domain": "default",
+            "utterance": "What is the battery life of the ASUS ROG laptop?",
+            "intent": "product_info_laptop"
+          },
+          {
+            "domain": "default",
+            "utterance": "Where can I find eco-friendly T-shirt options?",
+            "intent": "product_info_tshirt"
+          },
+          {
+            "domain": "default",
+            "utterance": "Tell me about custom printed T-shirts.",
+            "intent": "product_info_tshirt"
+          },
+          {
+            "domain": "default",
+            "utterance": "What are the popular T-shirt brands in 2023?",
+            "intent": "product_info_tshirt"
+          },
+          {
+            "domain": "default",
+            "utterance": "Tell me about the author of \"The Great Gatsby.\"",
+            "intent": "product_info_book"
+          },
+          {
+            "domain": "default",
+            "utterance": "What's the genre of the \"Harry Potter\" series?",
+            "intent": "product_info_book"
+          },
+          {
+            "domain": "default",
+            "utterance": "Recommend a mystery novel for me.",
+            "intent": "product_info_book"
+          },
+          {
+            "domain": "default",
+            "utterance": "What is the average price of a hardcover book?",
+            "intent": "product_price_book"
+          }
+        ],
         "domains": {
           "master_domain": {
             "settings": {
-              "language": "en",
-              "useNoneFeature": true,
-              "config": {
-                "activation": "leaky-relu",
-                "hiddenLayers": [],
-                "iterations": 20000,
-                "learningRate": 0.7,
-                "errorThresh": 0.00005,
-                "momentum": 0.5,
-                "deltaErrorThresh": 0.000001,
-                "maxDecimals": 9,
-                "leakyReluAlpha": 0.08,
-                "timeout": 120000
-              }
+              "locale": "en",
+              "tag": "nlu-en",
+              "keepStopwords": true,
+              "nonefeatureValue": 1,
+              "nonedeltaMultiplier": 1.2,
+              "spellCheck": false,
+              "spellCheckDistance": 1,
+              "filterZeros": true,
+              "log": true
             },
-            "language": "en",
-            "keepStopwords": true,
-            "docs": [
-              {
-                "intent": "greeting",
-                "tokens": [
-                  "hello"
-                ]
-              },
-              {
-                "intent": "greeting",
-                "tokens": [
-                  "hi"
-                ]
-              },
-              {
-                "intent": "greeting",
-                "tokens": [
-                  "hey"
-                ]
-              },
-              {
-                "intent": "greeting",
-                "tokens": [
-                  "hey",
-                  "you"
-                ]
-              },
-              {
-                "intent": "greeting",
-                "tokens": [
-                  "yo"
-                ]
-              },
-              {
-                "intent": "greeting",
-                "tokens": [
-                  "goodmorn"
-                ]
-              },
-              {
-                "intent": "greeting",
-                "tokens": [
-                  "goodafternoon"
-                ]
-              },
-              {
-                "intent": "greeting",
-                "tokens": [
-                  "good",
-                  "day"
-                ]
-              },
-              {
-                "intent": "product_price_macbook",
-                "tokens": [
-                  "what",
-                  "is",
-                  "the",
-                  "price",
-                  "of",
-                  "a",
-                  "macbook",
-                  "pro"
-                ]
-              },
-              {
-                "intent": "product_price_ipad",
-                "tokens": [
-                  "how",
-                  "much",
-                  "doe",
-                  "an",
-                  "ipad",
-                  "cost"
-                ]
-              },
-              {
-                "intent": "product_price_laptop",
-                "tokens": [
-                  "can",
-                  "you",
-                  "tell",
-                  "me",
-                  "the",
-                  "price",
-                  "of",
-                  "a",
-                  "new",
-                  "laptop"
-                ]
-              },
-              {
-                "intent": "product_price_shirts",
-                "tokens": [
-                  "what",
-                  "is",
-                  "the",
-                  "averag",
-                  "price",
-                  "of",
-                  "a",
-                  "t",
-                  "shirt"
-                ]
-              },
-              {
-                "intent": "product_price_book",
-                "tokens": [
-                  "tell",
-                  "me",
-                  "the",
-                  "cost",
-                  "of",
-                  "a",
-                  "popular",
-                  "book"
-                ]
-              },
-              {
-                "intent": "product_info_macbook",
-                "tokens": [
-                  "tell",
-                  "me",
-                  "about",
-                  "the",
-                  "latest",
-                  "macbook",
-                  "featur"
-                ]
-              },
-              {
-                "intent": "product_info_ipad",
-                "tokens": [
-                  "what",
-                  "are",
-                  "the",
-                  "specif",
-                  "of",
-                  "the",
-                  "newest",
-                  "ipad"
-                ]
-              },
-              {
-                "intent": "product_info_laptop",
-                "tokens": [
-                  "which",
-                  "laptop",
-                  "are",
-                  "good",
-                  "for",
-                  "game"
-                ]
-              },
-              {
-                "intent": "product_info_book",
-                "tokens": [
-                  "recommend",
-                  "a",
-                  "classic",
-                  "book",
-                  "to",
-                  "read"
-                ]
-              },
-              {
-                "intent": "product_info_tshirt",
-                "tokens": [
-                  "what",
-                  "are",
-                  "some",
-                  "trendi",
-                  "t",
-                  "shirt",
-                  "design"
-                ]
-              },
-              {
-                "intent": "product_info_macbook",
-                "tokens": [
-                  "tell",
-                  "me",
-                  "about",
-                  "the",
-                  "macbook",
-                  "pro",
-                  "13",
-                  "inch"
-                ]
-              },
-              {
-                "intent": "product_info_macbook",
-                "tokens": [
-                  "what",
-                  "is",
-                  "the",
-                  "storag",
-                  "capac",
-                  "of",
-                  "the",
-                  "macbook",
-                  "air"
-                ]
-              },
-              {
-                "intent": "product_info_macbook",
-                "tokens": [
-                  "how",
-                  "doe",
-                  "the",
-                  "new",
-                  "macbook",
-                  "compar",
-                  "to",
-                  "the",
-                  "previous",
-                  "version"
-                ]
-              },
-              {
-                "intent": "product_info_ipad",
-                "tokens": [
-                  "tell",
-                  "me",
-                  "about",
-                  "the",
-                  "ipad",
-                  "pro",
-                  "2023"
-                ]
-              },
-              {
-                "intent": "product_info_ipad",
-                "tokens": [
-                  "what",
-                  "are",
-                  "the",
-                  "color",
-                  "option",
-                  "for",
-                  "the",
-                  "ipad",
-                  "mini"
-                ]
-              },
-              {
-                "intent": "product_info_ipad",
-                "tokens": [
-                  "how",
-                  "doe",
-                  "the",
-                  "ipad",
-                  "pro",
-                  "differ",
-                  "from",
-                  "the",
-                  "standard",
-                  "ipad"
-                ]
-              },
-              {
-                "intent": "product_info_laptop",
-                "tokens": [
-                  "what",
-                  "are",
-                  "the",
-                  "top",
-                  "game",
-                  "laptop",
-                  "in",
-                  "2023"
-                ]
-              },
-              {
-                "intent": "product_info_laptop",
-                "tokens": [
-                  "tell",
-                  "me",
-                  "about",
-                  "the",
-                  "latest",
-                  "dell",
-                  "xps",
-                  "laptop"
-                ]
-              },
-              {
-                "intent": "product_info_laptop",
-                "tokens": [
-                  "what",
-                  "is",
-                  "the",
-                  "batteri",
-                  "life",
-                  "of",
-                  "the",
-                  "asus",
-                  "rog",
-                  "laptop"
-                ]
-              },
-              {
-                "intent": "product_info_tshirt",
-                "tokens": [
-                  "where",
-                  "can",
-                  "i",
-                  "find",
-                  "eco",
-                  "friend",
-                  "t",
-                  "shirt",
-                  "option"
-                ]
-              },
-              {
-                "intent": "product_info_tshirt",
-                "tokens": [
-                  "tell",
-                  "me",
-                  "about",
-                  "custom",
-                  "print",
-                  "t",
-                  "shirt"
-                ]
-              },
-              {
-                "intent": "product_info_tshirt",
-                "tokens": [
-                  "what",
-                  "are",
-                  "the",
-                  "popular",
-                  "t",
-                  "shirt",
-                  "brand",
-                  "in",
-                  "2023"
-                ]
-              },
-              {
-                "intent": "product_info_book",
-                "tokens": [
-                  "tell",
-                  "me",
-                  "about",
-                  "the",
-                  "author",
-                  "of",
-                  "the",
-                  "great",
-                  "gatsbi"
-                ]
-              },
-              {
-                "intent": "product_info_book",
-                "tokens": [
-                  "what",
-                  "is",
-                  "the",
-                  "genr",
-                  "of",
-                  "the",
-                  "harri",
-                  "potter",
-                  "seri"
-                ]
-              },
-              {
-                "intent": "product_info_book",
-                "tokens": [
-                  "recommend",
-                  "a",
-                  "mysteri",
-                  "novel",
-                  "for",
-                  "me"
-                ]
-              },
-              {
-                "intent": "product_price_book",
-                "tokens": [
-                  "what",
-                  "is",
-                  "the",
-                  "averag",
-                  "price",
-                  "of",
-                  "a",
-                  "hardcov",
-                  "book"
-                ]
-              }
-            ],
             "features": {
-              "13": 1,
-              "2023": 3,
+              "2023": 1,
               "hello": 1,
               "hi": 1,
-              "hey": 2,
-              "you": 2,
+              "hey": 1,
+              "you": 1,
               "yo": 1,
               "goodmorn": 1,
               "goodafternoon": 1,
-              "good": 2,
+              "good": 1,
               "day": 1,
-              "what": 11,
-              "is": 6,
-              "the": 27,
-              "price": 4,
-              "of": 10,
-              "a": 7,
-              "macbook": 5,
-              "pro": 4,
-              "how": 3,
+              "what": 1,
+              "is": 1,
+              "the": 1,
+              "price": 1,
+              "of": 1,
+              "a": 1,
+              "macbook": 1,
+              "pro": 1,
+              "how": 1,
               "much": 1,
-              "doe": 3,
+              "doe": 1,
               "an": 1,
-              "ipad": 6,
-              "cost": 2,
-              "can": 2,
-              "tell": 8,
-              "me": 9,
-              "new": 2,
-              "laptop": 5,
-              "averag": 2,
-              "t": 5,
-              "shirt": 5,
-              "popular": 2,
-              "book": 3,
-              "about": 6,
-              "latest": 2,
+              "ipad": 1,
+              "cost": 1,
+              "can": 1,
+              "tell": 1,
+              "me": 1,
+              "new": 1,
+              "laptop": 1,
+              "averag": 1,
+              "t-shirt": 1,
+              "popular": 1,
+              "book": 1,
+              "about": 1,
+              "latest": 1,
               "featur": 1,
-              "are": 6,
+              "are": 1,
               "specif": 1,
               "newest": 1,
               "which": 1,
-              "for": 3,
-              "game": 2,
-              "recommend": 2,
+              "for": 1,
+              "game": 1,
+              "recommend": 1,
               "classic": 1,
-              "to": 2,
+              "to": 1,
               "read": 1,
               "some": 1,
               "trendi": 1,
               "design": 1,
-              "inch": 1,
+              "13-inch": 1,
               "storag": 1,
               "capac": 1,
               "air": 1,
@@ -659,13 +427,13 @@
               "previous": 1,
               "version": 1,
               "color": 1,
-              "option": 2,
+              "option": 1,
               "mini": 1,
               "differ": 1,
               "from": 1,
               "standard": 1,
               "top": 1,
-              "in": 2,
+              "in": 1,
               "dell": 1,
               "xps": 1,
               "batteri": 1,
@@ -675,8 +443,7 @@
               "where": 1,
               "i": 1,
               "find": 1,
-              "eco": 1,
-              "friend": 1,
+              "eco-friend": 1,
               "custom": 1,
               "print": 1,
               "brand": 1,
@@ -691,1112 +458,1661 @@
               "novel": 1,
               "hardcov": 1
             },
-            "isEditing": false,
-            "className": "BrainNLU",
-            "classifier": {
-              "className": "BrainClassifier",
-              "settings": {
-                "language": "en",
-                "useNoneFeature": true,
-                "config": {
-                  "activation": "leaky-relu",
-                  "hiddenLayers": [],
-                  "iterations": 20000,
-                  "learningRate": 0.7,
-                  "errorThresh": 0.00005,
-                  "momentum": 0.5,
-                  "deltaErrorThresh": 0.000001,
-                  "maxDecimals": 9,
-                  "leakyReluAlpha": 0.08,
-                  "timeout": 120000
-                }
+            "intents": {
+              "greeting": 1,
+              "product_price_macbook": 1,
+              "product_price_ipad": 1,
+              "product_price_laptop": 1,
+              "product_price_shirts": 1,
+              "product_price_book": 1,
+              "product_info_macbook": 1,
+              "product_info_ipad": 1,
+              "product_info_laptop": 1,
+              "product_info_book": 1,
+              "product_info_tshirt": 1
+            },
+            "intentFeatures": {
+              "greeting": {
+                "hello": 1,
+                "hi": 1,
+                "hey": 1,
+                "you": 1,
+                "yo": 1,
+                "goodmorn": 1,
+                "goodafternoon": 1,
+                "good": 1,
+                "day": 1
               },
-              "labels": [],
-              "network": {
-                "sizes": [
-                  91,
-                  12
-                ],
-                "layers": [
-                  {
-                    "13": {},
-                    "2023": {},
-                    "hello": {},
-                    "hi": {},
-                    "hey": {},
-                    "you": {},
-                    "yo": {},
-                    "goodmorn": {},
-                    "goodafternoon": {},
-                    "good": {},
-                    "day": {},
-                    "what": {},
-                    "is": {},
-                    "the": {},
-                    "price": {},
-                    "of": {},
-                    "a": {},
-                    "macbook": {},
-                    "pro": {},
-                    "how": {},
-                    "much": {},
-                    "doe": {},
-                    "an": {},
-                    "ipad": {},
-                    "cost": {},
-                    "can": {},
-                    "tell": {},
-                    "me": {},
-                    "new": {},
-                    "laptop": {},
-                    "averag": {},
-                    "t": {},
-                    "shirt": {},
-                    "popular": {},
-                    "book": {},
-                    "about": {},
-                    "latest": {},
-                    "featur": {},
-                    "are": {},
-                    "specif": {},
-                    "newest": {},
-                    "which": {},
-                    "for": {},
-                    "game": {},
-                    "recommend": {},
-                    "classic": {},
-                    "to": {},
-                    "read": {},
-                    "some": {},
-                    "trendi": {},
-                    "design": {},
-                    "inch": {},
-                    "storag": {},
-                    "capac": {},
-                    "air": {},
-                    "compar": {},
-                    "previous": {},
-                    "version": {},
-                    "color": {},
-                    "option": {},
-                    "mini": {},
-                    "differ": {},
-                    "from": {},
-                    "standard": {},
-                    "top": {},
-                    "in": {},
-                    "dell": {},
-                    "xps": {},
-                    "batteri": {},
-                    "life": {},
-                    "asus": {},
-                    "rog": {},
-                    "where": {},
-                    "i": {},
-                    "find": {},
-                    "eco": {},
-                    "friend": {},
-                    "custom": {},
-                    "print": {},
-                    "brand": {},
-                    "author": {},
-                    "great": {},
-                    "gatsbi": {},
-                    "genr": {},
-                    "harri": {},
-                    "potter": {},
-                    "seri": {},
-                    "mysteri": {},
-                    "novel": {},
-                    "hardcov": {},
-                    "nonefeature": {}
-                  },
-                  {
-                    "greeting": {
-                      "bias": 7.756774067,
-                      "weights": {
-                        "13": -0.03162789,
-                        "hello": 4.565472603,
-                        "hi": 4.639852524,
-                        "hey": 4.412926674,
-                        "you": 0.513881564,
-                        "yo": 4.575331688,
-                        "goodmorn": 4.531160831,
-                        "goodafternoon": 4.484874249,
-                        "good": 1.529007435,
-                        "day": 3.140237808,
-                        "what": -1.551256895,
-                        "is": -0.976353824,
-                        "the": -2.267697573,
-                        "price": -0.885371625,
-                        "of": -1.572515011,
-                        "a": -2.263907433,
-                        "macbook": -1.090301275,
-                        "pro": -0.684207082,
-                        "how": -1.397056699,
-                        "much": -1.16091466,
-                        "doe": -1.397056699,
-                        "an": -1.16091466,
-                        "ipad": -1.501514196,
-                        "cost": -1.194192529,
-                        "can": -1.014873385,
-                        "tell": -1.337467432,
-                        "me": -1.652777076,
-                        "new": -0.436196566,
-                        "laptop": -1.999060869,
-                        "averag": -0.032737155,
-                        "t": -1.516950965,
-                        "shirt": -1.516950965,
-                        "popular": -0.033277892,
-                        "book": -1.063226581,
-                        "about": -0.916360259,
-                        "latest": -0.427412719,
-                        "featur": -0.427412719,
-                        "are": -2.186133385,
-                        "specif": -0.15282397,
-                        "newest": -0.15282397,
-                        "which": -1.611230612,
-                        "for": -1.926539779,
-                        "game": -1.611230612,
-                        "recommend": -1.345257878,
-                        "classic": -1.029948711,
-                        "to": -1.078315735,
-                        "read": -1.029948711,
-                        "some": -0.422079265,
-                        "trendi": -0.422079265,
-                        "design": -0.422079265,
-                        "inch": -0.03162789,
-                        "storag": -0.118090019,
-                        "capac": -0.118090019,
-                        "air": -0.118090019,
-                        "compar": -0.048366684,
-                        "previous": -0.048366684,
-                        "version": -0.048366684,
-                        "option": -0.627043784,
-                        "differ": -0.187775135,
-                        "from": -0.187775135,
-                        "standard": -0.187775135,
-                        "where": -0.627043784,
-                        "i": -0.627043784,
-                        "find": -0.627043784,
-                        "eco": -0.627043784,
-                        "friend": -0.627043784,
-                        "custom": -0.435090482,
-                        "print": -0.435090482,
-                        "author": -0.022229251,
-                        "great": -0.022229251,
-                        "gatsbi": -0.022229251,
-                        "genr": -0.360722363,
-                        "harri": -0.360722363,
-                        "potter": -0.360722363,
-                        "seri": -0.360722363,
-                        "mysteri": -0.315308809,
-                        "novel": -0.315308809,
-                        "nonefeature": -6.918217659
-                      }
-                    },
-                    "product_price_macbook": {
-                      "bias": -0.616495654,
-                      "weights": {
-                        "13": -0.842045546,
-                        "you": -0.535666943,
-                        "what": 0.9069767,
-                        "is": 1.200533986,
-                        "the": -0.999594629,
-                        "price": 2.315713167,
-                        "of": 0.28801468,
-                        "a": 2.073108435,
-                        "macbook": 3.122713327,
-                        "pro": 4.196706772,
-                        "how": -0.434034199,
-                        "much": -0.073793463,
-                        "doe": -0.434034199,
-                        "an": -0.073793463,
-                        "ipad": -0.703960717,
-                        "cost": -0.157088429,
-                        "can": -0.535666943,
-                        "tell": -1.546330094,
-                        "me": -1.546330094,
-                        "new": -0.559297621,
-                        "laptop": -0.656471312,
-                        "averag": -2.52398324,
-                        "t": -1.324016213,
-                        "shirt": -1.324016213,
-                        "popular": -0.08329498,
-                        "book": -1.442570806,
-                        "about": -0.927368104,
-                        "latest": -0.085322537,
-                        "featur": -0.085322537,
-                        "are": -0.293557167,
-                        "specif": -0.293557167,
-                        "newest": -0.293557167,
-                        "recommend": -0.159309894,
-                        "classic": -0.159309894,
-                        "to": -0.182940632,
-                        "read": -0.159309894,
-                        "inch": -0.842045546,
-                        "storag": -1.301649213,
-                        "capac": -1.301649213,
-                        "air": -1.301649213,
-                        "compar": -0.023630735,
-                        "previous": -0.023630735,
-                        "version": -0.023630735,
-                        "differ": -0.336609989,
-                        "from": -0.336609989,
-                        "standard": -0.336609989,
-                        "batteri": -0.120804384,
-                        "life": -0.120804384,
-                        "asus": -0.120804384,
-                        "rog": -0.120804384,
-                        "genr": -0.228391752,
-                        "harri": -0.228391752,
-                        "potter": -0.228391752,
-                        "seri": -0.228391752,
-                        "hardcov": -1.199966073,
-                        "nonefeature": 2.27e-7
-                      }
-                    },
-                    "product_price_ipad": {
-                      "bias": 0.09888624,
-                      "weights": {
-                        "2023": -0.054031599,
-                        "hello": -0.103842393,
-                        "hi": -0.101781845,
-                        "hey": -0.110228233,
-                        "you": -0.081585906,
-                        "yo": -0.098952726,
-                        "goodmorn": -0.097942218,
-                        "goodafternoon": -0.09687531,
-                        "good": -0.079813905,
-                        "day": -0.041755818,
-                        "what": -0.247915849,
-                        "is": -0.044404253,
-                        "the": -1.617468357,
-                        "price": -0.096363619,
-                        "of": -0.43371436,
-                        "a": -0.274458528,
-                        "macbook": -0.312150836,
-                        "pro": -0.83133477,
-                        "how": 1.542338371,
-                        "much": 2.63131237,
-                        "doe": 1.542338371,
-                        "an": 2.63131237,
-                        "ipad": 1.596758604,
-                        "cost": 2.456912279,
-                        "can": -0.0682211,
-                        "tell": -0.280871212,
-                        "me": -0.280871212,
-                        "new": -0.363630086,
-                        "laptop": -0.090017453,
-                        "averag": -0.044404253,
-                        "t": -0.060958568,
-                        "shirt": -0.060958568,
-                        "popular": -0.174400091,
-                        "book": -0.178094923,
-                        "about": -0.054511745,
-                        "latest": -0.000480141,
-                        "featur": -0.000480141,
-                        "are": -0.241569668,
-                        "specif": -0.162950665,
-                        "newest": -0.162950665,
-                        "which": -0.038058076,
-                        "for": -0.078326412,
-                        "game": -0.038058076,
-                        "recommend": -0.003694824,
-                        "classic": -0.003694824,
-                        "to": -0.315365523,
-                        "read": -0.003694824,
-                        "some": -0.000292591,
-                        "trendi": -0.000292591,
-                        "design": -0.000292591,
-                        "compar": -0.311670691,
-                        "previous": -0.311670691,
-                        "version": -0.311670691,
-                        "color": -0.040268332,
-                        "option": -0.056530058,
-                        "mini": -0.040268332,
-                        "differ": -0.777303278,
-                        "from": -0.777303278,
-                        "standard": -0.777303278,
-                        "where": -0.016261728,
-                        "i": -0.016261728,
-                        "find": -0.016261728,
-                        "eco": -0.016261728,
-                        "friend": -0.016261728,
-                        "nonefeature": -0.10635215
-                      }
-                    },
-                    "product_price_laptop": {
-                      "bias": -0.796996927,
-                      "weights": {
-                        "13": -0.086428389,
-                        "2023": -0.128086984,
-                        "hey": -0.870319426,
-                        "you": 1.677939773,
-                        "good": -0.219403416,
-                        "what": -0.880102277,
-                        "is": -0.77059114,
-                        "the": -0.222903818,
-                        "price": 1.902195692,
-                        "of": 0.830422819,
-                        "a": 0.979505241,
-                        "macbook": -0.720365703,
-                        "pro": -0.319923818,
-                        "how": -0.185953259,
-                        "doe": -0.185953259,
-                        "ipad": -0.156878576,
-                        "cost": -0.751235604,
-                        "can": 2.438378096,
-                        "tell": 0.843151867,
-                        "me": 0.671696663,
-                        "new": 2.362306356,
-                        "laptop": 1.813324809,
-                        "averag": -0.500294626,
-                        "t": -0.559805036,
-                        "shirt": -0.559805036,
-                        "popular": -0.751235604,
-                        "book": -0.801606059,
-                        "about": -0.953871369,
-                        "latest": -0.65285778,
-                        "featur": -0.302215934,
-                        "are": -0.328914553,
-                        "specif": -0.069151364,
-                        "newest": -0.069151364,
-                        "which": -0.219403416,
-                        "for": -0.390858591,
-                        "game": -0.259763181,
-                        "recommend": -0.171455175,
-                        "to": -0.185953259,
-                        "inch": -0.086428389,
-                        "compar": -0.185953259,
-                        "previous": -0.185953259,
-                        "version": -0.185953259,
-                        "option": -0.109880984,
-                        "top": -0.040359773,
-                        "in": -0.040359773,
-                        "dell": -0.350641906,
-                        "xps": -0.350641906,
-                        "batteri": -0.124528401,
-                        "life": -0.124528401,
-                        "asus": -0.124528401,
-                        "rog": -0.124528401,
-                        "where": -0.109880984,
-                        "i": -0.109880984,
-                        "find": -0.109880984,
-                        "eco": -0.109880984,
-                        "friend": -0.109880984,
-                        "author": -0.126857728,
-                        "great": -0.126857728,
-                        "gatsbi": -0.126857728,
-                        "mysteri": -0.171455175,
-                        "novel": -0.171455175,
-                        "hardcov": -0.050370473,
-                        "nonefeature": 2.27e-7
-                      }
-                    },
-                    "product_price_shirts": {
-                      "bias": -1.397953452,
-                      "weights": {
-                        "2023": -0.498954028,
-                        "good": -0.000672154,
-                        "what": -0.693205774,
-                        "is": 1.055996656,
-                        "the": -0.258680642,
-                        "price": 2.119047165,
-                        "of": 0.352420539,
-                        "a": 1.643857479,
-                        "macbook": -1.666065574,
-                        "pro": -1.122255802,
-                        "ipad": -0.40105477,
-                        "cost": -0.302521944,
-                        "can": -0.713823259,
-                        "tell": -1.214586973,
-                        "me": -1.26597929,
-                        "laptop": -0.397086442,
-                        "averag": 3.241303444,
-                        "t": 3.195632935,
-                        "shirt": 3.195632935,
-                        "popular": -0.801475942,
-                        "book": -3.240015984,
-                        "about": -0.91206485,
-                        "latest": -0.112146944,
-                        "featur": -0.112146944,
-                        "are": -1.749874711,
-                        "specif": -0.40105477,
-                        "newest": -0.40105477,
-                        "which": -0.000672154,
-                        "for": -0.052064337,
-                        "game": -0.000672154,
-                        "recommend": -0.172667652,
-                        "classic": -0.121275447,
-                        "to": -0.121275447,
-                        "read": -0.121275447,
-                        "some": -0.849194229,
-                        "trendi": -0.849194229,
-                        "design": -0.849194229,
-                        "storag": -0.431663036,
-                        "capac": -0.431663036,
-                        "air": -0.431663036,
-                        "option": -0.713823259,
-                        "in": -0.498954028,
-                        "batteri": -0.39641431,
-                        "life": -0.39641431,
-                        "asus": -0.39641431,
-                        "rog": -0.39641431,
-                        "where": -0.713823259,
-                        "i": -0.713823259,
-                        "find": -0.713823259,
-                        "eco": -0.713823259,
-                        "friend": -0.713823259,
-                        "custom": -0.799917877,
-                        "print": -0.799917877,
-                        "brand": -0.498954028,
-                        "genr": -0.23497273,
-                        "harri": -0.23497273,
-                        "potter": -0.23497273,
-                        "seri": -0.23497273,
-                        "mysteri": -0.051392183,
-                        "novel": -0.051392183,
-                        "hardcov": -2.816218615,
-                        "nonefeature": 2.27e-7
-                      }
-                    },
-                    "product_price_book": {
-                      "bias": -0.685770021,
-                      "weights": {
-                        "13": -0.031608358,
-                        "2023": -0.135442138,
-                        "hello": -0.070427239,
-                        "hi": -0.066491187,
-                        "hey": -0.11853344,
-                        "you": -0.84151876,
-                        "yo": -0.056150485,
-                        "goodmorn": -0.053012334,
-                        "goodafternoon": -0.050049573,
-                        "good": -0.049358156,
-                        "day": -0.046987392,
-                        "what": 0.010038785,
-                        "is": 0.218068495,
-                        "the": 0.681939125,
-                        "price": -0.171866223,
-                        "of": 1.058451653,
-                        "a": 0.869459748,
-                        "macbook": -1.338182688,
-                        "pro": -1.417059302,
-                        "how": -0.229250789,
-                        "much": -0.229250789,
-                        "doe": -0.229250789,
-                        "an": -0.229250789,
-                        "ipad": -0.553844929,
-                        "cost": 2.095117569,
-                        "can": -0.785760403,
-                        "tell": 0.669319689,
-                        "me": 0.638897717,
-                        "new": -0.785760403,
-                        "laptop": -1.026019335,
-                        "averag": 1.873341918,
-                        "t": -1.925382257,
-                        "shirt": -1.925382257,
-                        "popular": 2.314929724,
-                        "book": 4.858451843,
-                        "about": -0.869288445,
-                        "latest": -0.209461629,
-                        "featur": -0.03679958,
-                        "are": -0.210400447,
-                        "specif": -0.198590845,
-                        "newest": -0.198590845,
-                        "which": -0.002370758,
-                        "for": -0.032792673,
-                        "game": -0.002370758,
-                        "recommend": -1.283042431,
-                        "classic": -1.252620697,
-                        "to": -1.252620697,
-                        "read": -1.252620697,
-                        "inch": -0.031608358,
-                        "storag": -0.010327252,
-                        "capac": -0.010327252,
-                        "air": -0.010327252,
-                        "in": -0.00943885,
-                        "dell": -0.17266205,
-                        "xps": -0.17266205,
-                        "batteri": -0.065226354,
-                        "life": -0.065226354,
-                        "asus": -0.065226354,
-                        "rog": -0.065226354,
-                        "custom": -0.002580576,
-                        "print": -0.002580576,
-                        "brand": -0.00943885,
-                        "author": -0.499634594,
-                        "great": -0.499634594,
-                        "gatsbi": -0.499634594,
-                        "genr": -0.320271909,
-                        "harri": -0.320271909,
-                        "potter": -0.320271909,
-                        "seri": -0.320271909,
-                        "mysteri": -0.030421915,
-                        "novel": -0.030421915,
-                        "hardcov": 3.78670454,
-                        "nonefeature": -0.074674934
-                      }
-                    },
-                    "product_info_macbook": {
-                      "bias": 0.015855426,
-                      "weights": {
-                        "13": 2.283747673,
-                        "2023": -1.550747871,
-                        "hello": -0.029345699,
-                        "hi": -0.028126469,
-                        "hey": -0.038603242,
-                        "you": -0.016314859,
-                        "yo": -0.025496479,
-                        "goodmorn": -0.024540467,
-                        "goodafternoon": -0.023615854,
-                        "good": -0.02091815,
-                        "day": -0.016059395,
-                        "what": -0.849251688,
-                        "is": -0.141109675,
-                        "the": 0.882378399,
-                        "price": -1.892761111,
-                        "of": -0.905655026,
-                        "a": -1.969139695,
-                        "macbook": 6.133355618,
-                        "pro": -1.273403287,
-                        "how": 0.453925222,
-                        "doe": 0.453925222,
-                        "ipad": -2.26890564,
-                        "tell": 0.724692523,
-                        "me": 0.724692523,
-                        "new": 0.927392602,
-                        "laptop": -1.854771256,
-                        "averag": -0.129166707,
-                        "t": -0.553012669,
-                        "shirt": -0.553012669,
-                        "book": -0.205545232,
-                        "about": 0.724692523,
-                        "latest": 1.063940644,
-                        "featur": 2.231011629,
-                        "are": -0.713001132,
-                        "specif": -0.01251895,
-                        "newest": -0.01251895,
-                        "which": -0.004858753,
-                        "for": -0.467689842,
-                        "game": -0.23551859,
-                        "recommend": -0.076378547,
-                        "classic": -0.076378547,
-                        "to": 0.851014018,
-                        "read": -0.076378547,
-                        "some": -0.002132512,
-                        "trendi": -0.002132512,
-                        "design": -0.002132512,
-                        "inch": 2.283747673,
-                        "storag": 2.454797983,
-                        "capac": 2.454797983,
-                        "air": 2.454797983,
-                        "compar": 0.927392602,
-                        "previous": 0.927392602,
-                        "version": 0.927392602,
-                        "color": -0.46283108,
-                        "option": -0.46283108,
-                        "mini": -0.46283108,
-                        "differ": -0.47346738,
-                        "from": -0.47346738,
-                        "standard": -0.47346738,
-                        "top": -0.230659828,
-                        "in": -0.230659828,
-                        "dell": -1.167071223,
-                        "xps": -1.167071223,
-                        "batteri": -0.452181488,
-                        "life": -0.452181488,
-                        "asus": -0.452181488,
-                        "rog": -0.452181488,
-                        "custom": -0.550880194,
-                        "print": -0.550880194,
-                        "author": -0.752026618,
-                        "great": -0.752026618,
-                        "gatsbi": -0.752026618,
-                        "genr": -0.250964522,
-                        "harri": -0.250964522,
-                        "potter": -0.250964522,
-                        "seri": -0.250964522,
-                        "hardcov": -0.129166707,
-                        "nonefeature": -0.030636754
-                      }
-                    },
-                    "product_info_ipad": {
-                      "bias": -0.27607865,
-                      "weights": {
-                        "13": -1.31603694,
-                        "2023": 1.864531517,
-                        "hello": -0.011022482,
-                        "hi": -0.010406454,
-                        "hey": -0.018551525,
-                        "you": -0.008726669,
-                        "yo": -0.008788044,
-                        "goodmorn": -0.008296897,
-                        "goodafternoon": -0.007833198,
-                        "good": -0.018515039,
-                        "day": -0.00599609,
-                        "what": 0.151691735,
-                        "is": -1.21239543,
-                        "the": 1.73952949,
-                        "price": -0.569068193,
-                        "of": -0.044327267,
-                        "a": -0.756870985,
-                        "macbook": -2.13341403,
-                        "pro": 2.657488823,
-                        "how": -0.501953244,
-                        "much": -1.527747154,
-                        "doe": -0.501953244,
-                        "an": -1.527747154,
-                        "ipad": 5.863889694,
-                        "cost": -1.527747154,
-                        "can": -0.195719972,
-                        "tell": 0.276733845,
-                        "me": 0.094490319,
-                        "new": -0.147311285,
-                        "laptop": -1.983608365,
-                        "averag": -0.023053894,
-                        "t": -1.07782948,
-                        "shirt": -1.07782948,
-                        "popular": -0.596799433,
-                        "book": -0.028613007,
-                        "about": 0.276733845,
-                        "latest": -0.805459082,
-                        "are": 1.351567984,
-                        "specif": 1.857069373,
-                        "newest": 1.857069373,
-                        "which": -0.01251895,
-                        "for": 0.820264697,
-                        "game": -0.89762342,
-                        "recommend": -0.187802717,
-                        "classic": -0.005559114,
-                        "to": -0.152870402,
-                        "read": -0.005559114,
-                        "some": -0.026105735,
-                        "trendi": -0.026105735,
-                        "design": -0.026105735,
-                        "inch": -1.31603694,
-                        "storag": -0.124052308,
-                        "capac": -0.124052308,
-                        "air": -0.124052308,
-                        "compar": -0.147311285,
-                        "previous": -0.147311285,
-                        "version": -0.147311285,
-                        "color": 1.015027404,
-                        "option": 0.819307446,
-                        "mini": 1.015027404,
-                        "differ": 1.17310524,
-                        "from": 1.17310524,
-                        "standard": 1.17310524,
-                        "top": -0.885104418,
-                        "in": -1.481904149,
-                        "dell": -0.805459082,
-                        "xps": -0.805459082,
-                        "batteri": -0.280525893,
-                        "life": -0.280525893,
-                        "asus": -0.280525893,
-                        "rog": -0.280525893,
-                        "where": -0.195719972,
-                        "i": -0.195719972,
-                        "find": -0.195719972,
-                        "eco": -0.195719972,
-                        "friend": -0.195719972,
-                        "custom": -0.259204179,
-                        "print": -0.259204179,
-                        "brand": -0.596799433,
-                        "author": -0.689001262,
-                        "great": -0.689001262,
-                        "gatsbi": -0.689001262,
-                        "genr": -0.238748908,
-                        "harri": -0.238748908,
-                        "potter": -0.238748908,
-                        "seri": -0.238748908,
-                        "mysteri": -0.182243615,
-                        "novel": -0.182243615,
-                        "hardcov": -0.023053894,
-                        "nonefeature": -0.011686981
-                      }
-                    },
-                    "product_info_laptop": {
-                      "bias": -0.138142134,
-                      "weights": {
-                        "13": -0.005053434,
-                        "2023": 0.360145599,
-                        "hello": -0.093866572,
-                        "hi": -0.089158565,
-                        "hey": -0.113612525,
-                        "you": -0.792471528,
-                        "yo": -0.079033874,
-                        "goodmorn": -0.07505805,
-                        "goodafternoon": -0.071279943,
-                        "good": 0.751685381,
-                        "day": -0.603157341,
-                        "what": 0.254319876,
-                        "is": 0.625990272,
-                        "the": 0.415753961,
-                        "price": -1.173060775,
-                        "of": -1.055427432,
-                        "a": -1.304445863,
-                        "macbook": -0.891640902,
-                        "pro": -0.120213971,
-                        "how": -0.035794973,
-                        "much": -0.00222334,
-                        "doe": -0.035794973,
-                        "an": -0.00222334,
-                        "ipad": -0.729894996,
-                        "cost": -0.00222334,
-                        "can": -0.941411555,
-                        "tell": -0.312372893,
-                        "me": -0.437498629,
-                        "new": -0.785170257,
-                        "laptop": 6.036072254,
-                        "averag": -0.307879508,
-                        "t": -1.764150381,
-                        "shirt": -1.764150381,
-                        "popular": -1.074956656,
-                        "book": -0.314138979,
-                        "about": 0.447224081,
-                        "latest": 1.661319137,
-                        "featur": -0.752508163,
-                        "are": 0.983171761,
-                        "specif": -0.206437111,
-                        "newest": -0.206437111,
-                        "which": 1.354842424,
-                        "for": 0.718058348,
-                        "game": 2.791523218,
-                        "recommend": -0.131385252,
-                        "classic": -0.006259475,
-                        "to": -0.031832803,
-                        "read": -0.006259475,
-                        "some": -0.015298505,
-                        "trendi": -0.015298505,
-                        "design": -0.015298505,
-                        "inch": -0.005053434,
-                        "storag": -0.002921514,
-                        "capac": -0.002921514,
-                        "air": -0.002921514,
-                        "compar": -0.025573328,
-                        "previous": -0.025573328,
-                        "version": -0.025573328,
-                        "color": -0.51165837,
-                        "option": -0.693473041,
-                        "mini": -0.51165837,
-                        "differ": -0.007998307,
-                        "from": -0.007998307,
-                        "standard": -0.007998307,
-                        "top": 1.436680317,
-                        "in": 0.361723602,
-                        "dell": 2.413827419,
-                        "xps": 2.413827419,
-                        "batteri": 1.590319991,
-                        "life": 1.590319991,
-                        "asus": 1.590319991,
-                        "rog": 1.590319991,
-                        "where": -0.181814626,
-                        "i": -0.181814626,
-                        "find": -0.181814626,
-                        "eco": -0.181814626,
-                        "friend": -0.181814626,
-                        "custom": -0.49208042,
-                        "print": -0.49208042,
-                        "brand": -1.074956656,
-                        "author": -0.715383172,
-                        "great": -0.715383172,
-                        "gatsbi": -0.715383172,
-                        "genr": -0.547944486,
-                        "harri": -0.547944486,
-                        "potter": -0.547944486,
-                        "seri": -0.547944486,
-                        "mysteri": -0.125125766,
-                        "novel": -0.125125766,
-                        "hardcov": -0.307879508,
-                        "nonefeature": -0.098912425
-                      }
-                    },
-                    "product_info_book": {
-                      "bias": 0.339550944,
-                      "weights": {
-                        "13": -0.098893456,
-                        "2023": -0.354790747,
-                        "hello": -0.37691462,
-                        "hi": -0.363873839,
-                        "hey": -0.439493686,
-                        "you": -0.779861987,
-                        "yo": -0.343296856,
-                        "goodmorn": -0.339250118,
-                        "goodafternoon": -0.336626172,
-                        "good": -0.320054978,
-                        "day": -0.191336781,
-                        "what": 0.013235181,
-                        "is": 0.491617501,
-                        "the": -0.180808544,
-                        "price": -2.375906229,
-                        "of": 1.332753062,
-                        "a": 0.702500284,
-                        "macbook": -1.563968062,
-                        "pro": -0.997151017,
-                        "how": -0.151603237,
-                        "much": -0.046494551,
-                        "doe": -0.151603237,
-                        "an": -0.046494551,
-                        "ipad": -0.786507607,
-                        "cost": -1.394169092,
-                        "can": -0.64013803,
-                        "tell": -0.692200124,
-                        "me": 1.315130591,
-                        "new": -0.739591956,
-                        "laptop": -1.117718697,
-                        "averag": -1.197956085,
-                        "t": -0.616530299,
-                        "shirt": -0.616530299,
-                        "popular": -1.347674608,
-                        "book": -0.119269341,
-                        "about": 1.289958119,
-                        "latest": -0.77814573,
-                        "featur": -0.643502772,
-                        "are": -0.607100368,
-                        "specif": -0.208599404,
-                        "newest": -0.208599404,
-                        "which": -0.128718227,
-                        "for": 1.701989174,
-                        "game": -0.128718227,
-                        "recommend": 4.426080227,
-                        "classic": 2.41875124,
-                        "to": 2.31364274,
-                        "read": 2.41875124,
-                        "some": -0.093159877,
-                        "trendi": -0.093159877,
-                        "design": -0.093159877,
-                        "inch": -0.098893456,
-                        "storag": -0.172996357,
-                        "capac": -0.172996357,
-                        "air": -0.172996357,
-                        "compar": -0.105108686,
-                        "previous": -0.105108686,
-                        "version": -0.105108686,
-                        "color": -0.176622853,
-                        "option": -0.182277635,
-                        "mini": -0.176622853,
-                        "dell": -0.134642899,
-                        "xps": -0.134642899,
-                        "batteri": -0.219874457,
-                        "life": -0.219874457,
-                        "asus": -0.219874457,
-                        "rog": -0.219874457,
-                        "where": -0.005654774,
-                        "i": -0.005654774,
-                        "find": -0.005654774,
-                        "eco": -0.005654774,
-                        "friend": -0.005654774,
-                        "custom": -0.510105133,
-                        "print": -0.510105133,
-                        "author": 3.031892061,
-                        "great": 3.031892061,
-                        "gatsbi": 3.031892061,
-                        "genr": 2.625911236,
-                        "harri": 2.625911236,
-                        "potter": 2.625911236,
-                        "seri": 2.625911236,
-                        "mysteri": 2.007330418,
-                        "novel": 2.007330418,
-                        "hardcov": -1.190345645,
-                        "nonefeature": -0.391249508
-                      }
-                    },
-                    "product_info_tshirt": {
-                      "bias": 0.090895993,
-                      "weights": {
-                        "13": -0.04499628,
-                        "2023": 0.677409649,
-                        "hello": -0.142848402,
-                        "hi": -0.13643609,
-                        "hey": -0.214969903,
-                        "you": -0.264596969,
-                        "yo": -0.12077076,
-                        "goodmorn": -0.115300179,
-                        "goodafternoon": -0.11006777,
-                        "good": -0.156054825,
-                        "day": -0.084088638,
-                        "what": 0.375003219,
-                        "is": -1.216257811,
-                        "the": -1.633633375,
-                        "price": -1.123108387,
-                        "of": -1.900480151,
-                        "a": -1.345183849,
-                        "macbook": -0.185272515,
-                        "pro": -0.263277978,
-                        "how": -0.076703072,
-                        "much": -0.074294358,
-                        "doe": -0.076703072,
-                        "an": -0.074294358,
-                        "ipad": -0.532464564,
-                        "cost": -0.074294358,
-                        "can": 0.562272906,
-                        "tell": 0.522753656,
-                        "me": 0.300678372,
-                        "new": -0.169850826,
-                        "laptop": -0.777169228,
-                        "averag": -0.955666244,
-                        "t": 3.854215622,
-                        "shirt": 3.854215622,
-                        "popular": 1.433452845,
-                        "book": -0.117733248,
-                        "about": 0.690195858,
-                        "latest": -0.123269379,
-                        "featur": -0.123269379,
-                        "are": 1.519294262,
-                        "which": -0.071966179,
-                        "for": -0.533930123,
-                        "game": -0.609727144,
-                        "recommend": -0.222075328,
-                        "to": -0.002408714,
-                        "some": 0.935458124,
-                        "trendi": 0.935458124,
-                        "design": 0.935458124,
-                        "inch": -0.04499628,
-                        "storag": -0.014598146,
-                        "capac": -0.014598146,
-                        "air": -0.014598146,
-                        "compar": -0.002408714,
-                        "previous": -0.002408714,
-                        "version": -0.002408714,
-                        "color": -0.239888534,
-                        "option": 0.489826471,
-                        "mini": -0.239888534,
-                        "top": -0.537760973,
-                        "in": 0.895691514,
-                        "where": 0.72971487,
-                        "i": 0.72971487,
-                        "find": 0.72971487,
-                        "eco": 0.72971487,
-                        "friend": 0.72971487,
-                        "custom": 1.593523622,
-                        "print": 1.593523622,
-                        "brand": 1.433452845,
-                        "author": -0.516780138,
-                        "great": -0.516780138,
-                        "gatsbi": -0.516780138,
-                        "genr": -0.245993391,
-                        "harri": -0.245993391,
-                        "potter": -0.245993391,
-                        "seri": -0.245993391,
-                        "mysteri": -0.222075328,
-                        "novel": -0.222075328,
-                        "hardcov": -0.117733248,
-                        "nonefeature": -0.150453702
-                      }
-                    },
-                    "None": {
-                      "bias": 1.228140562,
-                      "weights": {
-                        "13": -0.007928916,
-                        "2023": -0.030111708,
-                        "hello": -1.088697791,
-                        "hi": -1.070163012,
-                        "hey": -1.09985733,
-                        "you": -0.312700093,
-                        "yo": -1.035272241,
-                        "goodmorn": -1.016473293,
-                        "goodafternoon": -0.997687161,
-                        "good": -0.605043888,
-                        "day": -0.52885896,
-                        "what": -0.267460197,
-                        "is": -0.141181469,
-                        "the": -0.35295698,
-                        "price": -0.076557435,
-                        "of": -0.205192417,
-                        "a": -0.324114889,
-                        "macbook": -0.145557031,
-                        "pro": -0.084967986,
-                        "how": -0.213980526,
-                        "much": -0.169507116,
-                        "doe": -0.213980526,
-                        "an": -0.169507116,
-                        "ipad": -0.218994007,
-                        "cost": -0.18248491,
-                        "can": -0.115208298,
-                        "tell": -0.173602447,
-                        "me": -0.262892395,
-                        "new": -0.034901872,
-                        "laptop": -0.150630087,
-                        "averag": -0.00908973,
-                        "t": -0.238016888,
-                        "shirt": -0.238016888,
-                        "popular": -0.012977809,
-                        "book": -0.158267483,
-                        "about": -0.141764387,
-                        "latest": -0.065250538,
-                        "featur": -0.053080905,
-                        "are": -0.202463537,
-                        "specif": -0.021055056,
-                        "newest": -0.021055056,
-                        "which": -0.076184906,
-                        "for": -0.165474713,
-                        "game": -0.106296599,
-                        "recommend": -0.234579638,
-                        "classic": -0.145289674,
-                        "to": -0.161331326,
-                        "read": -0.145289674,
-                        "some": -0.075111881,
-                        "trendi": -0.075111881,
-                        "design": -0.075111881,
-                        "inch": -0.007928916,
-                        "storag": -0.019898275,
-                        "capac": -0.019898275,
-                        "air": -0.019898275,
-                        "compar": -0.016041614,
-                        "previous": -0.016041614,
-                        "version": -0.016041614,
-                        "option": -0.096348032,
-                        "differ": -0.028431695,
-                        "from": -0.028431695,
-                        "standard": -0.028431695,
-                        "top": -0.030111708,
-                        "in": -0.030111708,
-                        "dell": -0.012169667,
-                        "xps": -0.012169667,
-                        "batteri": -0.013303524,
-                        "life": -0.013303524,
-                        "asus": -0.013303524,
-                        "rog": -0.013303524,
-                        "where": -0.096348032,
-                        "i": -0.096348032,
-                        "find": -0.096348032,
-                        "eco": -0.096348032,
-                        "friend": -0.096348032,
-                        "custom": -0.057467066,
-                        "print": -0.057467066,
-                        "author": -0.011117851,
-                        "great": -0.011117851,
-                        "gatsbi": -0.011117851,
-                        "genr": -0.050282519,
-                        "harri": -0.050282519,
-                        "potter": -0.050282519,
-                        "seri": -0.050282519,
-                        "mysteri": -0.089289859,
-                        "novel": -0.089289859,
-                        "nonefeature": 10.295507431
-                      }
-                    }
-                  }
-                ],
-                "trainOpts": {
-                  "iterations": 20000,
-                  "errorThresh": 0.00005,
-                  "fixedError": false,
-                  "deltaErrorThresh": 0.000001,
-                  "learningRate": 0.7,
-                  "momentum": 0.5,
-                  "leakyReluAlpha": 0.08,
-                  "maxDecimals": 9,
-                  "log": false
-                }
+              "product_price_macbook": {
+                "what": 1,
+                "is": 1,
+                "the": 1,
+                "price": 1,
+                "of": 1,
+                "a": 1,
+                "macbook": 1,
+                "pro": 1
+              },
+              "product_price_ipad": {
+                "how": 1,
+                "much": 1,
+                "doe": 1,
+                "an": 1,
+                "ipad": 1,
+                "cost": 1
+              },
+              "product_price_laptop": {
+                "can": 1,
+                "you": 1,
+                "tell": 1,
+                "me": 1,
+                "the": 1,
+                "price": 1,
+                "of": 1,
+                "a": 1,
+                "new": 1,
+                "laptop": 1
+              },
+              "product_price_shirts": {
+                "what": 1,
+                "is": 1,
+                "the": 1,
+                "averag": 1,
+                "price": 1,
+                "of": 1,
+                "a": 1,
+                "t-shirt": 1
+              },
+              "product_price_book": {
+                "tell": 1,
+                "me": 1,
+                "the": 1,
+                "cost": 1,
+                "of": 1,
+                "a": 1,
+                "popular": 1,
+                "book": 1,
+                "what": 1,
+                "is": 1,
+                "averag": 1,
+                "price": 1,
+                "hardcov": 1
+              },
+              "product_info_macbook": {
+                "tell": 1,
+                "me": 1,
+                "about": 1,
+                "the": 1,
+                "latest": 1,
+                "macbook": 1,
+                "featur": 1,
+                "pro": 1,
+                "13-inch": 1,
+                "what": 1,
+                "is": 1,
+                "storag": 1,
+                "capac": 1,
+                "of": 1,
+                "air": 1,
+                "how": 1,
+                "doe": 1,
+                "new": 1,
+                "compar": 1,
+                "to": 1,
+                "previous": 1,
+                "version": 1
+              },
+              "product_info_ipad": {
+                "2023": 1,
+                "what": 1,
+                "are": 1,
+                "the": 1,
+                "specif": 1,
+                "of": 1,
+                "newest": 1,
+                "ipad": 1,
+                "tell": 1,
+                "me": 1,
+                "about": 1,
+                "pro": 1,
+                "color": 1,
+                "option": 1,
+                "for": 1,
+                "mini": 1,
+                "how": 1,
+                "doe": 1,
+                "differ": 1,
+                "from": 1,
+                "standard": 1
+              },
+              "product_info_laptop": {
+                "2023": 1,
+                "which": 1,
+                "laptop": 1,
+                "are": 1,
+                "good": 1,
+                "for": 1,
+                "game": 1,
+                "what": 1,
+                "the": 1,
+                "top": 1,
+                "in": 1,
+                "tell": 1,
+                "me": 1,
+                "about": 1,
+                "latest": 1,
+                "dell": 1,
+                "xps": 1,
+                "is": 1,
+                "batteri": 1,
+                "life": 1,
+                "of": 1,
+                "asus": 1,
+                "rog": 1
+              },
+              "product_info_book": {
+                "recommend": 1,
+                "a": 1,
+                "classic": 1,
+                "book": 1,
+                "to": 1,
+                "read": 1,
+                "tell": 1,
+                "me": 1,
+                "about": 1,
+                "the": 1,
+                "author": 1,
+                "of": 1,
+                "great": 1,
+                "gatsbi": 1,
+                "what": 1,
+                "is": 1,
+                "genr": 1,
+                "harri": 1,
+                "potter": 1,
+                "seri": 1,
+                "mysteri": 1,
+                "novel": 1,
+                "for": 1
+              },
+              "product_info_tshirt": {
+                "2023": 1,
+                "what": 1,
+                "are": 1,
+                "some": 1,
+                "trendi": 1,
+                "t-shirt": 1,
+                "design": 1,
+                "where": 1,
+                "can": 1,
+                "i": 1,
+                "find": 1,
+                "eco-friend": 1,
+                "option": 1,
+                "tell": 1,
+                "me": 1,
+                "about": 1,
+                "custom": 1,
+                "print": 1,
+                "the": 1,
+                "popular": 1,
+                "brand": 1,
+                "in": 1
               }
+            },
+            "featuresToIntent": {
+              "2023": [
+                "product_info_ipad",
+                "product_info_laptop",
+                "product_info_tshirt"
+              ],
+              "hello": [
+                "greeting"
+              ],
+              "hi": [
+                "greeting"
+              ],
+              "hey": [
+                "greeting"
+              ],
+              "you": [
+                "greeting",
+                "product_price_laptop"
+              ],
+              "yo": [
+                "greeting"
+              ],
+              "goodmorn": [
+                "greeting"
+              ],
+              "goodafternoon": [
+                "greeting"
+              ],
+              "good": [
+                "greeting",
+                "product_info_laptop"
+              ],
+              "day": [
+                "greeting"
+              ],
+              "what": [
+                "product_price_macbook",
+                "product_price_shirts",
+                "product_price_book",
+                "product_info_macbook",
+                "product_info_ipad",
+                "product_info_laptop",
+                "product_info_book",
+                "product_info_tshirt"
+              ],
+              "is": [
+                "product_price_macbook",
+                "product_price_shirts",
+                "product_price_book",
+                "product_info_macbook",
+                "product_info_laptop",
+                "product_info_book"
+              ],
+              "the": [
+                "product_price_macbook",
+                "product_price_laptop",
+                "product_price_shirts",
+                "product_price_book",
+                "product_info_macbook",
+                "product_info_ipad",
+                "product_info_laptop",
+                "product_info_book",
+                "product_info_tshirt"
+              ],
+              "price": [
+                "product_price_macbook",
+                "product_price_laptop",
+                "product_price_shirts",
+                "product_price_book"
+              ],
+              "of": [
+                "product_price_macbook",
+                "product_price_laptop",
+                "product_price_shirts",
+                "product_price_book",
+                "product_info_macbook",
+                "product_info_ipad",
+                "product_info_laptop",
+                "product_info_book"
+              ],
+              "a": [
+                "product_price_macbook",
+                "product_price_laptop",
+                "product_price_shirts",
+                "product_price_book",
+                "product_info_book"
+              ],
+              "macbook": [
+                "product_price_macbook",
+                "product_info_macbook"
+              ],
+              "pro": [
+                "product_price_macbook",
+                "product_info_macbook",
+                "product_info_ipad"
+              ],
+              "how": [
+                "product_price_ipad",
+                "product_info_macbook",
+                "product_info_ipad"
+              ],
+              "much": [
+                "product_price_ipad"
+              ],
+              "doe": [
+                "product_price_ipad",
+                "product_info_macbook",
+                "product_info_ipad"
+              ],
+              "an": [
+                "product_price_ipad"
+              ],
+              "ipad": [
+                "product_price_ipad",
+                "product_info_ipad"
+              ],
+              "cost": [
+                "product_price_ipad",
+                "product_price_book"
+              ],
+              "can": [
+                "product_price_laptop",
+                "product_info_tshirt"
+              ],
+              "tell": [
+                "product_price_laptop",
+                "product_price_book",
+                "product_info_macbook",
+                "product_info_ipad",
+                "product_info_laptop",
+                "product_info_book",
+                "product_info_tshirt"
+              ],
+              "me": [
+                "product_price_laptop",
+                "product_price_book",
+                "product_info_macbook",
+                "product_info_ipad",
+                "product_info_laptop",
+                "product_info_book",
+                "product_info_tshirt"
+              ],
+              "new": [
+                "product_price_laptop",
+                "product_info_macbook"
+              ],
+              "laptop": [
+                "product_price_laptop",
+                "product_info_laptop"
+              ],
+              "averag": [
+                "product_price_shirts",
+                "product_price_book"
+              ],
+              "t-shirt": [
+                "product_price_shirts",
+                "product_info_tshirt"
+              ],
+              "popular": [
+                "product_price_book",
+                "product_info_tshirt"
+              ],
+              "book": [
+                "product_price_book",
+                "product_info_book"
+              ],
+              "hardcov": [
+                "product_price_book"
+              ],
+              "about": [
+                "product_info_macbook",
+                "product_info_ipad",
+                "product_info_laptop",
+                "product_info_book",
+                "product_info_tshirt"
+              ],
+              "latest": [
+                "product_info_macbook",
+                "product_info_laptop"
+              ],
+              "featur": [
+                "product_info_macbook"
+              ],
+              "13-inch": [
+                "product_info_macbook"
+              ],
+              "storag": [
+                "product_info_macbook"
+              ],
+              "capac": [
+                "product_info_macbook"
+              ],
+              "air": [
+                "product_info_macbook"
+              ],
+              "compar": [
+                "product_info_macbook"
+              ],
+              "to": [
+                "product_info_macbook",
+                "product_info_book"
+              ],
+              "previous": [
+                "product_info_macbook"
+              ],
+              "version": [
+                "product_info_macbook"
+              ],
+              "are": [
+                "product_info_ipad",
+                "product_info_laptop",
+                "product_info_tshirt"
+              ],
+              "specif": [
+                "product_info_ipad"
+              ],
+              "newest": [
+                "product_info_ipad"
+              ],
+              "color": [
+                "product_info_ipad"
+              ],
+              "option": [
+                "product_info_ipad",
+                "product_info_tshirt"
+              ],
+              "for": [
+                "product_info_ipad",
+                "product_info_laptop",
+                "product_info_book"
+              ],
+              "mini": [
+                "product_info_ipad"
+              ],
+              "differ": [
+                "product_info_ipad"
+              ],
+              "from": [
+                "product_info_ipad"
+              ],
+              "standard": [
+                "product_info_ipad"
+              ],
+              "which": [
+                "product_info_laptop"
+              ],
+              "game": [
+                "product_info_laptop"
+              ],
+              "top": [
+                "product_info_laptop"
+              ],
+              "in": [
+                "product_info_laptop",
+                "product_info_tshirt"
+              ],
+              "dell": [
+                "product_info_laptop"
+              ],
+              "xps": [
+                "product_info_laptop"
+              ],
+              "batteri": [
+                "product_info_laptop"
+              ],
+              "life": [
+                "product_info_laptop"
+              ],
+              "asus": [
+                "product_info_laptop"
+              ],
+              "rog": [
+                "product_info_laptop"
+              ],
+              "recommend": [
+                "product_info_book"
+              ],
+              "classic": [
+                "product_info_book"
+              ],
+              "read": [
+                "product_info_book"
+              ],
+              "author": [
+                "product_info_book"
+              ],
+              "great": [
+                "product_info_book"
+              ],
+              "gatsbi": [
+                "product_info_book"
+              ],
+              "genr": [
+                "product_info_book"
+              ],
+              "harri": [
+                "product_info_book"
+              ],
+              "potter": [
+                "product_info_book"
+              ],
+              "seri": [
+                "product_info_book"
+              ],
+              "mysteri": [
+                "product_info_book"
+              ],
+              "novel": [
+                "product_info_book"
+              ],
+              "some": [
+                "product_info_tshirt"
+              ],
+              "trendi": [
+                "product_info_tshirt"
+              ],
+              "design": [
+                "product_info_tshirt"
+              ],
+              "where": [
+                "product_info_tshirt"
+              ],
+              "i": [
+                "product_info_tshirt"
+              ],
+              "find": [
+                "product_info_tshirt"
+              ],
+              "eco-friend": [
+                "product_info_tshirt"
+              ],
+              "custom": [
+                "product_info_tshirt"
+              ],
+              "print": [
+                "product_info_tshirt"
+              ],
+              "brand": [
+                "product_info_tshirt"
+              ]
+            },
+            "neuralNetwork": {
+              "settings": {
+                "locale": "en",
+                "tag": "nlu-en",
+                "keepStopwords": true,
+                "nonefeatureValue": 1,
+                "nonedeltaMultiplier": 1.2,
+                "spellCheck": false,
+                "spellCheckDistance": 1,
+                "filterZeros": true,
+                "log": true
+              },
+              "features": [
+                "hello",
+                "hi",
+                "hey",
+                "you",
+                "yo",
+                "goodmorn",
+                "goodafternoon",
+                "good",
+                "day",
+                "what",
+                "is",
+                "the",
+                "price",
+                "of",
+                "a",
+                "macbook",
+                "pro",
+                "how",
+                "much",
+                "doe",
+                "an",
+                "ipad",
+                "cost",
+                "can",
+                "tell",
+                "me",
+                "new",
+                "laptop",
+                "averag",
+                "t-shirt",
+                "popular",
+                "book",
+                "about",
+                "latest",
+                "featur",
+                "are",
+                "specif",
+                "newest",
+                "which",
+                "for",
+                "game",
+                "recommend",
+                "classic",
+                "to",
+                "read",
+                "some",
+                "trendi",
+                "design",
+                "13-inch",
+                "storag",
+                "capac",
+                "air",
+                "compar",
+                "previous",
+                "version",
+                "2023",
+                "color",
+                "option",
+                "mini",
+                "differ",
+                "from",
+                "standard",
+                "top",
+                "in",
+                "dell",
+                "xps",
+                "batteri",
+                "life",
+                "asus",
+                "rog",
+                "where",
+                "i",
+                "find",
+                "eco-friend",
+                "custom",
+                "print",
+                "brand",
+                "author",
+                "great",
+                "gatsbi",
+                "genr",
+                "harri",
+                "potter",
+                "seri",
+                "mysteri",
+                "novel",
+                "hardcov"
+              ],
+              "intents": [
+                "greeting",
+                "product_price_macbook",
+                "product_price_ipad",
+                "product_price_laptop",
+                "product_price_shirts",
+                "product_price_book",
+                "product_info_macbook",
+                "product_info_ipad",
+                "product_info_laptop",
+                "product_info_book",
+                "product_info_tshirt"
+              ],
+              "perceptrons": [
+                [
+                  4.390325546264648,
+                  4.573276519775391,
+                  4.272834300994873,
+                  0.7114365696907043,
+                  4.486212253570557,
+                  4.426796913146973,
+                  4.366815090179443,
+                  1.3696354627609253,
+                  3.2444210052490234,
+                  -2.1083266735076904,
+                  -1.15916907787323,
+                  -2.7737252712249756,
+                  -0.7230310440063477,
+                  -1.8137145042419434,
+                  -2.6183600425720215,
+                  -1.2334402799606323,
+                  -0.6965806484222412,
+                  -1.7863593101501465,
+                  -1.383888602256775,
+                  -1.7863593101501465,
+                  -1.383888602256775,
+                  -1.8893383741378784,
+                  -1.4874894618988037,
+                  -1.432881236076355,
+                  -1.7838749885559082,
+                  -2.2112016677856445,
+                  -0.4248606264591217,
+                  -2.2133045196533203,
+                  -0.06158462166786194,
+                  -2.748304843902588,
+                  -0.07599861174821854,
+                  -1.3905454874038696,
+                  -1.3505154848098755,
+                  -0.4183269739151001,
+                  -0.40875351428985596,
+                  -2.8207857608795166,
+                  -0.17036588490009308,
+                  -0.17036588490009308,
+                  -1.8715015649795532,
+                  -2.3174638748168945,
+                  -1.8715015649795532,
+                  -1.7142552137374878,
+                  -1.2869453430175781,
+                  -1.4240761995315552,
+                  -1.2869453430175781,
+                  -0.6863188743591309,
+                  -0.6863188743591309,
+                  -0.6863188743591309,
+                  -0.06562242656946182,
+                  -0.21198254823684692,
+                  -0.21198254823684692,
+                  -0.21198254823684692,
+                  -0.1063670665025711,
+                  -0.1063670665025711,
+                  -0.1063670665025711,
+                  0,
+                  -0.009461128152906895,
+                  -1.1220440864562988,
+                  -0.009461128152906895,
+                  -0.2636668086051941,
+                  -0.2636668086051941,
+                  -0.2636668086051941,
+                  0,
+                  0,
+                  -0.001323666307143867,
+                  -0.001323666307143867,
+                  -0.006549128331243992,
+                  -0.006549128331243992,
+                  -0.006549128331243992,
+                  -0.006549128331243992,
+                  -1.1031219959259033,
+                  -1.1031219959259033,
+                  -1.1031219959259033,
+                  -1.1031219959259033,
+                  -0.8111146092414856,
+                  -0.8111146092414856,
+                  0,
+                  0,
+                  0,
+                  0,
+                  -0.4658067226409912,
+                  -0.4658067226409912,
+                  -0.4658067226409912,
+                  -0.4658067226409912,
+                  -0.42538735270500183,
+                  -0.42538735270500183,
+                  0,
+                  9.71911452188785
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  -0.22354574501514435,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0.9661376476287842,
+                  1.225886583328247,
+                  -1.2536158561706543,
+                  2.652620792388916,
+                  0.5223575234413147,
+                  2.352536916732788,
+                  3.4847397804260254,
+                  4.691895484924316,
+                  -0.493394136428833,
+                  -0.025016844272613525,
+                  -0.493394136428833,
+                  -0.025016844272613525,
+                  -0.631634533405304,
+                  -0.12357962131500244,
+                  -0.22354574501514435,
+                  -1.796401023864746,
+                  -1.796401023864746,
+                  -0.37189969420433044,
+                  -0.41601988673210144,
+                  -3.327150821685791,
+                  -2.294614553451538,
+                  -0.08527227491140366,
+                  -1.3489766120910645,
+                  -1.3158084154129028,
+                  -0.057191938161849976,
+                  -0.057191938161849976,
+                  -0.19792711734771729,
+                  -0.15084482729434967,
+                  -0.15084482729434967,
+                  0,
+                  -0.00005461736873257905,
+                  0,
+                  -0.12276077270507812,
+                  -0.12276077270507812,
+                  -0.21052385866641998,
+                  -0.12276077270507812,
+                  -0.01900489628314972,
+                  -0.01900489628314972,
+                  -0.01900489628314972,
+                  -1.2345339059829712,
+                  -1.3975777626037598,
+                  -1.3975777626037598,
+                  -1.3975777626037598,
+                  -0.0682651698589325,
+                  -0.0682651698589325,
+                  -0.0682651698589325,
+                  0,
+                  -0.00005461736873257905,
+                  -0.00005461736873257905,
+                  -0.00005461736873257905,
+                  -0.36031627655029297,
+                  -0.36031627655029297,
+                  -0.36031627655029297,
+                  0,
+                  0,
+                  0,
+                  0,
+                  -0.11081080883741379,
+                  -0.11081080883741379,
+                  -0.11081080883741379,
+                  -0.11081080883741379,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  -0.1857580542564392,
+                  -0.1857580542564392,
+                  -0.1857580542564392,
+                  -0.1857580542564392,
+                  0,
+                  0,
+                  -1.048887848854065,
+                  -0.7390950910198663
+                ],
+                [
+                  -0.12496946007013321,
+                  -0.12163007259368896,
+                  -0.13927319645881653,
+                  -0.08754383772611618,
+                  -0.11767816543579102,
+                  -0.11592680960893631,
+                  -0.11404607445001602,
+                  -0.10316722840070724,
+                  -0.05816081538796425,
+                  -0.22853310406208038,
+                  -0.01880931481719017,
+                  -1.8571041822433472,
+                  -0.05320374667644501,
+                  -0.3054935932159424,
+                  -0.23531991243362427,
+                  -0.3570754826068878,
+                  -1.002381682395935,
+                  1.681396245956421,
+                  3.0467026233673096,
+                  1.681396245956421,
+                  3.0467026233673096,
+                  1.7999943494796753,
+                  2.906419038772583,
+                  -0.055408380925655365,
+                  -0.2673596739768982,
+                  -0.2673596739768982,
+                  -0.3829614520072937,
+                  -0.07118474692106247,
+                  -0.01880931481719017,
+                  -0.07172862440347672,
+                  -0.11389672756195068,
+                  -0.15537166595458984,
+                  -0.07553452998399734,
+                  -0.009287583641707897,
+                  -0.009287583641707897,
+                  -0.24596071243286133,
+                  -0.0748145580291748,
+                  -0.0748145580291748,
+                  -0.03175293281674385,
+                  -0.11022695899009705,
+                  -0.03175293281674385,
+                  -0.021957118064165115,
+                  -0.021957118064165115,
+                  -0.3731301426887512,
+                  -0.021957118064165115,
+                  -0.012659517116844654,
+                  -0.012659517116844654,
+                  -0.012659517116844654,
+                  0,
+                  0,
+                  0,
+                  0,
+                  -0.33962854743003845,
+                  -0.33962854743003845,
+                  -0.33962854743003845,
+                  -0.05952313542366028,
+                  -0.06176184490323067,
+                  -0.09932492673397064,
+                  -0.06176184490323067,
+                  -0.915264368057251,
+                  -0.915264368057251,
+                  -0.915264368057251,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  -0.01349069457501173,
+                  -0.01349069457501173,
+                  -0.01349069457501173,
+                  -0.01349069457501173,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0.11769053184731638
+                ],
+                [
+                  0,
+                  0,
+                  -0.9478684067726135,
+                  1.9593615531921387,
+                  0,
+                  0,
+                  0,
+                  -0.17624647915363312,
+                  0,
+                  -1.0363678932189941,
+                  -0.8753342032432556,
+                  -0.22741186618804932,
+                  2.1897125244140625,
+                  0.9363545775413513,
+                  1.0860528945922852,
+                  -0.7191449403762817,
+                  -0.4084274172782898,
+                  -0.1575659215450287,
+                  0,
+                  -0.1575659215450287,
+                  0,
+                  -0.17194102704524994,
+                  -0.8401973843574524,
+                  2.6792750358581543,
+                  0.9847244620323181,
+                  0.7822318077087402,
+                  2.738750696182251,
+                  2.0850791931152344,
+                  -0.5435155630111694,
+                  -0.7561820149421692,
+                  -0.8401973843574524,
+                  -0.9376489520072937,
+                  -1.0906054973602295,
+                  -0.6778630018234253,
+                  -0.16368554532527924,
+                  -0.3389780521392822,
+                  -0.05672755837440491,
+                  -0.05672755837440491,
+                  -0.17624647915363312,
+                  -0.3889541029930115,
+                  -0.2297903597354889,
+                  -0.25300559401512146,
+                  -0.04477587342262268,
+                  -0.2189205139875412,
+                  -0.04477587342262268,
+                  0,
+                  0,
+                  0,
+                  -0.11356280744075775,
+                  -0.011132528074085712,
+                  -0.011132528074085712,
+                  -0.011132528074085712,
+                  -0.1575659215450287,
+                  -0.1575659215450287,
+                  -0.1575659215450287,
+                  -0.1345892697572708,
+                  0,
+                  -0.21216121315956116,
+                  0,
+                  0,
+                  0,
+                  0,
+                  -0.03464984893798828,
+                  -0.03464984893798828,
+                  -0.45795583724975586,
+                  -0.45795583724975586,
+                  -0.10403699427843094,
+                  -0.10403699427843094,
+                  -0.10403699427843094,
+                  -0.10403699427843094,
+                  -0.21216121315956116,
+                  -0.21216121315956116,
+                  -0.21216121315956116,
+                  -0.21216121315956116,
+                  0,
+                  0,
+                  0,
+                  -0.14999426901340485,
+                  -0.14999426901340485,
+                  -0.14999426901340485,
+                  0,
+                  0,
+                  0,
+                  0,
+                  -0.19155800342559814,
+                  -0.19155800342559814,
+                  -0.02340434119105339,
+                  -0.9386521517048378
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  -0.0396101251244545,
+                  0,
+                  0,
+                  0,
+                  -0.00763746676966548,
+                  0,
+                  -0.3277343511581421,
+                  1.199885606765747,
+                  -0.04100238159298897,
+                  2.16444993019104,
+                  0.6873227953910828,
+                  1.7377065420150757,
+                  -2.2113256454467773,
+                  -1.7236133813858032,
+                  -0.02667146548628807,
+                  0,
+                  -0.02667146548628807,
+                  0,
+                  -0.29069122672080994,
+                  -0.16509412229061127,
+                  -0.7018720507621765,
+                  -1.0055981874465942,
+                  -1.067682147026062,
+                  -0.06599416583776474,
+                  -0.44335073232650757,
+                  3.917018175125122,
+                  5.198162078857422,
+                  -0.6823744773864746,
+                  -4.056171417236328,
+                  -0.7342252731323242,
+                  -0.04445015266537666,
+                  -0.04445015266537666,
+                  -1.553396224975586,
+                  -0.18022505939006805,
+                  -0.18022505939006805,
+                  -0.00763746676966548,
+                  -0.12557674944400787,
+                  -0.03674774244427681,
+                  -0.17964264750480652,
+                  -0.09298662096261978,
+                  -0.12453705817461014,
+                  -0.09298662096261978,
+                  -0.7128135561943054,
+                  -0.7128135561943054,
+                  -0.7128135561943054,
+                  -0.019434092566370964,
+                  -0.26156294345855713,
+                  -0.26156294345855713,
+                  -0.26156294345855713,
+                  -0.013888565823435783,
+                  -0.013888565823435783,
+                  -0.013888565823435783,
+                  -0.5055858492851257,
+                  -0.03498009592294693,
+                  -0.7239683866500854,
+                  -0.03498009592294693,
+                  -0.006105621811002493,
+                  -0.006105621811002493,
+                  -0.006105621811002493,
+                  -0.02511308155953884,
+                  -0.5055858492851257,
+                  0,
+                  0,
+                  -0.2229442000389099,
+                  -0.2229442000389099,
+                  -0.2229442000389099,
+                  -0.2229442000389099,
+                  -0.6564110517501831,
+                  -0.6564110517501831,
+                  -0.6564110517501831,
+                  -0.6564110517501831,
+                  -0.6111559867858887,
+                  -0.6111559867858887,
+                  -0.4570693373680115,
+                  0,
+                  0,
+                  0,
+                  -0.2195035219192505,
+                  -0.2195035219192505,
+                  -0.2195035219192505,
+                  -0.2195035219192505,
+                  -0.04772573336958885,
+                  -0.04772573336958885,
+                  -3.6915123462677,
+                  -1.1438283589929203
+                ],
+                [
+                  -0.03918546438217163,
+                  -0.037585895508527756,
+                  -0.0711013600230217,
+                  -0.969451367855072,
+                  -0.033381346613168716,
+                  -0.03201838582754135,
+                  -0.030711038038134575,
+                  -0.030322303995490074,
+                  -0.02857661433517933,
+                  -0.20121462643146515,
+                  0.18256011605262756,
+                  0.5892730355262756,
+                  -0.1758078932762146,
+                  1.1318655014038086,
+                  0.9365754723548889,
+                  -1.3937090635299683,
+                  -1.1021369695663452,
+                  -0.27638107538223267,
+                  -0.27418410778045654,
+                  -0.27638107538223267,
+                  -0.27418410778045654,
+                  -0.6607356667518616,
+                  2.455510139465332,
+                  -0.9287336468696594,
+                  0.778451144695282,
+                  0.6157124638557434,
+                  -0.9306038618087769,
+                  -1.18861985206604,
+                  1.745259165763855,
+                  -3.0571999549865723,
+                  2.6820859909057617,
+                  6.018259525299072,
+                  -0.9628728628158569,
+                  -0.15531429648399353,
+                  -0.07923783361911774,
+                  -0.3690248727798462,
+                  -0.1971444934606552,
+                  -0.1971444934606552,
+                  -0.0009975377470254898,
+                  -0.14814472198486328,
+                  -0.0045549990609288216,
+                  -1.628528118133545,
+                  -1.4657851457595825,
+                  -1.4676704406738281,
+                  -1.4657851457595825,
+                  -0.007874002680182457,
+                  -0.007874002680182457,
+                  -0.007874002680182457,
+                  -0.0674956664443016,
+                  -0.16374178230762482,
+                  -0.16374178230762482,
+                  -0.16374178230762482,
+                  -0.0009424578165635467,
+                  -0.0009424578165635467,
+                  -0.0009424578165635467,
+                  -0.15619482100009918,
+                  -0.008909717202186584,
+                  -0.008909717202186584,
+                  -0.008909717202186584,
+                  -0.0001572654873598367,
+                  -0.0001572654873598367,
+                  -0.0001572654873598367,
+                  -0.0030586926732212305,
+                  -0.06273483484983444,
+                  -0.0381091944873333,
+                  -0.0381091944873333,
+                  -0.11741329729557037,
+                  -0.11741329729557037,
+                  -0.11741329729557037,
+                  -0.11741329729557037,
+                  0,
+                  0,
+                  0,
+                  0,
+                  -0.0035679906141012907,
+                  -0.0035679906141012907,
+                  -0.05678914859890938,
+                  -0.5117197036743164,
+                  -0.5117197036743164,
+                  -0.5117197036743164,
+                  -0.22901609539985657,
+                  -0.22901609539985657,
+                  -0.22901609539985657,
+                  -0.22901609539985657,
+                  -0.12927976250648499,
+                  -0.12927976250648499,
+                  4.722174644470215,
+                  -0.8596404867919522
+                ],
+                [
+                  -0.03706960752606392,
+                  -0.035657335072755814,
+                  -0.05800509452819824,
+                  -0.022806042805314064,
+                  -0.03214723616838455,
+                  -0.030920585617423058,
+                  -0.029740452766418457,
+                  -0.024942845106124878,
+                  -0.022104384377598763,
+                  -1.0649136304855347,
+                  -0.3699181079864502,
+                  1.281019687652588,
+                  -2.49015474319458,
+                  -1.3837320804595947,
+                  -2.5395381450653076,
+                  7.233915328979492,
+                  -0.6402379870414734,
+                  0.3973102271556854,
+                  0,
+                  0.3973102271556854,
+                  0,
+                  -2.114061117172241,
+                  0,
+                  -0.012986091896891594,
+                  0.9849409461021423,
+                  0.9794927835464478,
+                  1.0085746049880981,
+                  -2.1393256187438965,
+                  -0.13879647850990295,
+                  -1.0480960607528687,
+                  -0.03338170796632767,
+                  -0.21612949669361115,
+                  0.9849409461021423,
+                  0.6924995183944702,
+                  2.1927318572998047,
+                  -0.6197003126144409,
+                  -0.0035209546331316233,
+                  -0.0035209546331316233,
+                  -0.001465012552216649,
+                  -0.3059571385383606,
+                  -0.13801847398281097,
+                  -0.03670177608728409,
+                  -0.03174082189798355,
+                  0.9646590352058411,
+                  -0.03174082189798355,
+                  -0.0010553874308243394,
+                  -0.0010553874308243394,
+                  -0.0010553874308243394,
+                  3.4542179107666016,
+                  2.8707878589630127,
+                  2.8707878589630127,
+                  2.8707878589630127,
+                  1.0085746049880981,
+                  1.0085746049880981,
+                  1.0085746049880981,
+                  -1.4555283784866333,
+                  -0.25732240080833435,
+                  -0.3186033368110657,
+                  -0.25732240080833435,
+                  -0.49746817350387573,
+                  -0.49746817350387573,
+                  -0.49746817350387573,
+                  -0.13582095503807068,
+                  -0.2371131330728531,
+                  -1.4712940454483032,
+                  -1.4712940454483032,
+                  -0.2661440074443817,
+                  -0.2661440074443817,
+                  -0.2661440074443817,
+                  -0.2661440074443817,
+                  -0.012986091896891594,
+                  -0.012986091896891594,
+                  -0.012986091896891594,
+                  -0.012986091896891594,
+                  -0.9532473087310791,
+                  -0.9532473087310791,
+                  -0.03338170796632767,
+                  -0.9864048957824707,
+                  -0.9864048957824707,
+                  -0.9864048957824707,
+                  -0.2901718020439148,
+                  -0.2901718020439148,
+                  -0.2901718020439148,
+                  -0.2901718020439148,
+                  -0.002724024700000882,
+                  -0.002724024700000882,
+                  -0.13879647850990295,
+                  -0.02270553971144085
+                ],
+                [
+                  -0.021640455350279808,
+                  -0.020752573385834694,
+                  -0.04453949257731438,
+                  -0.017019009217619896,
+                  -0.018411921337246895,
+                  -0.01765638217329979,
+                  -0.01693183183670044,
+                  -0.0886770486831665,
+                  -0.0138385696336627,
+                  0.08109938353300095,
+                  -1.3347461223602295,
+                  1.9461528062820435,
+                  -0.6062079071998596,
+                  0.03691215440630913,
+                  -0.8404292464256287,
+                  -2.9388132095336914,
+                  2.848562717437744,
+                  -0.6058142185211182,
+                  -1.75998055934906,
+                  -0.6058142185211182,
+                  -1.75998055934906,
+                  6.975901126861572,
+                  -1.7856987714767456,
+                  -0.11510604619979858,
+                  0.2858593165874481,
+                  0.08179782330989838,
+                  -0.16172751784324646,
+                  -1.760782241821289,
+                  -0.09167777001857758,
+                  -1.5010852813720703,
+                  -0.93992680311203,
+                  -0.12114612013101578,
+                  0.31155097484588623,
+                  -0.5981395840644836,
+                  -0.09848839789628983,
+                  1.3640639781951904,
+                  2.174982786178589,
+                  2.174982786178589,
+                  -0.061674121767282486,
+                  0.9213945269584656,
+                  -0.877723753452301,
+                  -0.16176141798496246,
+                  -0.0016127448761835694,
+                  -0.16475142538547516,
+                  -0.0016127448761835694,
+                  -0.13640742003917694,
+                  -0.13640742003917694,
+                  -0.13640742003917694,
+                  -1.9626061916351318,
+                  -0.038202010095119476,
+                  -0.038202010095119476,
+                  -0.038202010095119476,
+                  -0.16172751784324646,
+                  -0.16172751784324646,
+                  -0.16172751784324646,
+                  2.1933789253234863,
+                  1.2093613147735596,
+                  1.0395578145980835,
+                  1.2093613147735596,
+                  1.3965182304382324,
+                  1.3965182304382324,
+                  1.3965182304382324,
+                  -0.7574084997177124,
+                  -1.765380620956421,
+                  -0.37884190678596497,
+                  -0.37884190678596497,
+                  -0.23869052529335022,
+                  -0.23869052529335022,
+                  -0.23869052529335022,
+                  -0.23869052529335022,
+                  -0.11510604619979858,
+                  -0.11510604619979858,
+                  -0.11510604619979858,
+                  -0.11510604619979858,
+                  -0.18294323980808258,
+                  -0.18294323980808258,
+                  -0.9142346382141113,
+                  -0.7376124858856201,
+                  -0.7376124858856201,
+                  -0.7376124858856201,
+                  -0.279956579208374,
+                  -0.279956579208374,
+                  -0.279956579208374,
+                  -0.279956579208374,
+                  -0.15873752534389496,
+                  -0.15873752534389496,
+                  -0.09167777001857758,
+                  -0.45689594795946165
+                ],
+                [
+                  -0.10903766006231308,
+                  -0.10479924827814102,
+                  -0.14867357909679413,
+                  -0.9327431917190552,
+                  -0.09521429985761642,
+                  -0.10220595449209213,
+                  -0.09842497855424881,
+                  0.8685194253921509,
+                  -0.6784828305244446,
+                  0.19546453654766083,
+                  0.7261894345283508,
+                  0.3569301962852478,
+                  -1.4438502788543701,
+                  -1.188519835472107,
+                  -1.5892353057861328,
+                  -1.163944959640503,
+                  -0.38821497559547424,
+                  -0.030762573704123497,
+                  -0.014636825770139694,
+                  -0.030762573704123497,
+                  -0.014636825770139694,
+                  -1.033371090888977,
+                  -0.014636825770139694,
+                  -1.0016348361968994,
+                  -0.28820592164993286,
+                  -0.42720234394073486,
+                  -0.8963833451271057,
+                  6.882180213928223,
+                  -0.2707373797893524,
+                  -1.6688082218170166,
+                  -1.0285762548446655,
+                  -0.2738182246685028,
+                  0.6845689415931702,
+                  1.8276128768920898,
+                  -0.8677319288253784,
+                  1.020694613456726,
+                  -0.23346512019634247,
+                  -0.23346512019634247,
+                  1.5501261949539185,
+                  0.8162329792976379,
+                  3.2875983715057373,
+                  -0.09696850925683975,
+                  -0.0017604773165658116,
+                  -0.012710241600871086,
+                  -0.0017604773165658116,
+                  -0.12098708748817444,
+                  -0.12098708748817444,
+                  -0.12098708748817444,
+                  -0.055642981082201004,
+                  -0.0012032497907057405,
+                  -0.0012032497907057405,
+                  -0.0012032497907057405,
+                  -0.009629406034946442,
+                  -0.009629406034946442,
+                  -0.009629406034946442,
+                  0.407865047454834,
+                  -0.544725775718689,
+                  -0.6720617413520813,
+                  -0.544725775718689,
+                  -0.00008486809383612126,
+                  -0.00008486809383612126,
+                  -0.00008486809383612126,
+                  1.7365275621414185,
+                  0.554749071598053,
+                  2.6999123096466064,
+                  2.6999123096466064,
+                  1.867077350616455,
+                  1.867077350616455,
+                  1.867077350616455,
+                  1.867077350616455,
+                  -0.06463903933763504,
+                  -0.06463903933763504,
+                  -0.06463903933763504,
+                  -0.06463903933763504,
+                  -0.20533914864063263,
+                  -0.20533914864063263,
+                  -1.0285762548446655,
+                  -0.4386064112186432,
+                  -0.4386064112186432,
+                  -0.4386064112186432,
+                  -0.392713338136673,
+                  -0.392713338136673,
+                  -0.392713338136673,
+                  -0.392713338136673,
+                  -0.09388767182826996,
+                  -0.09388767182826996,
+                  -0.2707373797893524,
+                  -0.15242017712010128
+                ],
+                [
+                  -0.4423280358314514,
+                  -0.42755481600761414,
+                  -0.5412747263908386,
+                  -0.7320317029953003,
+                  -0.40899065136909485,
+                  -0.39617469906806946,
+                  -0.39117342233657837,
+                  -0.42650195956230164,
+                  -0.23942436277866364,
+                  -0.11180955171585083,
+                  0.5059674382209778,
+                  -0.283101350069046,
+                  -2.6069283485412598,
+                  1.4430245161056519,
+                  0.7180579900741577,
+                  -1.8316055536270142,
+                  -1.2873455286026,
+                  -0.1579359918832779,
+                  -0.059805091470479965,
+                  -0.1579359918832779,
+                  -0.059805091470479965,
+                  -0.9679976105690002,
+                  -1.7268013954162598,
+                  -0.5190943479537964,
+                  -0.8884530067443848,
+                  1.4741921424865723,
+                  -0.7030437588691711,
+                  -1.3864229917526245,
+                  -1.228096842765808,
+                  -1.159386396408081,
+                  -1.6304340362548828,
+                  0.09762392193078995,
+                  1.453470230102539,
+                  -0.7778459787368774,
+                  -0.4624623656272888,
+                  -0.7813461422920227,
+                  -0.2571018636226654,
+                  -0.2571018636226654,
+                  -0.14665989577770233,
+                  1.9403220415115356,
+                  -0.14730465412139893,
+                  5.067181587219238,
+                  2.7043356895446777,
+                  2.632227897644043,
+                  2.7043356895446777,
+                  -0.039420850574970245,
+                  -0.039420850574970245,
+                  -0.039420850574970245,
+                  -0.21361412107944489,
+                  -0.251936674118042,
+                  -0.251936674118042,
+                  -0.251936674118042,
+                  -0.06225264444947243,
+                  -0.06225264444947243,
+                  -0.06225264444947243,
+                  -0.3135910928249359,
+                  -0.2196684032678604,
+                  -0.24019593000411987,
+                  -0.2196684032678604,
+                  -0.00035457691410556436,
+                  -0.00035457691410556436,
+                  -0.00035457691410556436,
+                  -0.0003327814629301429,
+                  -0.0003327814629301429,
+                  -0.2543449103832245,
+                  -0.2543449103832245,
+                  -0.26331648230552673,
+                  -0.26331648230552673,
+                  -0.26331648230552673,
+                  -0.26331648230552673,
+                  -0.01047809049487114,
+                  -0.01047809049487114,
+                  -0.01047809049487114,
+                  -0.01047809049487114,
+                  -0.6850365400314331,
+                  -0.6850365400314331,
+                  0,
+                  3.573995351791382,
+                  3.573995351791382,
+                  3.573995351791382,
+                  3.093883752822876,
+                  3.093883752822876,
+                  3.093883752822876,
+                  3.093883752822876,
+                  2.362787961959839,
+                  2.362787961959839,
+                  -0.8046781420707703,
+                  0.3608213438230306
+                ],
+                [
+                  -0.3133869469165802,
+                  -0.3138672709465027,
+                  -0.4153425693511963,
+                  -0.27469661831855774,
+                  -0.29034343361854553,
+                  -0.28085803985595703,
+                  -0.278371125459671,
+                  -0.35322868824005127,
+                  -0.15972965955734253,
+                  0.9639239311218262,
+                  -1.1167998313903809,
+                  -2.008108139038086,
+                  -1.0570621490478516,
+                  -1.7402225732803345,
+                  -1.328020453453064,
+                  -0.5728919506072998,
+                  -0.7113251686096191,
+                  -0.07037029415369034,
+                  -0.06853330135345459,
+                  -0.07037029415369034,
+                  -0.06853330135345459,
+                  -1.0873582363128662,
+                  -0.12095613777637482,
+                  1.191838264465332,
+                  0.8802630305290222,
+                  0.672168493270874,
+                  -0.07747115939855576,
+                  -1.2718733549118042,
+                  -0.835206925868988,
+                  6.632936477661133,
+                  2.1449053287506104,
+                  -0.15009474754333496,
+                  1.0903785228729248,
+                  -0.2662142813205719,
+                  -0.2662142813205719,
+                  1.9834952354431152,
+                  -0.034680694341659546,
+                  -0.034680694341659546,
+                  -0.1501675397157669,
+                  -0.857688844203949,
+                  -1.1163113117218018,
+                  -0.14698080718517303,
+                  0,
+                  -0.001049709040671587,
+                  0,
+                  1.4787588119506836,
+                  1.4787588119506836,
+                  1.4787588119506836,
+                  -0.15204431116580963,
+                  -0.00329935597255826,
+                  -0.00329935597255826,
+                  -0.00329935597255826,
+                  -0.001049709040671587,
+                  -0.001049709040671587,
+                  -0.001049709040671587,
+                  0.8423850536346436,
+                  -0.4437207281589508,
+                  0.8313241004943848,
+                  -0.4437207281589508,
+                  0,
+                  0,
+                  0,
+                  -0.928214430809021,
+                  1.2625142335891724,
+                  0,
+                  0,
+                  -0.0018887646729126573,
+                  -0.0018887646729126573,
+                  -0.0018887646729126573,
+                  -0.0018887646729126573,
+                  1.343630075454712,
+                  1.343630075454712,
+                  1.343630075454712,
+                  1.343630075454712,
+                  2.371267318725586,
+                  2.371267318725586,
+                  2.2032268047332764,
+                  -0.2491009533405304,
+                  -0.2491009533405304,
+                  -0.2491009533405304,
+                  -0.10038309544324875,
+                  -0.10038309544324875,
+                  -0.10038309544324875,
+                  -0.10038309544324875,
+                  -0.14698080718517303,
+                  -0.14698080718517303,
+                  -0.0806223526597023,
+                  0.2625778734588598
+                ]
+              ]
             }
           }
         }
       }
     },
+    "intentDomains": {},
     "extraSentences": [
       [
         "en",
@@ -1936,149 +2252,143 @@
       ]
     ]
   },
-  "nerManager": {
-    "settings": {},
-    "threshold": 0.8,
-    "builtins": [
-      "Number",
-      "Ordinal",
-      "Percentage",
-      "Age",
-      "Currency",
-      "Dimension",
-      "Temperature",
-      "DateTime",
-      "PhoneNumber",
-      "IpAddress",
-      "Boolean",
-      "Email",
-      "Hashtag",
-      "URL"
-    ],
-    "namedEntities": {}
+  "ner": {
+    "settings": {
+      "tag": "ner",
+      "entityPreffix": "%",
+      "entitySuffix": "%"
+    },
+    "rules": {}
   },
-  "slotManager": {},
-  "responses": {
-    "en": {
-      "greeting": [
-        {
-          "response": "Hey! How may I help you today?"
-        },
-        {
-          "response": "Hey there. How may I help you today?"
-        },
-        {
-          "response": "Hi! How may I help you today?"
-        },
-        {
-          "response": "Yo whatsup! How may I help you today?"
-        },
-        {
-          "response": "Howdy, How may I help you today?"
-        }
-      ],
-      "product_price_macbook": [
-        {
-          "response": "The price of a MacBook Pro starts at $1,299."
-        }
-      ],
-      "product_price_ipad": [
-        {
-          "response": "An iPad's price varies, but the base model starts at $329."
-        }
-      ],
-      "product_price_laptop": [
-        {
-          "response": "The cost of a new laptop can range from $500 to $2,000."
-        }
-      ],
-      "product_price_shirts": [
-        {
-          "response": "On average, a T-shirt costs around $15 to $30."
-        }
-      ],
-      "product_price_book": [
-        {
-          "response": "The cost of a popular book can range from $10 to $20."
-        }
-      ],
-      "product_info_macbook": [
-        {
-          "response": "The latest MacBook features a faster processor and improved battery life."
-        },
-        {
-          "response": "The MacBook Pro 13-inch features the latest M1 chip for improved performance."
-        },
-        {
-          "response": "The MacBook Air comes with storage options ranging from 256GB to 2TB."
-        },
-        {
-          "response": "The new MacBook boasts better battery life and faster processing compared to the previous version."
-        }
-      ],
-      "product_info_ipad": [
-        {
-          "response": "The newest iPad has a Retina display and support for the Apple Pencil."
-        },
-        {
-          "response": "The iPad Pro 2023 comes with a Liquid Retina XDR display for stunning visuals."
-        },
-        {
-          "response": "The iPad Mini offers color choices such as Space Gray, Pink, Purple, and more."
-        },
-        {
-          "response": "The iPad Pro is more powerful, with additional features like the Apple Pencil support."
-        }
-      ],
-      "product_info_laptop": [
-        {
-          "response": "Gaming laptops often come with high-end graphics cards and fast processors."
-        },
-        {
-          "response": "The top gaming laptops in 2023 include models from ASUS, MSI, and Razer."
-        },
-        {
-          "response": "The latest Dell XPS laptop offers a stunning InfinityEdge display and powerful performance."
-        },
-        {
-          "response": "The ASUS ROG laptop provides up to 8 hours of battery life for on-the-go gaming."
-        }
-      ],
-      "product_info_book": [
-        {
-          "response": "I recommend reading \"To Kill a Mockingbird\" by Harper Lee."
-        },
-        {
-          "response": "The author of \"The Great Gatsby\" is F. Scott Fitzgerald."
-        },
-        {
-          "response": "The \"Harry Potter\" series falls under the fantasy genre."
-        },
-        {
-          "response": "I recommend reading \"Gone Girl\" by Gillian Flynn, a popular mystery novel."
-        },
-        {
-          "response": "The average price of a hardcover book is typically around $25 to $30."
-        }
-      ],
-      "product_info_tshirt": [
-        {
-          "response": "Trendy T-shirt designs include graphic prints and vintage-inspired patterns."
-        },
-        {
-          "response": "You can find eco-friendly T-shirt options at stores like Patagonia and H&M."
-        },
-        {
-          "response": "Custom printed T-shirts allow you to design your own unique shirts with personalized graphics."
-        },
-        {
-          "response": "Popular T-shirt brands in 2023 include Nike, Adidas, and Supreme."
-        }
-      ]
+  "nlgManager": {
+    "settings": {
+      "tag": "nlg-manager"
+    },
+    "responses": {
+      "en": {
+        "greeting": [
+          {
+            "answer": "Hey! How may I help you today?"
+          },
+          {
+            "answer": "Hey there. How may I help you today?"
+          },
+          {
+            "answer": "Hi! How may I help you today?"
+          },
+          {
+            "answer": "Yo whatsup! How may I help you today?"
+          },
+          {
+            "answer": "Howdy, How may I help you today?"
+          }
+        ],
+        "product_price_macbook": [
+          {
+            "answer": "The price of a MacBook Pro starts at $1,299."
+          }
+        ],
+        "product_price_ipad": [
+          {
+            "answer": "An iPad's price varies, but the base model starts at $329."
+          }
+        ],
+        "product_price_laptop": [
+          {
+            "answer": "The cost of a new laptop can range from $500 to $2,000."
+          }
+        ],
+        "product_price_shirts": [
+          {
+            "answer": "On average, a T-shirt costs around $15 to $30."
+          }
+        ],
+        "product_price_book": [
+          {
+            "answer": "The cost of a popular book can range from $10 to $20."
+          }
+        ],
+        "product_info_macbook": [
+          {
+            "answer": "The latest MacBook features a faster processor and improved battery life."
+          },
+          {
+            "answer": "The MacBook Pro 13-inch features the latest M1 chip for improved performance."
+          },
+          {
+            "answer": "The MacBook Air comes with storage options ranging from 256GB to 2TB."
+          },
+          {
+            "answer": "The new MacBook boasts better battery life and faster processing compared to the previous version."
+          }
+        ],
+        "product_info_ipad": [
+          {
+            "answer": "The newest iPad has a Retina display and support for the Apple Pencil."
+          },
+          {
+            "answer": "The iPad Pro 2023 comes with a Liquid Retina XDR display for stunning visuals."
+          },
+          {
+            "answer": "The iPad Mini offers color choices such as Space Gray, Pink, Purple, and more."
+          },
+          {
+            "answer": "The iPad Pro is more powerful, with additional features like the Apple Pencil support."
+          }
+        ],
+        "product_info_laptop": [
+          {
+            "answer": "Gaming laptops often come with high-end graphics cards and fast processors."
+          },
+          {
+            "answer": "The top gaming laptops in 2023 include models from ASUS, MSI, and Razer."
+          },
+          {
+            "answer": "The latest Dell XPS laptop offers a stunning InfinityEdge display and powerful performance."
+          },
+          {
+            "answer": "The ASUS ROG laptop provides up to 8 hours of battery life for on-the-go gaming."
+          }
+        ],
+        "product_info_book": [
+          {
+            "answer": "I recommend reading \"To Kill a Mockingbird\" by Harper Lee."
+          },
+          {
+            "answer": "The author of \"The Great Gatsby\" is F. Scott Fitzgerald."
+          },
+          {
+            "answer": "The \"Harry Potter\" series falls under the fantasy genre."
+          },
+          {
+            "answer": "I recommend reading \"Gone Girl\" by Gillian Flynn, a popular mystery novel."
+          },
+          {
+            "answer": "The average price of a hardcover book is typically around $25 to $30."
+          }
+        ],
+        "product_info_tshirt": [
+          {
+            "answer": "Trendy T-shirt designs include graphic prints and vintage-inspired patterns."
+          },
+          {
+            "answer": "You can find eco-friendly T-shirt options at stores like Patagonia and H&M."
+          },
+          {
+            "answer": "Custom printed T-shirts allow you to design your own unique shirts with personalized graphics."
+          },
+          {
+            "answer": "Popular T-shirt brands in 2023 include Nike, Adidas, and Supreme."
+          }
+        ]
+      }
     }
   },
-  "actions": {},
-  "utteranceDict": {
-    "?": "help"
-  }
+  "actionManager": {
+    "settings": {
+      "tag": "action-manager"
+    },
+    "actions": {}
+  },
+  "slotManager": {}
 }

@@ -11,7 +11,10 @@ module.exports = {
                 return res.status(400).json({ message: 'User input is missing.' });
             }
 
+            // Process user input using the chatbot controller
             const response = await ChatbotController.processUserInput(userInput);
+
+            // Send the response back to the client
             res.status(200).json({ response });
         } catch (error) {
             console.error('Route Handler Error:', error);
@@ -19,5 +22,5 @@ module.exports = {
         }
     },
     'GET/search': ProductController.getExactProduct,
-    'GET/search/category': ProductController.getProductsByCategory
+    'GET/search/category': ProductController.getProductsByCategory,
 };
