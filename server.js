@@ -15,6 +15,7 @@ const fs = require('fs');
 const path_m = require('path');
 
 const paymentRouter = require("./routes/paymentRoute");
+const ticketsRouter = require("./routes/ticketsRoute");
 
 
 connectDB();
@@ -186,6 +187,7 @@ const server = http.createServer(async (request, response) => {
         const adminRouteHandler = adminRouter[routeKey];
         const paymentRouteHandler = paymentRouter[routeKey];
         const shoppingCartRouteHandler = shoppingCartRouter[routeKey];
+        const ticketsRouteHandler = ticketsRouter[routeKey];
         const shippingRouteHandler = shippingRouter[routeKey];
 
         if (userRouteHandler) {
@@ -199,6 +201,9 @@ const server = http.createServer(async (request, response) => {
             paymentRouteHandler(request, response);
         } else if (shoppingCartRouteHandler) {
             shoppingCartRouteHandler(request, response);
+        } else if(ticketsRouteHandler){
+            console.log('Ticket router is working.')
+            ticketsRouteHandler(request, response);
         } else if (shippingRouteHandler) {
             shippingRouteHandler(request, response);
         } else {
