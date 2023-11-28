@@ -21,8 +21,10 @@ class ProductRepository {
     return product;
   }
 
-  async getProductByIdSpecific(id, fieldstr){
-    const product = await Product.findOne({"_id": id}, fieldstr);
+  // Gets the product based on the internal category name
+  // Only gets fields specified by the fieldstring
+  async getProductByInternalName(intername, fieldstr){
+    const product = await Product.findOne({"category": intername}, fieldstr);
     let flag = true
     if(!product){
       flag = false

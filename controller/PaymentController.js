@@ -27,6 +27,9 @@ async function getStripePaymentRedirect(req, res){
             payment_method_types: ["card"],
             mode: "payment",
             line_items: items,
+            automatic_tax: {
+                enabled: true,
+            },
             success_url: "http://127.0.0.1:5500/views/successfulTransaction.html",
             cancel_url: "http://127.0.0.1:5500/views/shoppingCart.html"
         });
@@ -59,14 +62,25 @@ async function getStripePaymentRedirectdb(req, res){
             res.end();
             return;
         }
+        //console.log(products)
         let items = await getFormatedStripeJSON(products);
+        //let shippingrate = ???; // TODO
+        // https://stripe.com/docs/api/checkout/sessions/create#create_checkout_session-shipping_options-shipping_rate_data
+        console.log(items);
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
             mode: "payment",
             line_items: items,
+            automatic_tax: {
+                enabled: true,
+            },
             success_url: "http://127.0.0.1:5500/views/shoppingCart.html",
-            cancel_url: "http://127.0.0.1:5500/views/shoppingCart.html"
+            cancel_url: "http://127.0.0.1:5500/views/shoppingCart.html",
+            //shipping_options: {
+            //    shipping_rate_data: shippingrate
+            //} // TODO
         });
+        console.log(session);
         res.writeHead(200);
         res.end(JSON.stringify(session));
     } catch(err){
@@ -87,7 +101,7 @@ module.exports = {getStripePaymentRedirect, getStripePaymentRedirectdb};
  */
 async function getFormatedStripeJSON(array){
     let newarray = await Promise.all(array.map(async (item) => {
-        const productdata = await ProductRepo.getProductByIdSpecific(item.product_id, "name price");
+        const productdata = await ProductRepo.getProductByInternalName(item.product_id, "name price");
         //console.log(productdata);
         if(!productdata.doesExist)
             return undefined;
@@ -98,9 +112,11 @@ async function getFormatedStripeJSON(array){
             price_data:{
                 currency: "usd",
                 product_data:{
-                    name: productdata.data.name
+                    name: productdata.data.name,
+                    tax_code: "txcd_99999999"
                 },
                 unit_amount: cents,
+                tax_behavior: "exclusive"
             },
             quantity: item.quantity
         };
