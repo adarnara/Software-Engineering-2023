@@ -330,7 +330,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             <div class="product-info">
                 <h2>${product.name}</h2>
-                <p>Price: ${product.price}</p>
+                <p>Price: $${product.price}</p>
                 <p>Stars: ${product.stars}</p>
                 <p>Ratings: ${product.rating_count}</p>
                 <p>Features:</p>
