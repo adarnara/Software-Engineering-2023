@@ -12,7 +12,7 @@ class ProductRepository {
   }
 
   async getAllFromSellerEmail(email) {
-      console.log('made it to ProductRepo');
+      // console.log('made it to ProductRepo');
       const products = await Product.find({"seller_data.email": email});      
       return products;
   }
@@ -62,6 +62,20 @@ class ProductRepository {
     await newProduct.save();
     return newProduct;
   }
+
+  async delete(productId) {
+    try {
+        const result = await Product.findByIdAndDelete(productId);
+        if (!result) {
+            throw new Error('Product not found');
+        }
+        return { success: true, message: 'Product successfully deleted', deletedProduct: result};
+    } catch (error) {
+        console.error('Error deleting product:', error);
+        return { success: false, message: 'Error deleting product', error: error.message };
+    }
+  }
+
   
   async findByEmail(email){
     return await user.findOne({email})
