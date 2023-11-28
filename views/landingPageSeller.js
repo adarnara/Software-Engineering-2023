@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const productsContainer = document.getElementById("products-container");
     const products = [];
-
+    let currentEditProduct = '';
 
     // Find out if the user is signed in.
     checkSignedIn();
@@ -179,7 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    //event listener for submit button
+    //event listener for create submit button
     const form = document.getElementById('productForm');
     form.addEventListener('submit', async function(event) {
         event.preventDefault();
@@ -298,17 +298,17 @@ document.addEventListener("DOMContentLoaded", () => {
         //check if variant_data is empty
         let colorsHTML = '';
         if (product.variant_data.length > 0) {
-            try {
-                //attempt to parse the first item as JSON
-                const variantData = JSON.parse(product.variant_data[0]);
-                const colors = Object.values(variantData).flat();
-                colorsHTML = `
-                    <p>Variants:</p>
-                    <ul>
-                        ${colors.map(color => `<li>${color}</li>`).join('')}
-                    </ul>
-                `;
-            } catch (error) {
+            // try {
+            //     //attempt to parse the first item as JSON
+            //     const variantData = JSON.parse(product.variant_data[0]);
+            //     const colors = Object.values(variantData).flat();
+            //     colorsHTML = `
+            //         <p>Variants:</p>
+            //         <ul>
+            //             ${colors.map(color => `<li>${color}</li>`).join('')}
+            //         </ul>
+            //     `;
+            // } catch (error) {
                 //if JSON.parse fails, handle variant_data as an array of strings (this is what it is like when you create a new product as a seller)
                 colorsHTML = `
                     <p>Variants:</p>
@@ -316,7 +316,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         ${product.variant_data.map(variant => `<li>${variant}</li>`).join('')}
                     </ul>
                 `;
-            }
+            // }
         }
 
         const productHTML = `
@@ -332,7 +332,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 <h2>${product.name}</h2>
                 <p>Price: ${product.price}</p>
                 <p>Stars: ${product.stars}</p>
-                <p>Features: ${product.rating_count}</p>
+                <p>Ratings: ${product.rating_count}</p>
+                <p>Features:</p>
                 <ul>
                     ${product.feature_bullets.map((bullet) => `<li>${bullet}</li>`).join('')}
                 </ul>
@@ -370,8 +371,89 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    function editProduct(product){
+    //modal pop up for editing product
+    var editmodal = document.getElementById("editModal");
+    var editspan = document.getElementsByClassName("editclose")[0];
+    editspan.onclick = function() { //clicked X button
+        editmodal.style.display = "none";
+    }
+    window.onclick = function(event) { //clicked off of modal pop up
+        if (event.target == editmodal) {
+            editmodal.style.display = "none";
+        }
+    }
+
+    function editProduct(productId){
         console.log('clicked edit button');
+        editmodal.style.display = "block";
+        currentEditProduct = productId;
+    }
+
+    //event listener for EDIT submit button
+    const editform = document.getElementById('editForm');
+    editform.addEventListener('submit', async function(event) {
+        event.preventDefault();
+        console.log('edit submit button clicked');
+        const editFormData = await getEditFormInputs(currentEditProduct);
+        console.log(editFormData, "<------ form data");
+        authorize('http://localhost:3000/seller/update', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(editFormData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Result:', data);
+            displaySellerProducts();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+        editmodal.style.display = "none";
+    });
+
+    async function getEditFormInputs(){
+        formData = {
+            "_id": currentEditProduct,
+            "name": document.getElementById('editproductName').value,
+            "price": document.getElementById('editproductPrice').value,
+            "stars": document.getElementById('editstars').value,
+            "rating_count": document.getElementById('editratingCount').value,
+            "feature_bullets": [],
+            "images": [],
+            "variant_data": [],
+        };
+
+        //handle image files
+        const editimageFiles = document.getElementById('editimages').files;
+        if (editimageFiles) {
+            for (let i = 0; i < editimageFiles.length; i++) {
+                const base64String = await readFileAsDataURL(editimageFiles[i]);
+                formData.images.push({
+                    hiRes: null,
+                    thumb: null,
+                    large: base64String,
+                    main: [null],
+                    variant: null,
+                    lowRes: null,
+                    shoppableScene: null,
+                });
+            }
+        } else {
+            console.log("There were no images input.");
+        }
+
+        //handling feature bullets -> assuming featureBullets is a comma-separated input
+        const featureBulletInputs = document.getElementById('editfeatureBullets').value.split(',');
+        formData.feature_bullets = featureBulletInputs.map(bullet => bullet.trim());
+
+        //variant data similar to feature bullets
+        const variantDataInputs = document.getElementById('editvariantData').value.split(',');
+        formData.variant_data = variantDataInputs.map(variant => variant.trim());
+
+        return formData;
     }
 
     function changeImage(productId, offset, button) {

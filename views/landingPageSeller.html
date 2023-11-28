@@ -274,6 +274,53 @@ body {
       cursor: pointer;
     }
 
+    /* The Edit Modal (background) */
+    .editmodal {
+      display: none; /*Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1; /* Sit on top */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgb(0,0,0); /* Fallback color */
+      background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .editmodal-content {
+      background-color: #fefefe;
+      margin: 15% auto; /* 15% from the top and centered */
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%; /* Could be more or less, depending on screen size */
+    }
+
+    .editsubmitBtn {
+      background-color: #fff;
+      border: 1px solid #000000;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin-left: 5px;
+      cursor: pointer;
+    }
+
+    /* The Close Button */
+    .editclose {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .editclose:hover,
+    .editclose:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
 
   </style>
 </head>
@@ -322,7 +369,7 @@ body {
 
   </div>
   <button id="createProductBtn"class="createBtn">Create Product</button>
-  <!-- Modal -->
+  <!-- Create Modal -->
   <div id="productModal" class="modal">
     <!-- Modal content -->
     <div class="modal-content">
@@ -367,6 +414,54 @@ body {
       </form>
     </div>
   </div>
+
+
+<!-- Edit Modal -->
+<div id="editModal" class="editmodal">
+  <!-- Modal content -->
+  <div class="editmodal-content">
+    <span class="editclose">&times;</span>
+    <h2>Edit Product Details</h2>
+    <form id="editForm">
+
+      <label for="productType">Product Type:</label>
+      <select name="productType" id="productType">
+        <option value="ipad">Ipad</option>
+        <option value="laptop">Laptop</option>
+        <option value="tshirts">T-Shirt</option>
+        <option value="books">Book</option>
+      </select><br><br>
+
+      <label for="productName">Product Name:</label>
+      <input type="text" id="editproductName" name="editproductName"><br><br>
+
+      <label for="productPrice">Product Price:</label>
+      <input type="text" id="editproductPrice" name="editproductPrice"><br><br>
+
+      <label for="stars">Stars:</label>
+      <input type="text" id="editstars" name="editstars"><br><br>
+
+      <label for="ratingCount">Total Ratings:</label>
+      <input type="text" id="editratingCount" name="editratingCount"><br><br>
+
+      <label for="featureBullets">Feature Bullets:</label>
+      <input type="text" id="editfeatureBullets" name="editfeatureBullets"><br><br>
+
+      <label for="images">Images:</label>
+      <input type="file" id="editimages" name="editimages" accept="image/*" multiple><br><br>
+
+
+      <label for="variantData">Variant Data:</label>
+      <input type="text" id="editvariantData" name="editvariantData"><br><br>
+
+      <!--seller data is automatically input-->
+      <!--package information is automaitcally input-->
+
+      <input type="submit" value="Submit" class="editsubmitBtn">
+    </form>
+  </div>
+</div>
+
 </div>
 
 <section>
