@@ -71,7 +71,6 @@ class SellerController {
 
             }
             const newProduct = await ProductRepository.create(requestBody);
-            getAllSellersProducts();
             res.writeHead(201, {'Content-Type': 'application/json'});
             res.end(JSON.stringify({ message: "Created new product:", newProduct}));
         } catch (error) {
