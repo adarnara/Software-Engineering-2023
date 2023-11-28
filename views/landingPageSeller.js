@@ -175,10 +175,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById('productForm');
     form.addEventListener('submit', async function(event) {
         event.preventDefault();
-
         console.log('submit button clicked');
         const productData = await createProductJSON();
-        console.log(productData);
         authorize('http://localhost:3000/seller/create', {
             method: 'POST',
             headers: {
@@ -225,7 +223,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     "firstName": "",
                     "lastName": "",
                     "warehouse_address": {
-                        "street": "",
+                        "street1": "",
+                        "street2": "",
+                        "street3": "",
                         "city": "",
                         "state": "",
                         "zip": "",
@@ -267,7 +267,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const variantDataInputs = document.getElementById('variantData').value.split(',');
             productData.variant_data = variantDataInputs.map(variant => variant.trim());
     
-            console.log(productData);
             return productData;
         } catch (error) {
             console.error('Error:', error);

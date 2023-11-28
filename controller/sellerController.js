@@ -1,18 +1,7 @@
 const ProductRepository = require('../Repository/ProductRepo');
 const { parseJwtHeader } = require("../middlewares/authmiddleware.js");
+const userRepo = require("../Repository/userRepo.js");
 
-
-async function getUserData(req, res)
-{
-  return new Promise(async (resolve) => {
-    let userData = parseJwtHeader(req, res);
-    if (userData) {
-        resolve(userData);
-    } else {
-        resolve(null);
-    }
-  })
-}
 
 function parseRequestBody(req) {
   return new Promise((resolve, reject) => {
@@ -53,10 +42,31 @@ class SellerController {
     async createSellerProduct(req, res) {
         try {
             const requestBody = await parseRequestBody(req);   
+            // console.log(requestBody, "hellooooooooo");
+            let userData = parseJwtHeader(req, res);
+            // We continue handling if the JWT was valid.
+            if (userData) {
+                let user = await userRepo.findUserById(userData["id"]);
+                //add seller data
+                requestBody["seller_data"]["company"] = user["Company"];
+                requestBody["seller_data"]["bio"] = user["Bio"];
+                requestBody["seller_data"]["website"] = user["website"];
+                requestBody["seller_data"]["phone"] = user["phoneNumber"];
+                requestBody["seller_data"]["email"] = user["email"];
+                requestBody["seller_data"]["firstName"] = user["firstName"];
+                requestBody["seller_data"]["lastName"] = user["lastName"];
+                requestBody["seller_data"]["warehouse_address"]["street1"] = user["address"]["address1"];
+                requestBody["seller_data"]["warehouse_address"]["street2"] = user["address"]["address2"];
+                requestBody["seller_data"]["warehouse_address"]["street3"] = user["address"]["address3"];
+
+                // requestBody["seller_data"][warehouse_address]["city"] = user["email"];
+                requestBody["seller_data"]["warehouse_address"]["state"] = user["address"]["state"];
+                requestBody["seller_data"]["warehouse_address"]["zip"] = user["address"]["postalCode"];
+                // requestBody["seller_data"][warehouse_address]["country"] = user[""];
+
+            }
             const newProduct = await ProductRepository.create(requestBody);
-            const userData = await getUserData(req,res);
-            console.log(userData, "askdjnaskjfnajskfn");
-    
+            
             res.writeHead(201, {'Content-Type': 'application/json'});
             res.end(JSON.stringify({ message: "Created new product:", newProduct}));
         } catch (error) {

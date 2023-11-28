@@ -39,7 +39,9 @@ const productSchema = new mongoose.Schema({
     firstName: String,
     lastName: String,
     warehouse_address: [{
-      street: String,
+      street1: String,
+      street2: String,
+      street3: String,
       city: String,
       state: String,
       zip: String,

@@ -127,7 +127,6 @@ function removeJwtToken() {
  *     otherwise returns what the fetch request returns.
  */
 async function authorize(url, data = {}) {
-    console.log('made it here');
 
     if (url.startsWith("/")) {
         // send the request to the correct server by using the
@@ -161,7 +160,6 @@ async function authorize(url, data = {}) {
             + " file, or remember to use the SERVER_URL constant from this"
             + " file!");
     }
-    console.log('made it here');
     return await fetch(url, data);
 }
 
@@ -172,7 +170,6 @@ async function authorize(url, data = {}) {
  */
 function getJwtToken() {
     const jwt_token = localStorage.getItem(JWT_LOCAL_STORAGE_NAME);
-    console.log(jwt_token, 'this is the token it found')
     if ((jwt_token ?? null !== null) && typeof jwt_token !== "string") {
         console.warn("A JWT token was found, but it was not the correct"
             + " format. If there is a JWT meant to be used, please make"
@@ -181,7 +178,6 @@ function getJwtToken() {
     } else if (jwt_token && typeof jwt_token === "string") {
         return jwt_token;
     } else {
-        console.log('returned null2')
         return null;
     }
 }
