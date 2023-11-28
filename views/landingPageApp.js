@@ -288,5 +288,9 @@ function setup() {
     }
 }
 
+function navigateToPage(href) {
+    window.location = href;
+}
+
 // Set up the web page
 setup();
