@@ -58,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Find out if the user is signed in.
     checkSignedIn();
+    displaySellerProducts();
 
     //Set up event listener for search bar.
     const searchButton = document.querySelector('.search-bar .search-button');
@@ -128,7 +129,8 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     }
 
-    fetch('http://localhost:3000/seller')
+    function displaySellerProducts(){
+        fetch('http://localhost:3000/seller')
         .then((response) => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -149,6 +151,8 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch(error => {
             console.error('Error fetching product data:', error);
         });
+    }
+    
 
     //event listener for create product button
     document.getElementById("createProductBtn").addEventListener("click", function() {
@@ -176,6 +180,9 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener('submit', async function(event) {
         event.preventDefault();
         console.log('submit button clicked');
+        productsContainer.innerHTML = ''; //Clear the products container
+        products.length = 0; //Reset the products array
+        displaySellerProducts();
         const productData = await createProductJSON();
         authorize('http://localhost:3000/seller/create', {
             method: 'POST',
