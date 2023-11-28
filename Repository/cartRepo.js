@@ -124,6 +124,10 @@ class ShoppingCart {
                 { $set: { shipping_rate: shipRate } },
                 { new: true }
             );
+
+            console.log("POOP");
+            console.log(updatedProduct);
+
             resolve(updatedProduct);
             return;
         });

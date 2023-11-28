@@ -220,13 +220,17 @@ class Shipping {
 
             const updatedProduct = await cartRepo.setProductTransaction(productID, currCartID, transactionObj);
 
+            console.log("UPDATED PR:");
+            console.log(updatedProduct + "\n\n\n\n");
+
+
             await shoppingCartCollection.findById(currCartID.toString())
                 .then(cart => {
                     const indexToUpdate = cart.products.findIndex(someProduct => {
                         const someProductID = someProduct.product_id;
                         return someProductID === productID;
                     });
-
+                    updatedProduct.shipping_rate = shipRate;
                     cart.products[indexToUpdate].set(updatedProduct);
 
                     return cart.save();
@@ -238,7 +242,8 @@ class Shipping {
             await cartProductCollection.findOneAndUpdate(
                 { parent_cart: currCartID.toString() },
                 { $set: {
-                    transaction: transactionObj
+                    transaction: transactionObj,
+                    shipping_rate: shipRate
                 }},
                 { new: true }
             );

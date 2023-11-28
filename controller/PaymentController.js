@@ -21,7 +21,7 @@ async function getStripePaymentRedirect(req, res){
             return;
         }
         let items = await getFormatedStripeJSON(json.products);
-
+        console.log("L BOZO");
         console.log("LINE ITEMS:");
         console.log(JSON.stringify(items));
 
@@ -54,9 +54,8 @@ async function getFormatedStripeJSON(array){
         console.log(productdata);
         if(productdata.name === undefined || productdata.price === undefined)
             return undefined;
-        const totalShippingPrice = parseFloat(item.shipping_rate.amount)
-        const cents = ((parseFloat((totalShippingPrice / item.quantity))) + parseFloat(productdata.price.substring(1)))*100;
-
+        // const totalShippingPrice = parseFloat(item.shipping_rate.amount)
+        const cents = (parseFloat(productdata.price.substring(1)))*100;
         console.log("CENTS = " + cents);
 
         if(cents === -1)
@@ -67,15 +66,26 @@ async function getFormatedStripeJSON(array){
                 product_data:{
                     name: productdata.name
                 },
-                unit_amount: Math.floor(cents.toFixed(2)),
+                unit_amount: Math.floor(cents),
             },
             quantity: item.quantity
         };
     }));
     let resultarray = [];
+    console.log(newarray);
     for(let i = 0; i < newarray.length; i++){
         if(!(newarray[i] === undefined))
             resultarray.push(newarray[i]);
+            resultarray.push({
+                price_data:{
+                    currency: "usd",
+                    product_data:{
+                        name: "SHIPPING - " + newarray[i].price_data.product_data.name
+                    },
+                    unit_amount: Math.floor((parseFloat(array[i].shipping_rate.amount)*100)),
+                },
+                quantity: 1
+            });
     }
     return resultarray;
 }
