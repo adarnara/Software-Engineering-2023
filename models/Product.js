@@ -6,7 +6,7 @@ const imageSchema = new mongoose.Schema({
 });
 
 const productSchema = new mongoose.Schema({
-  _id: String,
+  category: String,
   name: {
     type: String,
     required: true,

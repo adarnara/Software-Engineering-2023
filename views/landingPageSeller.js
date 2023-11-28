@@ -206,7 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Initialize productData with default values
             productData = {
-                "_id": fullId,
+                "category": fullId,
                 "name": document.getElementById('productName').value,
                 "price": document.getElementById('productPrice').value,
                 "stars": document.getElementById('stars').value,

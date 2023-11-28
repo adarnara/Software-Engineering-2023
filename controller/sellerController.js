@@ -3,6 +3,7 @@ const { parseJwtHeader } = require("../middlewares/authmiddleware.js");
 const userRepo = require("../Repository/userRepo.js");
 
 
+
 function parseRequestBody(req) {
   return new Promise((resolve, reject) => {
       if (req.headers['content-type'] === 'application/json') {
@@ -42,7 +43,6 @@ class SellerController {
     async createSellerProduct(req, res) {
         try {
             const requestBody = await parseRequestBody(req);   
-            // console.log(requestBody, "hellooooooooo");
             let userData = parseJwtHeader(req, res);
             // We continue handling if the JWT was valid.
             if (userData) {
