@@ -23,7 +23,23 @@
 
 
 const Ticket = require('../models/ticketModel.js');
-const ticketsRepository = {
+class ticketsRepository{
+
+  async createTicket(userId, description){
+    try{
+      const newTicket = new Ticket({
+          userId: userId,
+          description: description,
+      });
+      await newTicket.save();
+      return newTicket; 
+    }
+    catch(error){
+      console.error("Error creating a ticket: ", error);
+      throw error; 
+    }
+    
+  }
 
   //This function will return the ticket with the oldest creation date and with an Open Status.
   async getFirstOpenTicket(){
@@ -40,7 +56,7 @@ const ticketsRepository = {
       console.error("Error fetching first 'Open' Ticket: ", error);
       throw error;
     }
-  },
+  }
 
   //This will return a ticket with the oldest creation date and with "In Progress" status
   async getFirstInProgessTicket() {
@@ -57,7 +73,7 @@ const ticketsRepository = {
       console.error("Error fetching first 'In Progress' Ticket: ", error);
       throw error;
     }
-  },
+  }
   
   //This will return the ID of the oldest ticket with "Open" status. It returns null if no ticket is found
   async getFirstOpenId() {
@@ -71,7 +87,7 @@ const ticketsRepository = {
         console.error("Error fetching the oldest open ticket:", error);
         throw error;
     }
-},
+}
 
   //This will return the ID of the oldest ticket with "In progress" Status. It returns null if no ticket is found
 async getFirstInProgessId() {
@@ -85,7 +101,7 @@ async getFirstInProgessId() {
       console.error("Error fetching the oldest in-progress ticket:", error);
       throw error;
   }
-}, 
+}
 
 //gets all tickets with "Open status"
 async getAllOpenTickets() {
@@ -96,7 +112,7 @@ async getAllOpenTickets() {
       console.error("Error fetching open tickets:", error);
       throw error;
   }
-},
+}
 
 //gets all tickets with "In Progess" status
 async getAllInProgressTickets() {
@@ -107,7 +123,7 @@ async getAllInProgressTickets() {
       console.error("Error fetching in-progress tickets:", error);
       throw error;
   }
-},
+}
 
 //gets all tickets with "Resolved" status
 async getAllResolvedTickets() {
@@ -118,7 +134,7 @@ async getAllResolvedTickets() {
       console.error("Error fetching closed tickets:", error);
       throw error; 
   }
-},
+}
 
 async changeStatus(ticketId, newStatus) {
   try {
@@ -132,7 +148,7 @@ async changeStatus(ticketId, newStatus) {
     console.error('Error updating ticket status:', error);
     throw error;
   }
-},
+}
 
 async resolution(ticketId, resolutionDescription, closureDate) {
   try {
@@ -155,4 +171,4 @@ async resolution(ticketId, resolutionDescription, closureDate) {
 
 };
 
-module.exports = ticketsRepository;
+module.exports = new ticketsRepository();
