@@ -12,6 +12,7 @@ class ProductRepository {
   }
 
   async getAllFromSellerEmail(email) {
+      console.log('made it to ProductRepo');
       const products = await Product.find({"seller_data.email": email});      
       return products;
   }

@@ -130,7 +130,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function displaySellerProducts(){
-        fetch('http://localhost:3000/seller')
+        console.log("display function called in landingPageSeller")
+        authorize('http://localhost:3000/seller')
         .then((response) => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -138,6 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return response.json();
         })
         .then(data => {
+            console.log("attempting to display fetched products")
             if(!Array.isArray(data)){
                 // display HTML to say no products
             }
@@ -182,7 +184,6 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log('submit button clicked');
         productsContainer.innerHTML = ''; //Clear the products container
         products.length = 0; //Reset the products array
-        displaySellerProducts();
         const productData = await createProductJSON();
         authorize('http://localhost:3000/seller/create', {
             method: 'POST',
@@ -194,6 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(response => response.json())
         .then(data => {
             console.log('Result:', data);
+            displaySellerProducts();
         })
         .catch(error => {
             console.error('Error:', error);
@@ -290,7 +292,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
     
-    
+        
 
     function createProductHTML(product) {
         //check if variant_data is empty
