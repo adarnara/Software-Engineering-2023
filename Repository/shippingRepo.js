@@ -174,6 +174,7 @@ class Shipping {
 
     async updateCartProductShippingRate(email, currCartID, productID, shipRate) {
         return new Promise(async (resolve) => {
+            console.log("OOOOOOOOOOOOOOOOOOOOOGA BOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOGA");
             // const currCart = await cartRepo.getCurrCart(email);
             // const fromStr = addressFrom.street1 + ", " + addressFrom.city + ", " + addressFrom.state + ", " + addressFrom.zip;
             // const toStr = addressTo.street1 + ", " + addressTo.city + ", " + addressTo.state + ", " + addressTo.zip;
@@ -205,16 +206,13 @@ class Shipping {
                 }},
                 { new: true }
             );
-            console.log("SHIP RATE: ");
-            console.log(foundShipRate);
-            console.log(shipRate);
-            console.log("DONE UPDATE REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE !!!");
+
             resolve(updatedProduct);
             return;
         });
     }
     
-    async updateCartProductTransaction(email, currCartID, productID, transactionObj) {
+    async updateCartProductTransaction(email, currCartID, productID, transactionObj, shipRate) {
         return new Promise(async (resolve) => {
             // const currCart = await cartRepo.getCurrCart(email);
             // const fromStr = addressFrom.street1 + ", " + addressFrom.city + ", " + addressFrom.state + ", " + addressFrom.zip;
@@ -222,13 +220,17 @@ class Shipping {
 
             const updatedProduct = await cartRepo.setProductTransaction(productID, currCartID, transactionObj);
 
+            console.log("UPDATED PR:");
+            console.log(updatedProduct + "\n\n\n\n");
+
+
             await shoppingCartCollection.findById(currCartID.toString())
                 .then(cart => {
                     const indexToUpdate = cart.products.findIndex(someProduct => {
                         const someProductID = someProduct.product_id;
                         return someProductID === productID;
                     });
-
+                    updatedProduct.shipping_rate = shipRate;
                     cart.products[indexToUpdate].set(updatedProduct);
 
                     return cart.save();
@@ -240,10 +242,33 @@ class Shipping {
             await cartProductCollection.findOneAndUpdate(
                 { parent_cart: currCartID.toString() },
                 { $set: {
-                    transaction: transactionObj
+                    transaction: transactionObj,
+                    shipping_rate: shipRate
                 }},
                 { new: true }
             );
+
+
+            const currCart = await cartRepo.getCurrCart(email);
+            console.log("***EMAIL = " + email);
+            console.log("CURR CART = " + JSON.stringify(currCart));
+            let currTotalPrice = currCart.totalPrice;
+            console.log("Curr total price = " + currTotalPrice);
+            console.log("ship price = " + shipRate.amount);
+            const newCartTotalPrice = (parseFloat(currTotalPrice) + parseFloat(shipRate.amount)).toFixed(2);
+            console.log("NEW PRICE !!!");
+            console.log(newCartTotalPrice);
+            const updatedCart = await shoppingCartCollection.findOneAndUpdate(
+                { _id: currCartID.toString() },
+                { $set: {
+                    totalPrice: newCartTotalPrice
+                } },
+                { new: true }
+            )
+
+            console.log("UPDATED CART:");
+            console.log(JSON.stringify(updatedCart));
+
             console.log("DONE UPDATE");
             resolve(updatedProduct);
             return;
@@ -288,3 +313,28 @@ class Shipping {
 
 
 module.exports = new Shipping();
+
+
+/*
+            // Add shipping rate to cart's total price
+            const currCart = await cartRepo.getCurrCart(email);
+            console.log("***EMAIL = " + email);
+            console.log("CURR CART = " + JSON.stringify(currCart));
+            let currTotalPrice = currCart.totalPrice;
+            console.log("Curr total price = " + currTotalPrice);
+            console.log("ship price = " + shipRate.amount);
+            const newCartTotalPrice = (parseFloat(currTotalPrice) + parseFloat(shipRate.amount)).toFixed(2);
+            console.log("NEW PRICE !!!");
+            console.log(newCartTotalPrice);
+            const updatedCart = await shoppingCartCollection.findOneAndUpdate(
+                { _id: currCartID.toString() },
+                { $set: {
+                    totalPrice: newCartTotalPrice
+                } },
+                { new: true }
+            )
+
+
+
+
+*/
