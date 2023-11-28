@@ -31,15 +31,19 @@ const productSchema = new mongoose.Schema({
   ],
   variant_data: [String],
   seller_data: {
-    Company: String,
-    Bio: String,
-    Website: String,
-    Email: String,
+    company: String,
+    bio: String,
+    website: String,
+    phone: String,
+    email: String,
     firstName: String,
     lastName: String,
-    Warehouse_Address: [{
-      Street1: String,
-      
+    warehouse_address: [{
+      street: String,
+      city: String,
+      state: String,
+      zip: String,
+      country: String,      
     }],
   },
   length: String,

@@ -166,11 +166,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
     function createProductHTML(product) {
-        // Check if variant_data is empty
+        //check if variant_data is empty
         let colorsHTML = '';
         if (product.variant_data.length > 0) {
             try {
-                // Attempt to parse the first item as JSON
+                //first attempt to parse the first item as JSON
                 const variantData = JSON.parse(product.variant_data[0]);
                 const colors = Object.values(variantData).flat();
                 colorsHTML = `
@@ -180,7 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     </ul>
                 `;
             } catch (error) {
-                // If JSON.parse fails, handle variant_data as an array of strings
+                //if JSON.parse fails, handle variant_data as an array of strings (this is what it is like when you create a new product as a seller)
                 colorsHTML = `
                     <p>Variants:</p>
                     <ul>
