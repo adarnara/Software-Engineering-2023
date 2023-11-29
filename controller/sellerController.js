@@ -57,24 +57,38 @@ class SellerController {
             if (userData) {
                 let user = await userRepo.findUserById(userData["id"]);
                 //add seller data
-                requestBody["seller_data"]["company"] = user["Company"];
-                requestBody["seller_data"]["bio"] = user["Bio"];
-                requestBody["seller_data"]["website"] = user["website"];
-                requestBody["seller_data"]["phone"] = user["phoneNumber"];
-                requestBody["seller_data"]["email"] = user["email"];
-                requestBody["seller_data"]["firstName"] = user["firstName"];
-                requestBody["seller_data"]["lastName"] = user["lastName"];
-                requestBody["seller_data"]["warehouse_address"]["street1"] = user["address"]["address1"];
-                requestBody["seller_data"]["warehouse_address"]["street2"] = user["address"]["address2"];
-                requestBody["seller_data"]["warehouse_address"]["street3"] = user["address"]["address3"];
+                // if((user["address"]["address1"] != null)  //<-------- UNCOMMENT THIS TO REJECT UNFILLED PROFILES
+                // && (user["address"]["state"] != null)
+                // && (user["address"]["postalCode"] != null)
+                // && (user["Company"] != null)
+                // && (user["Bio"] != null)
+                // && (user["website"] != null)
+                // && (user["phoneNumber"] != null)
+                // && (user["email"] != null)
+                // && (user["firstName"] != null)
+                // && (user["lastName"] != null)){
+                    requestBody["seller_data"]["company"] = user["Company"];
+                    requestBody["seller_data"]["bio"] = user["Bio"];
+                    requestBody["seller_data"]["website"] = user["website"];
+                    requestBody["seller_data"]["phone"] = user["phoneNumber"];
+                    requestBody["seller_data"]["email"] = user["email"];
+                    requestBody["seller_data"]["firstName"] = user["firstName"];
+                    requestBody["seller_data"]["lastName"] = user["lastName"];
+                    requestBody["seller_data"]["warehouse_address"]["street1"] = user["address"]["address1"];
+                    requestBody["seller_data"]["warehouse_address"]["street2"] = user["address"]["address2"];
+                    requestBody["seller_data"]["warehouse_address"]["street3"] = user["address"]["address3"];
 
-                // requestBody["seller_data"][warehouse_address]["city"] = user["email"];     //----these are not currently being stored to my knowledge
-                requestBody["seller_data"]["warehouse_address"]["state"] = user["address"]["state"];
-                requestBody["seller_data"]["warehouse_address"]["zip"] = user["address"]["postalCode"];
-                // requestBody["seller_data"][warehouse_address]["country"] = user[""];      //----these are not currently being stored to my knowledge
-                const newProduct = await ProductRepository.create(requestBody);
-                res.writeHead(201, {'Content-Type': 'application/json'});
-                res.end(JSON.stringify({ message: "Created new product:", newProduct}));
+                    // requestBody["seller_data"][warehouse_address]["city"] = user["email"];     //----these are not currently being stored to my knowledge
+                    requestBody["seller_data"]["warehouse_address"]["state"] = user["address"]["state"];
+                    requestBody["seller_data"]["warehouse_address"]["zip"] = user["address"]["postalCode"];
+                    // requestBody["seller_data"][warehouse_address]["country"] = user[""];      //----these are not currently being stored to my knowledge
+                    const newProduct = await ProductRepository.create(requestBody);
+                    res.writeHead(201, {'Content-Type': 'application/json'});
+                    res.end(JSON.stringify({ message: "Created new product:", newProduct}));
+                // } else {                                               //<-------- UNCOMMENT THIS TO REJECT UNFILLED PROFILES
+                //     res.writeHead(403, {'Content-Type': 'application/json'});
+                //     res.end(JSON.stringify({ message: "Must fill out profile information before creating product!"}));
+                // }
             }
         } catch (error) {
             res.writeHead(500, {'Content-Type': 'application/json'});
