@@ -31,6 +31,8 @@ button.addEventListener("click", async () => {
       .then(({ url }) => {
         // Redirect to the URL from the response
         // handle fixing shopping carts
+        console.log("URL:");
+        console.log(url);
         window.location.href = url;
       })
       .catch(e => {

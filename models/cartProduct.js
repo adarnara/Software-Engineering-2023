@@ -26,11 +26,16 @@ const cartProductSchema = new Schema({
         type: Number,
         default: 1
     },
-    from: String,
-    to: String,
-    date_shipped: Date,
-    date_arrival: Date,
-    shipping_id: Number
+    shipping_rate: {
+        type: Object,
+        default: null
+    },
+    from: {type: Object, default: null},
+    to: {type: Object, default: null},
+    transaction: {
+        type: Object,
+        default: null
+    }
 });
 
 module.exports = mongoose.model('cartProduct', cartProductSchema);

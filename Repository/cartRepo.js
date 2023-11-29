@@ -28,6 +28,29 @@ class ShoppingCart {
         return await productToAdd.save();
     }
 
+    async addProductToCartWithProductObject(email, product) {
+        console.log('*********************************');
+        console.log(product);
+        console.log("")
+        const currCart = await shoppingCartCollection.findOne({email: email, purchaseTime: null});
+        const productToAdd = await cartProductCollection.create({parent_cart: currCart, product_id: product.product_id, quantity: product.quantity, shipping_price: product.shipping_price, from: product.from, to: product.to, date_shipped: product.date_shipped, date_arrival: product.date_arrival, shipping_id: product.shipping_id});
+        console.log("new product:");
+        console.log(productToAdd);
+        return await productToAdd.save();
+    }
+
+    async pushProductToDeleted(currCart_id, product_id) {
+        return new Promise(async (resolve) => {
+            const updateRes = await shoppingCartCollection.updateOne(
+                { _id: currCart_id.toString(), purchaseTime: null },
+                { $push: { deletedProducts: product_id }
+              }
+              );
+            resolve(updateRes);
+            return;
+        });
+    }
+
     async removeProductFromCart(email, product_id) {
         const currCart = await shoppingCart.findOne({email: email, purchaseTime: null});
         return await cartProduct.findOneAndDelete({parent_cart: currCart, product_id: product_id});
@@ -73,6 +96,43 @@ class ShoppingCart {
             const updatedProduct = await cartProductCollection.findOneAndUpdate(
                 { product_id: product_id, parent_cart: currCart_id.toString() },
                 { $set: { quantity: newQuantity } },
+                { new: true }
+            );
+            resolve(updatedProduct);
+            return;
+        });
+    }
+
+    async setProductShippingAddresses(product_id, currCart_id, newFrom, newTo) {
+        return new Promise(async (resolve) => {
+            const updatedProduct = await cartProductCollection.findOneAndUpdate(
+                { product_id: product_id, parent_cart: currCart_id.toString() },
+                { $set: { from: newFrom,
+                          to: newTo } },
+                { new: true }
+            );
+            resolve(updatedProduct);
+            return;
+        });
+    }
+
+    async setProductShippingRate(product_id, currCart_id, shipRate) {
+        return new Promise(async (resolve) => {
+            const updatedProduct = await cartProductCollection.findOneAndUpdate(
+                { product_id: product_id, parent_cart: currCart_id.toString() },
+                { $set: { shipping_rate: shipRate } },
+                { new: true }
+            );
+            resolve(updatedProduct);
+            return;
+        });
+    }
+
+    async setProductTransaction(product_id, currCart_id, transactionObj) {
+        return new Promise(async (resolve) => {
+            const updatedProduct = await cartProductCollection.findOneAndUpdate(
+                { product_id: product_id, parent_cart: currCart_id.toString() },
+                { $set: { transaction: transactionObj } },
                 { new: true }
             );
             resolve(updatedProduct);
@@ -138,6 +198,19 @@ class ShoppingCart {
              });
             resolve(removedCartProduct);
             return;
+        });
+    }
+    async updateDeletedList(currCart_id, newProductList) {
+        return new Promise(async (resolve) => {
+            const updatedProduct = await shoppingCartCollection.findOneAndUpdate(
+                { _id: currCart_id.toString(), purchaseTime: null },
+                { $set: { 
+                  deletedProducts: newProductList
+                 }},
+                { new: true }
+            );
+            resolve(updatedProduct);
+            return;            
         });
     }
    

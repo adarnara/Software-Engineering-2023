@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>CSS Animation Effect</title>
-  <link rel="stylesheet" href="landingPage.css">
+  <title>Reprua: Where Dreams Come Right to Your Door</title>
+  <link rel="stylesheet" type="text/css" href="/views/landingPage.css">
+  <script src="/public/js/util.js"></script>
+
   <style>
 
     body {
@@ -178,11 +180,6 @@
       cursor: pointer;
     }
 
-    .go-to-page-button {
-      margin-left: auto; /* Pushes the button to the right */
-      white-space: nowrap; /* Prevents line breaks */
-    }
-
 
     .product-info ul {
       padding-left: 20px;
@@ -191,14 +188,63 @@
     .hidden {
       display: none;
     }
+    .go-to-page-button {
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .go-to-page-button.login-button {
+      background-color: transparent;
+    }
+
+
+    .redirect-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.redirect-button:hover {
+  background-color: #0056b3;
+  cursor: pointer;
+}
+
+.ticket-section {
+  position: relative;
+  z-index: 9999; /* High z-index to ensure it's on top */
+  padding: 20px;
+  text-align: center; /* Center the button within the section */
+}
+
+.ticket-button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.ticket-button:hover {
+  background-color: #0056b3;
+}
+
   </style>
 </head>
 <body>
 
 <div class="navbar">
-  <a href="http://127.0.0.1:5500/views/landingPage.html" style="text-decoration: none; color: inherit;">
+  <a href="/views/landingPage.html" style="text-decoration: none; color: inherit;">
     <div class="navbar-logo">
-      <img src="../public/Images/logo.png" alt="Logo" />
+      <img src="/public/Images/logo.png" alt="Logo" />
       <span style="font-weight: bold; font-size: 20px;">Reprua</span>
     </div>
   </a>
@@ -211,11 +257,18 @@
     <button class="search-button">Search</button>
   </div>
   <div id="shopping-icon" class="navbar-cart">
-    <a href = "http://127.0.0.1:5500/views/shoppingCart.html">
-    <img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />
-    <span style="font-weight: bold; font-size: 20px;"></span>
-  </a>
-    <button class="go-to-page-button" onclick="navigateToPage('registerAndLoginPage.html')">Register/Sign In</button>
+    <a href="/views/shoppingCart.html">
+      <img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />
+
+      <span style="font-weight: bold; font-size: 20px;"></span>
+    </a>
+    <div id="sign-in-user">
+      <a href="registerAndLoginPage.html">
+        <button class="go-to-page-button">
+          <img src="../public/Images/image-button-two.png" alt="Register/Login" />
+        </button>
+      </a>
+    </div>
   </div>
 </div>
 
@@ -242,12 +295,32 @@
   </div>
 </section>
 
+
+<section class="ticket-section">
+  <div>
+    <button id="button2" class="ticket-button">Have experienced issues with a product or seller. Click here.</button>
+  </div>
+</section>
+
 <script>
   // JavaScript function to navigate to another page
   function navigateToPage(route) {
     // Use window.location to navigate to the desired page
     window.location.href = route;
   }
+
+    //This is for tickets
+    document.addEventListener("DOMContentLoaded", () => {
+    const button2 = document.getElementById('button2');
+    if (button2) {
+      button2.addEventListener('click', () => {
+        console.log("Button2 clicked!");
+        window.location.href = "http://localhost:5500/views/ticketsPage.html";
+      });
+    } else {
+      console.log("Button2 not found");
+    }
+  });
 </script>
 
 <script src="landingPageApp.js"></script>
