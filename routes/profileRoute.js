@@ -1,7 +1,7 @@
 const profileController = require('../controller/profileCtrl');
 
 const profileRoutes = {
-    [`PUT/profile/updateProfile/:userId`]: async (request, response) => {
+    'PUT/profile/updateProfile/': async (request, response) => {
         await profileController.updateProfile(request, response);
     },
 };

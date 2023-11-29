@@ -4,10 +4,10 @@ const url = require('url');
 const PORT = process.env.PORT || 3000;
 const userRouter = require("./routes/userRoute");
 const adminRouter = require("./routes/adminRoute");
-const landingRouter = require('./routes/landingRoute');
 const shoppingCartRouter = require('./routes/shoppingCartRoute');
 const shippingRouter = require('./routes/shippingRoute');
 const routes = require('./routes/landingRoute');
+const landingRouter = require('./routes/landingRoute');
 
 const profileRouter = require('./routes/profileRoute');
 const forgetPasswordRouter = require("./routes/forgetPasswordRoute");
@@ -15,6 +15,7 @@ const fs = require('fs');
 const path_m = require('path');
 
 const paymentRouter = require("./routes/paymentRoute");
+const searchRouter = require("./routes/searchRoute");
 
 
 connectDB();
@@ -25,17 +26,47 @@ const server = http.createServer(async (request, response) => {
     const method = request.method;
     console.log(`Incoming request: ${request.method} ${request.url}`);
 
-
-    // Set the CORS headers to allow all origins (you can restrict it as needed)
+    // Set the CORS headers to allow all origins
     response.setHeader('Access-Control-Allow-Origin', '*');
-    response.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS'); // Add the necessary HTTP methods you want to support
-    response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Add the necessary headers
+    response.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+    response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
     if (request.method === 'OPTIONS') {
-        // Respond to preflight requests
         response.writeHead(200);
         response.end();
         return;
+    }
+
+
+
+
+    // Iterate over landingRouter for dynamic routes
+    for (const route in searchRouter) {
+        console.log(`Checking route: ${route}`);
+        const methodPart = route.match(/^[A-Z]+/)[0];
+        const pathPart = route.substring(methodPart.length);
+
+        console.log(methodPart);
+        console.log(pathPart);
+
+        if (methodPart !== method) continue;
+
+        const params = matchDynamicRoute(pathPart, path);
+        if (params) {
+            // Found a matching dynamic route
+            request.params = params;
+            console.log(params);
+
+            try {
+                await searchRouter[route](request, response);
+                return;
+            } catch (error) {
+                console.error('Route Handler Error:', error);
+                response.writeHead(500);
+                response.end(JSON.stringify({ message: 'Internal Server Error' }));
+                return;
+            }
+        }
     }
 
 
@@ -219,8 +250,8 @@ const server = http.createServer(async (request, response) => {
 function matchDynamicRoute(routePattern, path) {
     const routeParts = routePattern.split('/').filter(Boolean);
     const pathParts = path.split('/').filter(Boolean);
-    if (routeParts.length !== pathParts.length) return null;
 
+    if (routeParts.length > pathParts.length) return null;
 
     const params = {};
     for (let i = 0; i < routeParts.length; i++) {
@@ -232,6 +263,7 @@ function matchDynamicRoute(routePattern, path) {
     }
     return params;
 }
+
 
 
 server.listen(PORT, (error) => {
