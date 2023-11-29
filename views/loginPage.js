@@ -11,35 +11,22 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     const checkExistingToken = async () => {
         try {
-            const existingToken = getCookieToken("token");
-            console.log("Existing Token:", existingToken);
+            const existingToken = getJwtToken();
 
             if (existingToken) {
-                const tokenResponse = await fetch("http://localhost:3000/token", {
-                    method: "GET",
-                    headers: {
-                        "Authorization": `Bearer ${existingToken}`,
-                        "Content-Type": "application/json",
-                    },
-                });
+                const userData = await checkToken();
+                const userEmail = userData.email;
 
-                if (tokenResponse.status === 200) {
-                    const userData = await tokenResponse.json();
-                    const userEmail = userData.email;
+                const inputEmail = document.getElementById("username").value;
 
-                    const inputEmail = document.getElementById("username").value;
-                    console.log("User Email from Token:", userEmail);
-                    console.log("Input Email:", inputEmail);
-
-                    if (userEmail === inputEmail) {
-                        loginButton.textContent = 'Already Logged In';
-                        setTimeout(() => {
-                            loginButton.textContent = 'Login';
-                        }, 1500);
-                        alreadyLoggedIn = true;
-                    } else {
-                        alreadyLoggedIn = false;
-                    }
+                if (userEmail === inputEmail) {
+                    loginButton.textContent = 'Already Logged In';
+                    setTimeout(() => {
+                        loginButton.textContent = 'Login';
+                    }, 1500);
+                    alreadyLoggedIn = true;
+                } else {
+                    alreadyLoggedIn = false;
                 }
             }
         } catch (tokenError) {
@@ -69,30 +56,21 @@ document.addEventListener("DOMContentLoaded", async function () {
                 const data = await response.json();
                 const token = data.token;
 
-                removeCookie("token");
-
-                // Store the JWT token in a cookie with 10 minutes expiration
-                setCookie("token", token, 10 / (24 * 60)); // 10 minutes expiration
+                setJwtToken(token);
 
                 // Request user information from /token route using the obtained token
                 try {
-                    const tokenResponse = await fetch("http://localhost:3000/token", {
-                        method: "GET",
-                        headers: {
-                            "Authorization": `Bearer ${token}`,
-                            "Content-Type": "application/json",
-                        },
-                    });
+                    const userData = await checkToken();
 
-                    if (tokenResponse.status === 200) {
-                        const userData = await tokenResponse.json();
-                        console.log("User ID:", userData.userId);
-
+                    if (userData) {
+                        // This doesn't work correctly, since the redirect
+                        // happens instantaneously.
+                        //
                         // Display success message for 1.5 seconds
-                        loginButton.textContent = 'Login Successful';
-                        setTimeout(() => {
-                            loginButton.textContent = 'Login';
-                        }, 200);
+                        // loginButton.textContent = 'Login Successful';
+                        // setTimeout(() => {
+                        //     loginButton.textContent = 'Login';
+                        // }, 200);
 
                         // Redirect to landing page
                         window.location.href = "landingPage.html";
@@ -104,7 +82,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 } catch (tokenError) {
                     console.error(tokenError);
                     // Handle error as needed
-                    showErrorMessage('Error Logging In');
+                    showErrorMessage('Server Error');
                 }
             } else {
                 const data = await response.json();
@@ -119,16 +97,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             // Handle error as needed
             showErrorMessage('Error Logging In');
         }
-    };
-
-    const removeCookie = (name) => {
-        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-    };
-
-    const setCookie = (name, value, days) => {
-        const expires = new Date();
-        expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
-        document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
     };
 
     const showErrorMessage = (message) => {
@@ -164,6 +132,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     loginFormElement.addEventListener('submit', async (e) => {
         e.preventDefault();
+
         await checkExistingToken();
 
         if (alreadyLoggedIn) {
@@ -216,9 +185,4 @@ document.addEventListener("DOMContentLoaded", async function () {
             showErrorMessage('Error Logging In');
         }
     });
-
-    const getCookieToken = (name) => {
-        const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-        return cookieValue ? cookieValue.pop() : null;
-    };
 });
