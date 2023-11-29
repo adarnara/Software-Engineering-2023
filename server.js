@@ -1,4 +1,6 @@
 const connectDB = require('./config/db');
+const startElasticsearch = require('./config/elasticsearch');
+const copyMongoDataToElasticsearch = require('./config/importData');
 const http = require('http');
 const url = require('url');
 const PORT = process.env.PORT || 3000;
@@ -19,6 +21,11 @@ const searchRouter = require("./routes/searchRoute");
 
 
 connectDB();
+startElasticsearch();
+setTimeout(() => {
+    copyMongoDataToElasticsearch();
+}, 30000);
+
 
 const server = http.createServer(async (request, response) => {
     const parsedUrl = url.parse(request.url, true);

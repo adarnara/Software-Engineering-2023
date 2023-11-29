@@ -6,7 +6,7 @@ async function copyMongoDataToElasticsearch() {
   // MongoDB Connection
   try {
     await mongoose.connect('mongodb+srv://Keny:kde32@swe2023cluster.gikvwsm.mongodb.net/Reprua?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
-    console.log('Connected to MongoDB');
+    console.log("Second connection to Mongo DB for data pipeline to Elasticsearch")
   } catch (mongoError) {
     console.error('Error connecting to MongoDB:', mongoError.message);
     return;
@@ -16,6 +16,16 @@ async function copyMongoDataToElasticsearch() {
   const esClient = new Client({ node: 'http://localhost:9200' });
 
   try {
+    // Check if the index already exists
+    const indexExists = await esClient.indices.exists({
+      index: 'products_index',
+    });
+
+    if (indexExists) {
+      console.log('Index already exists. Skipping data copy.');
+      return;
+    }
+
     // Define your index mappings
     const indexMappings = {
       properties: {
@@ -61,4 +71,4 @@ async function copyMongoDataToElasticsearch() {
 }
 
 // Call the function to copy data
-copyMongoDataToElasticsearch();
+module.exports = copyMongoDataToElasticsearch;
