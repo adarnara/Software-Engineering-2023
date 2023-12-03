@@ -7,20 +7,26 @@
 </head>
 <body>
     <div class="dashboard-container">
+        <div class="admin-info">
+            <span id="adminName">Loading...</span>
+            <button id="logoutButton">Log Out</button>
+        </div>
         <h2>Admin Dashboard</h2>
         <div id="userList">
             <!-- Users will be dynamically loaded here -->
-            <!-- Example of a user row in the table -->
-            <div class="user-row">
-                <span class="user-name">User Name</span>
-                <span class="user-role">Role</span>
-                <!-- Add more user details as needed -->
-                <button class="update-user">Update</button>
-                <button class="delete-user">Delete</button>
+        </div>
+        <div id="updateUserModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2>Update User</h2>
+                <input type="text" id="updateFirstName" placeholder="First Name">
+                <input type="text" id="updateLastName" placeholder="Last Name">
+                <input type="email" id="updateEmail" placeholder="Email">
+                <button onclick="submitUserUpdate()">Submit</button>
             </div>
-            <!-- Repeat for each user -->
         </div>
     </div>
-    <script src="/views/admin/dashBoard.js"></script>
+    <script src="/views/admin/dashBoard.js"></script> <!-- Ensure this path is correct -->
 </body>
 </html>
+

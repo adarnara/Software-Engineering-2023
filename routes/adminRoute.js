@@ -4,6 +4,7 @@ const adminRoutes = {
   'POST/admin/login': (request,response) => adminController.adminLogin(request,response),
   'POST/admin/register': (request,response) => adminController.adminRegister(request,response),
   'GET/admins': adminController.allAdmins,
+  'GET/admintoken': adminController.getAdminByToken
 };
 
 module.exports = adminRoutes

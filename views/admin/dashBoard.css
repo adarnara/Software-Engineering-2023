@@ -59,3 +59,75 @@ button.update-user:hover {
 button.delete-user:hover {
   background-color: #c9302c;
 }
+.admin-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #2c3e50; /* Dark background for contrast */
+  padding: 10px 20px;
+  color: white; /* Light text for readability */
+  border-bottom: 2px solid #34495e; /* A subtle border for visual separation */
+  font-family: Arial, sans-serif;
+  border-radius: 20px;
+}
+
+.admin-info span {
+  font-size: 18px;
+  margin-right: 20px; /* Space before the logout button */
+}
+
+#logoutButton {
+  padding: 8px 15px;
+  background-color: #e74c3c; /* A red color to signify logging out */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+
+  /* Adding some shadow for depth */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#logoutButton:hover {
+  background-color: #c0392b; /* Slightly darker shade on hover */
+}
+
+#logoutButton:focus {
+  outline: none; /* Removing the outline on focus for a clean look */
+}
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
