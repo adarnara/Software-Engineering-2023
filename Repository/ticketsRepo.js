@@ -150,18 +150,17 @@ async changeStatus(ticketId, newStatus) {
   }
 }
 
-async resolution(ticketId, resolutionDescription, closureDate) {
+async resolution(ticketId, resolutionDescription) {
   try {
     const updatedTicket = await Ticket.findByIdAndUpdate(
       ticketId,
       { 
         resolutionDescription: resolutionDescription,
-        closureDate: closureDate,
+        closureDate: Date.now, //check if this is working
         status: "Resolved"
       },
       { new: true }
     );
-
     return updatedTicket;
   } catch (error) {
     console.error('Error adding resolution: ', error);
