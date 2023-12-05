@@ -76,7 +76,7 @@ async function getProductsFromDB() {
 function processProduct(product) {
     console.log(`Processing product: ${product.name}`);
 
-    const { _id, name, price, stars, rating_count, feature_bullets } = product;
+    const { category, name, price, stars, rating_count, feature_bullets } = product;
 
     if (!name || typeof name !== 'string') {
         console.error('Invalid product name:', name);
@@ -91,7 +91,7 @@ function processProduct(product) {
     addListofAllDetailsQuestion(name, price, stars, rating_count, feature_bullets)
 
 
-    if (_id.toLowerCase().includes('laptop')) {
+    if (category.toLowerCase().includes('laptop')) {
         manager.addDocument('en', `Recommend me a laptop`, `recommend_laptop`);
         manager.addAnswer('en', 'recommend_laptop', `A recommended laptop would be ${name}. Here are some details:\n
         - Price: ${price}\n
@@ -100,7 +100,7 @@ function processProduct(product) {
         - Features:\n${feature_bullets.map(feature => `  - ${feature}`).join('\n')}`);
     }
 
-    if (_id.toLowerCase().includes('tshirts')) {
+    if (category.toLowerCase().includes('tshirts')) {
         manager.addDocument('en', `Recommend me a t-shirt`, `recommend_tshirt`);
         manager.addAnswer('en', 'recommend_tshirt', `A recommended t-shirt would be ${name}. Here are some details:\n
         - Price: ${price}\n
@@ -108,7 +108,7 @@ function processProduct(product) {
         - Rating Count: ${rating_count}\n
         - Features:\n${feature_bullets.map(feature => `  - ${feature}`).join('\n')}`);
     }
-    if (_id.toLowerCase().includes('books')) {
+    if (category.toLowerCase().includes('books')) {
         manager.addDocument('en', `Recommend me a book`, `recommend_books`);
         manager.addAnswer('en', 'recommend_books', `A recommended book would be ${name}. Here are some details:\n
         - Price: ${price}\n
@@ -116,7 +116,7 @@ function processProduct(product) {
         - Rating Count: ${rating_count}\n
         - Features:\n${feature_bullets.map(feature => `  - ${feature}`).join('\n')}`);
     }
-    if (_id.toLowerCase().includes('ipad')) {
+    if (category.toLowerCase().includes('ipad')) {
         manager.addDocument('en', `Recommend me a ipad`, `recommend_ipad`);
         manager.addAnswer('en', 'recommend_ipad', `A recommended ipad would be ${name}. Here are some details:\n
         - Price: ${price}\n

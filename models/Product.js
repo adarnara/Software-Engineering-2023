@@ -7,7 +7,6 @@ const imageSchema = new mongoose.Schema({
 
 const productSchema = new mongoose.Schema({
 
-  _id: mongoose.Schema.Types.ObjectId, // Use ObjectId for _id
   category:{
     type:String,
     required: true,
