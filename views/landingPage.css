@@ -108,9 +108,17 @@ h2
 .island
 {
     position: absolute;
+    z-index: 1;
     left: 50%;
     transform: translateX(-50%);
     width: 800px;
     bottom: 0;
     pointer-events: none;
+}
+
+.chatbox {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    z-index: 2000; /* Set a higher z-index for the chatbox */
 }

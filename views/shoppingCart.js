@@ -1,20 +1,8 @@
-const currMemberEmail = "mm3201@scarletmail.rutgers.edu";
 function checkPos(quantity) {
   console.log(quantity.value);
   if (quantity.value < 1) quantity.value = 1;
 }
 let subtotal;
-// Get the current Member's cart
-const getCurrMemberCart = async () => {
-  try {
-    const currMemberCart = await cartRepo.getUserCurrentCart(currMemberEmail);
-
-    console.log("Curr Member: ", JSON.stringify(currMemberCart));
-    return currMemberCart;
-  } catch (err) {
-    console.log(err);
-  }
-};
 
 // Go to checkout page when 'Proceed to Checkout' button is clicked
 function proceedToCheckout() {
@@ -40,14 +28,15 @@ function handleKeyPress(event, productId, inputElement) {
 
 async function addProductToCart(product, button) {
   let quantity = document.getElementById(product).value;
-
+  const currUser = await checkToken();
   console.log(quantity);
   if (isNaN(parseInt(quantity)) || parseInt(quantity) < 1) {
     quantity = 1;
   } else {
     console.log("Sending");
-    await fetch(
-      `http://localhost:3000/cart/add?user_id=655f9963f9cbae2c21c3bb60`,
+
+    await authorize(
+      `http://localhost:3000/cart/add`,
       {
         method: "POST",
         headers: {
@@ -55,7 +44,6 @@ async function addProductToCart(product, button) {
         },
         body: JSON.stringify({
           quantity: parseInt(quantity),
-          email: currMemberEmail,
           product_id: product,
         }),
       }
@@ -68,16 +56,16 @@ async function addProductToCart(product, button) {
     quantity: quantity,
   };
   productContainer.remove();
-  await fetch(`http://localhost:3000/search?productId=${product}`).then(
+  await authorize(`http://localhost:3000/search?productId=${product}`).then(
     async (response) => {
       // console.log(response);
       response = await response.json();
       console.log(response);
-      const productHTML = createProductHTML(response, quant);
+      const productHTML = createProductHTML(response[0], quant);
       prods.innerHTML += productHTML;
     }
   );
-  await fetch("http://localhost:3000/cart?user_id=655f9963f9cbae2c21c3bb60")
+  await authorize("http://localhost:3000/cart")
     .then((response) => {
       console.log(
         "***********************************************************************"
@@ -119,7 +107,6 @@ async function changeNumber(productId, displayNumber) {
     },
     body: JSON.stringify({
       quantity: parseInt(displayNumber.value),
-      email: currMemberEmail,
       product_id: productId,
     }),
   };
@@ -130,11 +117,11 @@ async function changeNumber(productId, displayNumber) {
   ) {
     displayNumber.value = 1;
   } else {
-    await fetch(
-      `http://localhost:3000/cart?user_id=655f9963f9cbae2c21c3bb60`,
+    await authorize(
+      `http://localhost:3000/cart`,
       req
     ).then((res) => console.log(res));
-    await fetch("http://localhost:3000/cart?user_id=655f9963f9cbae2c21c3bb60")
+    await authorize("http://localhost:3000/cart")
       .then((response) => {
         console.log(
           "***********************************************************************"
@@ -158,8 +145,8 @@ async function changeNumber(productId, displayNumber) {
 async function deleteProduct(productId, button) {
   console.log(productId);
 
-  await fetch(
-    `http://localhost:3000/cart/remove?user_id=655f9963f9cbae2c21c3bb60&product_id=${productId}`,
+  await authorize(
+    `http://localhost:3000/cart/remove?product_id=${productId}`,
     {
       method: "DELETE",
     }
@@ -169,16 +156,16 @@ async function deleteProduct(productId, button) {
   var productContainer = button.closest(".product-container");
 
   productContainer.remove();
-  await fetch(`http://localhost:3000/search?productId=${productId}`).then(
+  await authorize(`http://localhost:3000/search?productId=${productId}`).then(
     async (response) => {
       // console.log(response);
       response = await response.json();
       console.log(response);
-      const productHTML = createDeletedProductHTML(response);
+      const productHTML = createDeletedProductHTML(response[0]);
       deletedContainer.innerHTML += productHTML;
     }
   );
-  await fetch("http://localhost:3000/cart?user_id=655f9963f9cbae2c21c3bb60")
+  await authorize("http://localhost:3000/cart")
     .then((response) => {
       console.log(
         "***********************************************************************"
@@ -215,10 +202,10 @@ function createProductHTML(product, currCartProduct) {
                 <img src="${product.images[0].large}" alt="${product.name}" />
                 <div class="image-navigation">
                     <button onclick="changeImage('${
-                      product._id
+                      product.category
                     }', -1, this)">Previous</button>
                     <button onclick="changeImage('${
-                      product._id
+                      product.category
                     }', 1, this)">Next</button>
                 </div>
             </div>
@@ -239,10 +226,10 @@ function createProductHTML(product, currCartProduct) {
                 <input type="number" class="display-number" value="${
                   currCartProduct.quantity
                 }" oninput="changeNumber('${
-    product._id
-  }', this)" onkeyup="handleKeyPress(event, '${product._id}', this)">
+    product.category
+  }', this)" onkeyup="handleKeyPress(event, '${product.category}', this)">
                 <button class= "delete-button" onclick="deleteProduct('${
-                  product._id
+                  product.category
                 }', this)">Remove Item From Cart</button>
                 </div>
             </div>
@@ -271,10 +258,10 @@ function createDeletedProductHTML(product) {
           <img src="${product.images[0].large}" alt="${product.name}" />
           <div class="image-navigation">
               <button onclick="changeImage('${
-                product._id
+                product.category
               }', -1, this)">Previous</button>
               <button onclick="changeImage('${
-                product._id
+                product.category
               }', 1, this)">Next</button>
           </div>
       </div>
@@ -292,12 +279,12 @@ function createDeletedProductHTML(product) {
       </div>
       <div class="add-to-cart-button">
           <button class= "add-button" onclick="addProductToCart('${
-            product._id
+            product.category
           }', this)">Add Quantity</br> to Cart</button>
       </div>
       <div class="number-control">
           <input type="number" id='${
-            product._id
+            product.category
           }' onclick="checkPos(this)" class="display-number" value="1">
       </div>
   </div>
@@ -329,6 +316,7 @@ function createSubTotalHTML(data) {
       </div>
      </div>
       `;
+      console.log(data.products.length == 0 && data.deletedProducts.length == 0);
   if (data.products.length == 0 && data.deletedProducts.length == 0) {
     return emptyWithoutDeleted;
   }
@@ -342,8 +330,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   );
 
   const products = [];
-
-  await fetch("http://localhost:3000/cart?user_id=655f9963f9cbae2c21c3bb60")
+    await authorize("http://localhost:3000/cart")
     .then((response) => {
       console.log(
         "***********************************************************************"
@@ -363,33 +350,35 @@ document.addEventListener("DOMContentLoaded", async () => {
       const hiddenButton = document.getElementById(
         "hidden-button"
       );
-      if (data.deletedProducts.length == 0)
+      if (data.deletedProducts.length == 0 && data.products.length == 0)
         {
           hiddenButton.remove();
         }
       for (let i = 0; i < data.products.length; i++) {
-        const product = data.products[i];
-        await fetch(
+        let product = data.products[i];
+        console.log(product)
+        await authorize(
           `http://localhost:3000/search?productId=${product.product_id}`
         ).then(async (response) => {
           // console.log(response);
           response = await response.json();
+          console.log(response);
           products.push(response);
-          const productHTML = createProductHTML(response, product);
+          const productHTML = createProductHTML(response[0], product);
           productsContainer.innerHTML += productHTML;
         });
       }
       console.log(data);
       for (let i = 0; i < data.deletedProducts.length; i++) {
         const product = data.deletedProducts[i];
-        await fetch(`http://localhost:3000/search?productId=${product}`).then(
+        await authorize(`http://localhost:3000/search?productId=${product}`).then(
           async (response) => {
             // console.log(response);
             response = await response.json();
             products.push(response);
             console.log(response);
             console.log(product);
-            const productHTML = createDeletedProductHTML(response);
+            const productHTML = createDeletedProductHTML(response[0]);
             deletedProductsContainer.innerHTML += productHTML;
           }
         );

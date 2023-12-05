@@ -9,7 +9,7 @@ button.addEventListener("click", async () => {
   console.log('Button clicked');
 
   // Get the correct body using cart fetch APIs
-  await fetch(`http://localhost:3000/cart?user_id=6545a86825de71eac175dfc7`)
+  await authorize(`http://localhost:3000/cart`)
     .then(async responseGET => {
       console.log("inside responseGET");
       responseGET = await responseGET.json();

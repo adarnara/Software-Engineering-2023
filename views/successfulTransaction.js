@@ -3,7 +3,7 @@
 // const userRepo = require('../Repository/userRepo.js');
 
 // const productRepo = require("../Repository/ProductRepo.js");
-const currMemberEmail = "mm3201@scarletmail.rutgers.edu";
+// const currMemberEmail = "mm3201@scarletmail.rutgers.edu";
 const currMemberAddress = "123 Epic Drive";
 let currMemberCart;
 let buttonCount = 0;
@@ -36,9 +36,10 @@ let cartProductShippingInfo;
 // }
 
 document.addEventListener('DOMContentLoaded', async function() {
-    
+    const currUser = await checkToken()
 
-    await fetch(`http://localhost:3000/cart?user_id=655f9963f9cbae2c21c3bb60`)
+
+    await authorize(`http://localhost:3000/cart`)
     .then(async (response) => {
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -49,7 +50,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 
     let updatedCartProducts;
-    await fetch(`http://localhost:3000/cart?user_id=655f9963f9cbae2c21c3bb60`)
+    await authorize(`http://localhost:3000/cart`)
         .then(async (res) => {
             if (!res.ok) {
                 console.error("Meh");
@@ -62,7 +63,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         })
 
     const updatedShippingProducts = {
-        "email": currMemberEmail,
+        "email": currUser.email,
         "cart_id": currMemberCart._id,
         "updated_cart_products": updatedCartProducts
     };
@@ -80,7 +81,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     console.log(transactionReq);
 
-    const purchasedCartEmptyCart = await fetch(`http://localhost:3000/cart/transaction?cart_id=${currMemberCart._id}`, transactionReq)
+    const purchasedCartEmptyCart = await authorize(`http://localhost:3000/cart/transaction?cart_id=${currMemberCart._id}`, transactionReq)
         .then(async (response) => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
