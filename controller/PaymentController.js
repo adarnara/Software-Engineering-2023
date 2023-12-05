@@ -19,6 +19,7 @@ async function getStripePaymentRedirect(req, res){
             return;
         }
         let items = await getFormatedStripeJSON(json.products);
+
         console.log("L BOZO");
         console.log("LINE ITEMS:");
         console.log(JSON.stringify(items));
@@ -60,7 +61,8 @@ async function getFormatedStripeJSON(array){
                  currency: "usd",
                  product_data:{
                      name: productdata.name
-                 },unit_amount: Math.floor(cents),
+                 },
+                 unit_amount: Math.floor(cents),
                 },
                 quantity: item.quantity
             };
