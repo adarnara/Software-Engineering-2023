@@ -12,12 +12,22 @@ document.addEventListener('DOMContentLoaded', function() {
 function fetchUserInformation() {
     checkToken().then(data => {
         const userId = data.id;
-        authorize(`http://localhost:3000/user/${userId}`)
+
+
+        authorize(`${SERVER_URL}/user/${userId}`)
+
             .then(response => response.json())
             .then(userData => {
                 // Populate the form with retrieved user information
                 populateForm(userData);
             })
+
+            .catch(error => {
+                console.error("Error fetching user information:", error);
+            });
+    }).catch(error => {
+        console.error("Error fetching user ID:", error);
+
     });
 }
 
@@ -32,10 +42,6 @@ function populateForm(userData) {
     document.querySelector("#account-info input[placeholder='Enter Street 3']").value = userData.address?.street3 || "";
     document.querySelector("#state").value = userData.address?.state || "Select a State";
     document.querySelector("#account-info input[placeholder='Enter Postal Code']").value = userData.address?.postalCode || "";
-    document.querySelector("#account-seller textarea[placeholder='Enter your bio']").value = userData.Bio || "";
-    document.querySelector("#account-seller input[placeholder='Enter your company name']").value = userData.Company || "";
-    document.querySelector("#account-seller input[placeholder='Enter your website URL']").value = userData.website || "";
-
     const profilePhotoElement = document.getElementById('profile-photo');
     if (userData.profileImage) {
         profilePhotoElement.src = userData.profileImage;
@@ -44,8 +50,10 @@ function populateForm(userData) {
     }
 }
 
+// In the future, we should use async functions instead of chaining callbacks.
 function saveChanges() {
     assertJwtToken();
+
     authorize("http://localhost:3000/token")
         .then(response => response.json())
         .then(data => {
@@ -122,6 +130,7 @@ function saveChanges() {
             } else {
                 updatedUserData.profileImage = '../public/Images/default-Avatar-2.jpeg';
 
+
                 console.log(updatedUserData);
 
                 authorize(`http://localhost:3000/profile/updateProfile/${userId}`, {
@@ -130,19 +139,45 @@ function saveChanges() {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify(updatedUserData),
+
+                }).then(response => response.json()).then(updatedData => {
+                    console.log("User profile updated:", updatedData);
+                    showSuccessAlert();
+                });
+            };
+
+            reader.readAsDataURL(selectedFile);
+        } else {
+            updatedUserData.profileImage = '../public/Images/default-Avatar-2.jpeg';
+
+            authorize(`http://localhost:3000/profile/updateProfile/${userId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(updatedUserData),
+            })
+                .then(response => response.json())
+                .then(updatedData => {
+                    console.log("User profile updated:", updatedData);
+                    showSuccessAlert();
                 })
-                    .then(response => response.json())
-                    .then(updatedData => {
-                        console.log("User profile updated:", updatedData);
-                        showSuccessAlert();
-                    })
-            }
-        })
+                .catch(error => {
+                    console.error("Error updating user profile:", error);
+                });
+        }
+    })
+
 }
 
+// Note: in the future, use email-typed inputs instead of manual validation.
 function validateEmail(email) {
-    //  email validation, checks for @gmail.com
-    return /\S+@\S+\.\S+/.test(email) && email.includes('@gmail.com');
+    // not sure why the email needed to be `@gmail.com`, changing that.
+
+    // email validation, checks for @gmail.com
+    // return /\S+@\S+\.\S+/.test(email) && email.includes('@gmail.com');
+    
+    return /[A-Za-z0-9_]+@\S+\.\S+/.test(email);
 }
 
 function showAlert(message) {

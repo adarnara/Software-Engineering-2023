@@ -7,6 +7,7 @@ const PORT = process.env.PORT || 3000;
 const userRouter = require("./routes/userRoute");
 const adminRouter = require("./routes/adminRoute");
 const shoppingCartRouter = require('./routes/shoppingCartRoute');
+const sellerRouter = require('./routes/sellerRoute');
 const shippingRouter = require('./routes/shippingRoute');
 const routes = require('./routes/landingRoute');
 const landingRouter = require('./routes/landingRoute');
@@ -17,7 +18,11 @@ const fs = require('fs');
 const path_m = require('path');
 
 const paymentRouter = require("./routes/paymentRoute");
+
+const ticketsRouter = require("./routes/ticketsRoute");
+
 const searchRouter = require("./routes/searchRoute");
+
 
 
 connectDB();
@@ -31,7 +36,7 @@ const server = http.createServer(async (request, response) => {
     const parsedUrl = url.parse(request.url, true);
     const path = parsedUrl.pathname;
     const method = request.method;
-    console.log(`Incoming request: ${request.method} ${request.url}`);
+    // console.log(`Incoming request: ${request.method} ${request.url}`);
 
     // Set the CORS headers to allow all origins
     response.setHeader('Access-Control-Allow-Origin', '*');
@@ -79,19 +84,19 @@ const server = http.createServer(async (request, response) => {
 
     //handling dymanic routes like /user/{id}
     for (const route in userRouter) {
-        console.log(`Checking route: ${route}`);
+        // console.log(`Checking route: ${route}`);
         const methodPart = route.match(/^[A-Z]+/)[0]; // Match the HTTP method part
         const pathPart = route.substring(methodPart.length); // Get the path part
 
-        console.log(methodPart)
-        console.log(pathPart)
+        // console.log(methodPart)
+        // console.log(pathPart)
         if (methodPart !== method) continue;
 
         const params = matchDynamicRoute(pathPart, path);
         if (params) {
             // Found a matching dynamic route
             request.params = params;
-            console.log(params)
+            // console.log(params)
             try {
                 await userRouter[route](request, response);
                 return;
@@ -106,19 +111,19 @@ const server = http.createServer(async (request, response) => {
 
     // handling dynamic routes like /profile/updateProfile/{userId}
     for (const route in profileRouter) {
-        console.log(`Checking route: ${route}`);
+        // console.log(`Checking route: ${route}`);
         const methodPart = route.match(/^[A-Z]+/)[0]; // Match the HTTP method part
         const pathPart = route.substring(methodPart.length); // Get the path part
 
-        console.log(methodPart)
-        console.log(pathPart)
+        // console.log(methodPart)
+        // console.log(pathPart)
         if (methodPart !== method) continue;
 
         const params = matchDynamicRoute(pathPart, path);
         if (params) {
             // Found a matching dynamic route
             request.params = params;
-            console.log(params)
+            // console.log(params)
             try {
                 await profileRouter[route](request, response);
                 return;
@@ -224,21 +229,26 @@ const server = http.createServer(async (request, response) => {
         const adminRouteHandler = adminRouter[routeKey];
         const paymentRouteHandler = paymentRouter[routeKey];
         const shoppingCartRouteHandler = shoppingCartRouter[routeKey];
+        const ticketsRouteHandler = ticketsRouter[routeKey];
         const shippingRouteHandler = shippingRouter[routeKey];
+        const sellerRouteHandler = sellerRouter[routeKey];
+
 
         if (userRouteHandler) {
-
             userRouteHandler(request, response);
-
-
         } else if (adminRouteHandler) {
             adminRouteHandler(request, response);
         } else if (paymentRouteHandler) {
             paymentRouteHandler(request, response);
         } else if (shoppingCartRouteHandler) {
             shoppingCartRouteHandler(request, response);
+        } else if(ticketsRouteHandler){
+            console.log('Ticket router is working.')
+            ticketsRouteHandler(request, response);
         } else if (shippingRouteHandler) {
             shippingRouteHandler(request, response);
+        } else if (sellerRouteHandler){
+            sellerRouteHandler(request, response);
         } else {
             if (!landingRouter[routeKey]) {
                 response.writeHead(404);
@@ -248,8 +258,6 @@ const server = http.createServer(async (request, response) => {
     } catch (error) {
         console.error('Request Handling Error:', error);
     }
-
-
 });
 
 

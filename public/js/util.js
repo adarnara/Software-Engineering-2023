@@ -130,6 +130,7 @@ function removeJwtToken() {
  *     otherwise returns what the fetch request returns.
  */
 async function authorize(url, data = {}) {
+
     if (url.startsWith("/")) {
         // send the request to the correct server by using the
         // SERVER_URL constant
@@ -147,6 +148,7 @@ async function authorize(url, data = {}) {
     }
 
     // Check for token in local storage
+
     const jwt_token = assertJwtToken();
     data.headers["Authorization"] = `Bearer ${jwt_token}`;
 
@@ -157,7 +159,6 @@ async function authorize(url, data = {}) {
             + " file, or remember to use the SERVER_URL constant from this"
             + " file!");
     }
-
     return await fetch(url, data);
 }
 

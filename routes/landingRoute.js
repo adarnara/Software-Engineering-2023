@@ -20,5 +20,10 @@ module.exports = {
             console.error('Route Handler Error:', error);
             res.status(500).json({ message: 'Internal Server Error' });
         }
-    }
+
+    },
+    'GET/search': ProductController.getExactProduct,
+    'GET/search/category': ProductController.getProductsByCategory,
+    'GET/search/categoryLargest': ProductController.getLargestCategoryId,
+
 };

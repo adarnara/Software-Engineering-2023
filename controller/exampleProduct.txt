@@ -1,0 +1,46 @@
+{
+  "_id": "uniqueProductId12345",
+  "name": "Example Product Name",
+  "price": "29.99",
+  "stars": "4.5",
+  "rating_count": "150",
+  "feature_bullets": [
+    "Feature bullet 1",
+    "Feature bullet 2",
+    "Feature bullet 3"
+  ],
+  "images": [
+    {
+      "hiRes": "url_to_high_resolution_image",
+      "thumb": "url_to_thumbnail_image",
+      "large": "url_to_large_image",
+      "main": [
+        {
+          "url": "url_to_main_image",
+          "dimensions": [800, 600]
+        }
+      ],
+      "variant": "image_variant",
+      "lowRes": "url_to_low_resolution_image",
+      "shoppableScene": "url_to_shoppable_scene_image"
+    }
+  ],
+  "variant_data": [
+    "Variant 1",
+    "Variant 2"
+  ],
+  "seller_data": {
+    "Company": "Example Company",
+    "Bio": "Company bio here",
+    "Website": "https://example.com",
+    "Email": "contact@example.com",
+    "Name": "Company Name",
+    "Warehouse_Address": "hard-code-address-here"
+  },
+  "length": "15",
+  "width": "10",
+  "height": "5",
+  "distance_unit": "cm",
+  "weight": "500",
+  "mass_unit": "g"
+}

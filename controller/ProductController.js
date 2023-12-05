@@ -86,6 +86,16 @@ class ProductController {
       res.status(500).json({ message: 'Failed to fetch category.' });
     }
   }
+
+  async getLargestCategoryId(req, res) {
+    try{
+      const category = req.query.category;
+      const largestId = await ProductRepository.getLargestCategoryId(category);
+      res.status(200).json(largestId);
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to fetch largest id in category.' });
+    }
+  }
 }
 
 module.exports = new ProductController();

@@ -6,11 +6,13 @@ const imageSchema = new mongoose.Schema({
 });
 
 const productSchema = new mongoose.Schema({
+
   _id: mongoose.Schema.Types.ObjectId, // Use ObjectId for _id
   category:{
     type:String,
     required: true,
   },
+
   name: {
     type: String,
     required: true,
@@ -43,11 +45,15 @@ const productSchema = new mongoose.Schema({
     firstName: String,
     lastName: String,
     warehouse_address: [{
-      street: String,
+
+      street1: String,
+      street2: String,
+      street3: String,
       city: String,
       state: String,
       zip: String,
-      country: String,
+      country: String,      
+
     }],
   },
   length: String,

@@ -200,6 +200,44 @@
       background-color: transparent;
     }
 
+
+    .redirect-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.redirect-button:hover {
+  background-color: #0056b3;
+  cursor: pointer;
+}
+
+.ticket-section {
+  position: relative;
+  z-index: 9999; /* High z-index to ensure it's on top */
+  padding: 20px;
+  text-align: center; /* Center the button within the section */
+}
+
+.ticket-button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.ticket-button:hover {
+  background-color: #0056b3;
+}
+
   </style>
 </head>
 <body>
@@ -278,6 +316,7 @@
     <img src="/Software-Engineering-2023/public/Images/island.png" class="island">
   </div>
 </section>
+
 
 <script>
   function getCookie(name) {
@@ -371,5 +410,34 @@
 
 <script src="/Software-Engineering-2023/views/landingPageApp.js"></script>
 
+
+<section class="ticket-section">
+  <div>
+    <button id="button2" class="ticket-button">Have experienced issues with a product or seller. Click here.</button>
+  </div>
+</section>
+
+<script>
+  // JavaScript function to navigate to another page
+  function navigateToPage(route) {
+    // Use window.location to navigate to the desired page
+    window.location.href = route;
+  }
+
+    //This is for tickets
+    document.addEventListener("DOMContentLoaded", () => {
+    const button2 = document.getElementById('button2');
+    if (button2) {
+      button2.addEventListener('click', () => {
+        console.log("Button2 clicked!");
+        window.location.href = "http://localhost:5500/views/ticketsPage.html";
+      });
+    } else {
+      console.log("Button2 not found");
+    }
+  });
+</script>
+
+<script src="landingPageApp.js"></script>
 </body>
 </html>
