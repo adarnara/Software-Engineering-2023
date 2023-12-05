@@ -2,7 +2,7 @@ const Ticket = require("../models/ticketModel");
 const mongoose = require('mongoose');
 const middleware = require('../middlewares/authmiddleware.js');
 const ticketsRepository = require('../Repository/ticketsRepo.js');
-const { parseJwtHeader } = require("../middlewares/authmiddleware");
+const userRepo = require("../Repository/userRepo.js");
 
 
 async function getJSON(req) {
@@ -49,20 +49,15 @@ async function createTicket(req, res) {
 
   async function getFirstOpen(req,res){
     try {
-        let userData = parseJwtHeader(req, res);
-    // We continue handling if the JWT was valid.
-    if (userData) {
-        
-        // Set some properties to return.
-        userData["firstName"] = user["firstName"];
-        userData["lastName"] = user["lastName"];
-        userData["email"] = user["email"];
-        userData["role"] = user["role"];
-    }
         const firstOpenTicket = await ticketsRepository.getFirstOpenTicket();
         let user = await userRepo.findUserById(firstOpenTicket.userId);
-        console.log(user);
-        //firstOpenTicket.userData = userData;
+        firstOpenTicket.userData = {
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            role: user.role
+        };
+        console.log(firstOpenTicket);
         res.writeHead(201, { 'Content-Type': 'application/json' }).end(JSON.stringify(firstOpenTicket));
   
     } catch (error) {
