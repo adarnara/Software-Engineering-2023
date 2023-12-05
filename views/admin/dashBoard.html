@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/views/admin/dashBoard.css">
+    <!-- Add any additional CSS or JS links here -->
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="admin-info">
+            <span id="adminName">Loading...</span>
+            <button id="logoutButton">Log Out</button>
+        </div>
+        <h2>Admin Dashboard</h2>
+        <div id="userList">
+            <!-- Users will be dynamically loaded here -->
+        </div>
+        <div id="updateUserModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2>Update User</h2>
+                <input type="text" id="updateFirstName" placeholder="First Name">
+                <input type="text" id="updateLastName" placeholder="Last Name">
+                <input type="email" id="updateEmail" placeholder="Email">
+                <button onclick="submitUserUpdate()">Submit</button>
+            </div>
+        </div>
+    </div>
+    <script src="/views/admin/dashBoard.js"></script> <!-- Ensure this path is correct -->
+</body>
+</html>
+
