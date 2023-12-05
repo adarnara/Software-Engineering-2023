@@ -1,7 +1,11 @@
 const ProductRepository = require('../Repository/ProductRepo');
+const { Client } = require('@elastic/elasticsearch');
+const client = new Client({ node: 'http://localhost:9200' }); // replace with your Elasticsearch server URL
+const natural = require('natural');
+const mongoose = require('mongoose');
+const Product = require('../models/Product');
 
 class ProductController {
-  // ... other methods ...
 
   async getAllProductsForLanding(req, res) {
     try {
@@ -16,9 +20,11 @@ class ProductController {
 
       res.status(200).json(sectionOfShuffledProducts);
     } catch (error) {
+      console.error('Error in getAllProductsForLanding:', error);
       res.status(500).json({ message: "Failed to fetch products for the landing page." });
     }
   }
+
 
   async getExactProduct(req,res) {
     try {
@@ -27,6 +33,45 @@ class ProductController {
       res.status(200).json(product);
     } catch (error) {
       res.status(500).json({ message: 'Failed to fetch specified product.' });
+    }
+  }
+
+  async searchProducts(query, res) {
+    try {
+      // Define the match search query with fuzziness
+      const response = await client.search({
+        index: 'products_index',
+        body: {
+          query: {
+            match: {
+              // Use the match query with fuzziness to search for similar terms in the "name" field
+              "name": {
+                query: query,
+                fuzziness: 'AUTO', // You can adjust the fuzziness level, e.g., '1', '2', etc.
+              },
+            },
+          },
+        },
+      });
+
+      // Log the complete Elasticsearch response
+      console.log('Elasticsearch Response:', response);
+
+      // Extract and return the hits (matching documents)
+      const hits = response.hits.hits || [];
+
+      if (hits.length > 0) {
+        // If hits are found, send a 200 response
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(hits));
+      } else {
+        // If no hits are found, send an error response
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'No matching products found.' }));
+      }
+    } catch (error) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Internal server error.' }));
     }
   }
 
@@ -39,6 +84,16 @@ class ProductController {
       res.status(200).json(products);
     } catch (error) {
       res.status(500).json({ message: 'Failed to fetch category.' });
+    }
+  }
+
+  async getLargestCategoryId(req, res) {
+    try{
+      const category = req.query.category;
+      const largestId = await ProductRepository.getLargestCategoryId(category);
+      res.status(200).json(largestId);
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to fetch largest id in category.' });
     }
   }
 }

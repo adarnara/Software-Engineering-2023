@@ -6,7 +6,7 @@ const cartProductCollection = require("../models/cartProduct");
 const productCollection = require("../models/Product");
 const usersCollection = require("../models/users.js");
 const cartRepo = require("../Repository/cartRepo.js");
-let shippo = require('shippo')('shippo_test_98bdae79698aa6f42363e805399343db9b796058');
+let shippo = require('shippo')(process.env.SHIPPO_TEST_KEY);
 
 
 class Shipping {

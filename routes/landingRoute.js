@@ -1,10 +1,10 @@
 const ProductController = require('../controller/ProductController');
-const ChatbotController = require('../controller/chatbotCtrl');
-const ShoppingCartController = require('../controller/shoppingCartController');
+const ChatbotController = require("../controller/chatbotCtrl");
 
 module.exports = {
     'GET/': ProductController.getAllProductsForLanding,
     'POST/chatbot': async (req, res) => {
+        console.log("WORKKKKK");
         try {
             let userInput = req.body.input;
             if (!userInput) {
@@ -20,7 +20,10 @@ module.exports = {
             console.error('Route Handler Error:', error);
             res.status(500).json({ message: 'Internal Server Error' });
         }
+
     },
     'GET/search': ProductController.getExactProduct,
     'GET/search/category': ProductController.getProductsByCategory,
+    'GET/search/categoryLargest': ProductController.getLargestCategoryId,
+
 };
