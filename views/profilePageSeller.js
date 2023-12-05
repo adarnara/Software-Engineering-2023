@@ -128,26 +128,6 @@ function saveChanges() {
 
                 reader.readAsDataURL(selectedFile);
             } else {
-                updatedUserData.profileImage = '../public/Images/default-Avatar-2.jpeg';
-
-
-                console.log(updatedUserData);
-
-                authorize(`http://localhost:3000/profile/updateProfile/${userId}`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(updatedUserData),
-
-                }).then(response => response.json()).then(updatedData => {
-                    console.log("User profile updated:", updatedData);
-                    showSuccessAlert();
-                });
-            };
-
-            reader.readAsDataURL(selectedFile);
-        } else {
             updatedUserData.profileImage = '../public/Images/default-Avatar-2.jpeg';
 
             authorize(`http://localhost:3000/profile/updateProfile/${userId}`, {

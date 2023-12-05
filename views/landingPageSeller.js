@@ -206,7 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const selectedProductType = document.getElementById('productType').value;
     
         try {
-            const response = await fetch(`http://localhost:3000/search/categoryLargest?category=${selectedProductType}`); //gets the id of the last product in the categoru
+            const response = await authorize(`http://localhost:3000/search/categoryLargest?category=${selectedProductType}`); //gets the id of the last product in the categoru
             const largestId = await response.json() + 1; //add one to largest id to get new unique id
             const fullId = selectedProductType + largestId; //combine category name and id number
 

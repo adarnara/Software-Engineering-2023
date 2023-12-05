@@ -67,6 +67,8 @@ class SellerController {
                 // && (user["email"] != null)
                 // && (user["firstName"] != null)
                 // && (user["lastName"] != null)){
+                    requestBody["_id"] = user["Company"];
+
                     requestBody["seller_data"]["company"] = user["Company"];
                     requestBody["seller_data"]["bio"] = user["Bio"];
                     requestBody["seller_data"]["website"] = user["website"];
