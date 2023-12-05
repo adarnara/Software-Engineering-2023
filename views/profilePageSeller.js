@@ -13,17 +13,21 @@ function fetchUserInformation() {
     checkToken().then(data => {
         const userId = data.id;
 
+
         authorize(`${SERVER_URL}/user/${userId}`)
+
             .then(response => response.json())
             .then(userData => {
                 // Populate the form with retrieved user information
                 populateForm(userData);
             })
+
             .catch(error => {
                 console.error("Error fetching user information:", error);
             });
     }).catch(error => {
         console.error("Error fetching user ID:", error);
+
     });
 }
 
@@ -49,52 +53,83 @@ function populateForm(userData) {
 // In the future, we should use async functions instead of chaining callbacks.
 function saveChanges() {
     assertJwtToken();
-    checkToken().then(data => {
-        const userId = data.id;
 
-        // In the future, these should all have their own IDs instead of janky CSS selectors.
-        const firstName = document.querySelector("#account-general input[placeholder='Enter First Name']").value;
-        const lastName = document.querySelector("#account-general input[placeholder='Enter Last Name']").value;
-        const email = document.querySelector("#account-general input[placeholder='Enter Email']").value;
-        const dateOfBirth = document.querySelector("#date-of-birth").value;
-        const phoneNumber = document.querySelector("#phone-number").value;
+    authorize("http://localhost:3000/token")
+        .then(response => response.json())
+        .then(data => {
+            const userId = data.id;
 
-        const street1 = document.querySelector("#account-info input[placeholder='Enter Street 1']").value;
-        const street2 = document.querySelector("#account-info input[placeholder='Enter Street 2']").value;
-        const street3 = document.querySelector("#account-info input[placeholder='Enter Street 3']").value;
-        const state = document.querySelector("#state").value;
-        const postalCode = document.querySelector("#account-info input[placeholder='Enter Postal Code']").value;
+            const firstName = document.querySelector("#account-general input[placeholder='Enter First Name']").value;
+            const lastName = document.querySelector("#account-general input[placeholder='Enter Last Name']").value;
+            const email = document.querySelector("#account-general input[placeholder='Enter Email']").value;
+            const dateOfBirth = document.querySelector("#date-of-birth").value;
+            const phoneNumber = document.querySelector("#phone-number").value;
+            const bio = document.querySelector("#account-seller textarea[placeholder='Enter your bio']").value;
+            const company = document.querySelector("#account-seller input[placeholder='Enter your company name']").value;
+            const website = document.querySelector("#account-seller input[placeholder='Enter your website URL']").value;
+            const street1 = document.querySelector("#account-info input[placeholder='Enter Street 1']").value;
+            const street2 = document.querySelector("#account-info input[placeholder='Enter Street 2']").value;
+            const street3 = document.querySelector("#account-info input[placeholder='Enter Street 3']").value;
+            const state = document.querySelector("#state").value;
+            const postalCode = document.querySelector("#account-info input[placeholder='Enter Postal Code']").value;
 
-        if (!validateEmail(email)) {
-            showAlert("Please enter a valid email address (e.g., user@gmail.com)");
-            return;
-        }
+            if (!validateEmail(email)) {
+                showAlert("Please enter a valid email address (e.g., user@gmail.com)");
+                return;
+            }
 
-        const updatedUserData = {};
+            const updatedUserData = {};
 
-        if (firstName !== null && firstName !== "") updatedUserData.firstName = firstName;
-        if (lastName !== null && lastName !== "") updatedUserData.lastName = lastName;
-        if (email !== null && email !== "") updatedUserData.email = email;
-        if (dateOfBirth !== null && dateOfBirth !== "") updatedUserData.dateOfBirth = dateOfBirth;
-        if (phoneNumber !== null && phoneNumber !== "") updatedUserData.phoneNumber = phoneNumber;
+            if (firstName !== null && firstName !== "") updatedUserData.firstName = firstName;
+            if (lastName !== null && lastName !== "") updatedUserData.lastName = lastName;
+            if (email !== null && email !== "") updatedUserData.email = email;
+            if (dateOfBirth !== null && dateOfBirth !== "") updatedUserData.dateOfBirth = dateOfBirth;
+            if (phoneNumber !== null && phoneNumber !== "") updatedUserData.phoneNumber = phoneNumber;
+            if (bio !== null && bio !== "") updatedUserData.Bio = bio;
+            if (company !== null && company !== "") updatedUserData.Company = company;
+            if (website !== null && website !== "") updatedUserData.website = website;
 
-        if ((street1 !== null && street1 !== "") || (street2 !== null && street2 !== "") || (street3 !== null && street3 !== "") || (state !== null && state !== "") || (postalCode !== null && postalCode !== "")) {
-            updatedUserData.address = {
-                street1: street1,
-                street2: street2,
-                street3: street3,
-                state: state,
-                postalCode: postalCode,
-            };
-        }
-        const profilePhotoInput = document.getElementById('profile-photo-input');
-        const selectedFile = profilePhotoInput.files[0];
+            if ((street1 !== null && street1 !== "") || (street2 !== null && street2 !== "") || (street3 !== null && street3 !== "") || (state !== null && state !== "") || (postalCode !== null && postalCode !== "")) {
+                updatedUserData.address = {
+                    street1: street1,
+                    street2: street2,
+                    street3: street3,
+                    state: state,
+                    postalCode: postalCode,
+                };
+            }
+            const profilePhotoInput = document.getElementById('profile-photo-input');
+            const selectedFile = profilePhotoInput.files[0];
 
-        if (selectedFile) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const base64Image = e.target.result;
-                updatedUserData.profileImage = base64Image;
+            if (selectedFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Image = e.target.result;
+                    updatedUserData.profileImage = base64Image;
+
+                    console.log(updatedUserData);
+
+                    authorize(`http://localhost:3000/profile/updateProfile/${userId}`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(updatedUserData),
+                    })
+                        .then(response => response.json())
+                        .then(updatedData => {
+                            console.log("User profile updated:", updatedData);
+                            showSuccessAlert();
+                        })
+                        .catch(error => {
+                            console.error("Error updating user profile:", error);
+                        });
+                };
+
+                reader.readAsDataURL(selectedFile);
+            } else {
+                updatedUserData.profileImage = '../public/Images/default-Avatar-2.jpeg';
+
 
                 console.log(updatedUserData);
 
@@ -104,6 +139,7 @@ function saveChanges() {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify(updatedUserData),
+
                 }).then(response => response.json()).then(updatedData => {
                     console.log("User profile updated:", updatedData);
                     showSuccessAlert();
@@ -131,6 +167,7 @@ function saveChanges() {
                 });
         }
     })
+
 }
 
 // Note: in the future, use email-typed inputs instead of manual validation.

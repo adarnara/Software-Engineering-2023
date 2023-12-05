@@ -6,7 +6,13 @@ const imageSchema = new mongoose.Schema({
 });
 
 const productSchema = new mongoose.Schema({
-  category: String,
+
+  _id: mongoose.Schema.Types.ObjectId, // Use ObjectId for _id
+  category:{
+    type:String,
+    required: true,
+  },
+
   name: {
     type: String,
     required: true,
@@ -39,6 +45,7 @@ const productSchema = new mongoose.Schema({
     firstName: String,
     lastName: String,
     warehouse_address: [{
+
       street1: String,
       street2: String,
       street3: String,
@@ -46,6 +53,7 @@ const productSchema = new mongoose.Schema({
       state: String,
       zip: String,
       country: String,      
+
     }],
   },
   length: String,
@@ -56,14 +64,12 @@ const productSchema = new mongoose.Schema({
   mass_unit: String,
 });
 
-
-
 const Product = mongoose.model('Product', productSchema);
 
 Product.createWithCustomId = function (id, productData, callback) {
-  const customProductData = { _id: id, ...productData };
+  const customProductData = { ...productData }; // Remove _id assignment here
+  customProductData._id = mongoose.Types.ObjectId(id); // Assign ObjectId here
   return this.create(customProductData, callback);
 };
 
 module.exports = Product;
-

@@ -47,7 +47,7 @@ function parseJwtHeader(request, response) {
                 // https://www.rfc-editor.org/rfc/rfc6750#section-3
                 // and somewhere else probably
                 "WWW-Authenticate",
-                `realm="example"\nerror="invalid_token"\nerror_description="${errorMsg}"`
+                `realm="example", error="invalid_token", error_description="${errorMsg}"`
             );
             response.end(JSON.stringify({ message: errorMsg }));
             return null;
