@@ -180,8 +180,8 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="product-image">
                 <img src="${product.images[0].large}" alt="${product.name}" />
                 <div class="image-navigation">
-                    <button onclick="changeImage('${product._id}', -1, this)">Previous</button>
-                    <button onclick="changeImage('${product._id}', 1, this)">Next</button>
+                    <button onclick="changeImage('${product.category}', -1, this)">Previous</button>
+                    <button onclick="changeImage('${product.category}', 1, this)">Next</button>
                 </div>
             </div>
             <div class="product-info">
@@ -195,10 +195,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 ${colorsHTML}
             </div>
             <div class="add-to-cart-button">
-                <button class= "add-button" onclick="addProductToCart('${product._id}')">Add to Cart</button>
+                <button class= "add-button" onclick="addProductToCart('${product.category}')">Add to Cart</button>
             </div>
             <div class="number-control">
-                <input type="number" id='${product._id}' onclick="checkPos(this)" class="display-number" value="1">
+                <input type="number" id='${product.category}' onclick="checkPos(this)" class="display-number" value="1">
             </div>
         </div>
     `;
@@ -225,11 +225,8 @@ document.addEventListener("DOMContentLoaded", () => {
     window.changeImage = changeImage;
     window.addProductToCart = addProductToCart;
 
-    const currMemberEmail = "mm3201@scarletmail.rutgers.edu";
-    function addProductToCart(product) {
-
+    async function addProductToCart(product) {
         let quantity = document.getElementById(product).value;
-
         console.log(quantity);
         if (
             isNaN(parseInt(quantity)) ||
@@ -238,14 +235,13 @@ document.addEventListener("DOMContentLoaded", () => {
             quantity = 1;
         } else {
             console.log("Sending")
-            fetch(`http://localhost:3000/cart/add?user_id=655f9963f9cbae2c21c3bb60`, {
+            authorize(`http://localhost:3000/cart/add`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     quantity: parseInt(quantity),
-                    email: currMemberEmail,
                     product_id: product
                 })
             }).then(res => console.log(res))

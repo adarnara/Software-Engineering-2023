@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     cartProductSet = new Set();
     cartProductShippingInfo = {};
 
-    await fetch(`http://localhost:3000/cart?user_id=655f9963f9cbae2c21c3bb60`)
+    await authorize(`http://localhost:3000/cart`)
         .then(async (response) => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -111,8 +111,9 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     cartPrice = currMemberCart.totalPrice;
     numProducts = currMemberCart.products.length;
-
+        console.log(currMemberCart.products)
     for (let product of currMemberCart.products) {
+        console.log(product);
         cartProductShippingInfo[product.product_id] = {
             "chosen_rate": null,
             "from": null,
@@ -121,6 +122,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             "best_value_rate": null,
             "cheapest_rate": null
         };
+        console.log(cartProductShippingInfo[product.product_id])
         cartProductSet.add(product.product_id);
     }
 
@@ -211,7 +213,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 
         try {
-            await fetch('http://localhost:3000/cart/ship', req)
+            await authorize('http://localhost:3000/cart/ship', req)
                 .then(async (res) => {
                     if (res.status == 422) {
                         console.log("HI");
@@ -326,20 +328,20 @@ document.addEventListener('DOMContentLoaded', async function () {
 
                         // get quantity of the product
                         let quantity;
-                        await fetch(`http://localhost:3000/cart/product?user_id=655f9963f9cbae2c21c3bb60&product_id=${product.product_id}`)
+                        await authorize(`http://localhost:3000/cart/product?product_id=${product.product_id}`)
                             .then(async (response) => {
                                 response = await response.json();
                                 quantity = response.quantity;
                         });
                         
                         
-                        await fetch(
+                        await authorize(
                             `http://localhost:3000/search?productId=${product.product_id}`
                           ).then(async (response) => {
                             // console.log(response);
                             response = await response.json();
                             products.push(response);
-                            const productHTML = createProductHTML(response, product, etaArr, shipArr, quantity);
+                            const productHTML = createProductHTML(response[0], product, etaArr, shipArr, quantity);
                             prods.innerHTML += productHTML;
                           });
 
@@ -457,7 +459,7 @@ function createProductHTML(product, currCartProduct, etaArr, shippingPriceArr, q
     }
 
     console.log("*****!*!*!");
-    console.log(product._id);
+    console.log(product.category);
 
     const productHTML = `
           <div class="product-container">
@@ -474,8 +476,8 @@ function createProductHTML(product, currCartProduct, etaArr, shippingPriceArr, q
                   <span class="display-number">${
                     quantity
                   }     </span>
-                  <button id="fastest_btn_${product._id}" class= "option-button" onclick="toggleShipmentOption('${
-                    product._id
+                  <button id="fastest_btn_${product.category}" class= "option-button" onclick="toggleShipmentOption('${
+                    product.category
                   }','${
                     shippingPriceArr[0]
                   }','${
@@ -488,8 +490,8 @@ function createProductHTML(product, currCartProduct, etaArr, shippingPriceArr, q
                         <span class="extra-cost"> + $${shippingPriceArr[0]}</span>
                     </div></button>
 
-                  <button id="best_value_btn_${product._id}" class= "option-button" onclick="toggleShipmentOption('${
-                    product._id
+                  <button id="best_value_btn_${product.category}" class= "option-button" onclick="toggleShipmentOption('${
+                    product.category
                   }','${
                     shippingPriceArr[0]
                   }','${
@@ -502,8 +504,8 @@ function createProductHTML(product, currCartProduct, etaArr, shippingPriceArr, q
                         <span class="extra-cost"> + $${shippingPriceArr[1]}</span>
                     </div></button>
 
-                    <button id="cheapest_btn_${product._id}" class= "option-button" onclick="toggleShipmentOption('${
-                        product._id
+                    <button id="cheapest_btn_${product.category}" class= "option-button" onclick="toggleShipmentOption('${
+                        product.category
                       }','${
                         shippingPriceArr[0]
                       }','${
@@ -641,6 +643,7 @@ async function confirmOrder() {
                         console.log("prodID = " + prodID);
                         console.log("matchOption = " + matchOption[1]);
                         console.log(" ");
+                        console.log(prodID)
                         if (option === 'fastest') {
                             cartProductShippingInfo[prodID].chosen_rate = "fastest";
                         } else if (option === 'best_value') {
@@ -672,7 +675,7 @@ async function confirmOrder() {
         let purchasedCart;
         let emptyCart;
         // fetch to set shipping Prices, cart total price, to/from (PATCH)
-        const updatedShippingInfo = await fetch(`http://localhost:3000/cart/info-confirmation?cart_id=${currMemberCart._id}`, req)
+        const updatedShippingInfo = await authorize(`http://localhost:3000/cart/info-confirmation?cart_id=${currMemberCart._id}`, req)
             .then(async (res) => {
                 if (!res.ok) {
                     throw new Error(`HTTP error! Status: ${res.status}`);
@@ -808,7 +811,18 @@ async function handleCheckout() {
     //     "__v": cartDetails.__v,
     //     "totalPrice": cartDetails.totalPrice
     //   };
-      const checkoutResponse = await fetch("http://localhost:3000/checkout", {
+
+    await authorize(`http://localhost:3000/cart`)
+    .then(async (response) => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        currMemberCart = await response.json();
+        return;
+    });
+
+      const checkoutResponse = await authorize("http://localhost:3000/checkout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -838,7 +852,7 @@ function refreshPrice(price) {
 function changeImage(productId, offset, button) {
     const productContainer = button.closest(".product-container");
     const productImage = productContainer.querySelector(".product-image img");
-    const product = products.find((p) => p._id === productId);
+    const product = products.find((p) => p.category === productId);
 
     let currentImageIndex = product.images.findIndex(
       (image) => image.large === productImage.src

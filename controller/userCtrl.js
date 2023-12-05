@@ -4,6 +4,7 @@ const { parseJwtHeader } = require("../middlewares/authmiddleware");
 const url = require('url');
 const fs = require('fs');
 const cartRepo = require('../Repository/cartRepo');
+const { isAdminAuthenticated } = require('../middlewares/adminAuth');
 
 const createUser = async (path, req, res) => {
     const email = req.body.email;
@@ -174,6 +175,12 @@ async function login(path, request, response) {
 
 }
 async function allUsers(request, response) {
+    const isAuthenticated = await isAdminAuthenticated(request);
+    if (!isAuthenticated) {
+        response.writeHead(401, { 'Content-Type': 'application/json' });
+        response.end(JSON.stringify({ message: 'Unauthorized' }));
+        return;
+    }
     try {
         getAllUsers(request, response)
     }
@@ -184,6 +191,12 @@ async function allUsers(request, response) {
 }
 
 const updateUser = async (request, response) => {
+    const isAuthenticated = await isAdminAuthenticated(request);
+    if (!isAuthenticated) {
+        response.writeHead(401, { 'Content-Type': 'application/json' });
+        response.end(JSON.stringify({ message: 'Unauthorized' }));
+        return;
+    }
     const { id } = request.params
     const putData = await getPostData(request);
     const userUpdateData = JSON.parse(putData);
@@ -199,6 +212,12 @@ const updateUser = async (request, response) => {
 };
 
 async function removeUser(request, response) {
+    const isAuthenticated = await isAdminAuthenticated(request);
+    if (!isAuthenticated) {
+        response.writeHead(401, { 'Content-Type': 'application/json' });
+        response.end(JSON.stringify({ message: 'Unauthorized' }));
+        return;
+    }
     const { id } = request.params;
     console.log(id)
     console.log("hello")
@@ -219,6 +238,12 @@ async function removeUser(request, response) {
 }
 
 const getAUser = async (request, response) => {
+    const isAuthenticated = await isAdminAuthenticated(request);
+    if (!isAuthenticated) {
+        response.writeHead(401, { 'Content-Type': 'application/json' });
+        response.end(JSON.stringify({ message: 'Unauthorized' }));
+        return;
+    }
     const { id } = request.params;
     try {
         const user = await userRepo.findUserById(id);

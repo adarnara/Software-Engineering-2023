@@ -10,6 +10,10 @@ class adminRepository {
     async findAllAdmins(){
       return await admin.find();
     }
+    //find admin by id
+    async findAdminById(id){
+      return await admin.findById(id);
+    }
 }
 
 module.exports = new adminRepository();

@@ -18,12 +18,22 @@ class ProductRepository {
 
   async getProductById(id) {
     const product = await Product.find({"category": id})
-
     if(!product) {
       throw new Error('Product not found');
     }
 
     return product;
+  }
+
+  // Gets the product based on the internal category name
+  // Only gets fields specified by the fieldstring
+  async getProductByInternalName(intername, fieldstr){
+    const product = await Product.findOne({"category": intername}, fieldstr);
+    let flag = true
+    if(!product){
+      flag = false
+    }
+    return {doesExist: flag, data: product};
   }
 
   async getProductsByCategory(category, page, pageSize) {

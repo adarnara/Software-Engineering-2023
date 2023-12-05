@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Registration</title>
+    <link rel="stylesheet" href="/views/admin/registration.css"> <!-- Link to your CSS file -->
+    <!-- Add any additional CSS or JS links here -->
+</head>
+<body>
+    <div class="login-container">
+        <h2>Admin Registration</h2>
+        <form id="adminRegistrationForm">
+            <div class="form-group">
+                <label for="newAdminName">Admin Name:</label>
+                <input type="text" id="newAdminName" name="newAdminName" required>
+            </div>
+            <div class="form-group">
+                <label for="newAdminKey">Admin Key:</label>
+                <input type="password" id="newAdminKey" name="newAdminKey" required>
+            </div>
+            <button type="submit">Register</button>
+        </form>
+    </div>
+    <script src="/views/admin/registration.js"></script> <!-- Link to your JavaScript file for handling registration -->
+</body>
+</html>

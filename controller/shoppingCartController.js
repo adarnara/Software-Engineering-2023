@@ -18,6 +18,16 @@ const { parseJwtHeader } = require("../middlewares/authmiddleware.js");
 
 const parseProductPrice = /\$([\d.]+)/;
 
+
+async function getID(req, res)
+{
+  return new Promise(async (resolve) => {
+    let userData = parseJwtHeader(req, res);
+    if (userData) resolve(userData["id"]);
+    else resolve(null);
+    resolve(userData['id']);
+  })
+}
 async function changeProductQuantityFromCatalog(
   parsedRequestBody,
   res,
@@ -46,11 +56,13 @@ async function changeProductQuantityFromCatalog(
       }
 
       // get current price of product and update totalPrice of cart as well
-      const productInfo = await productRepo.getProductById(
+      let productInfo = await productRepo.getProductById(
         parsedRequestBody.product_id
       );
+      productInfo = productInfo[0];
 
       let productPrice = productInfo.price;
+      console.log("\n\n\n\n\nHi\n\n\n\n")
       productPrice = parseFloat(productPrice.match(parseProductPrice)[1]);
 
       const updatedPOSTproduct =
@@ -98,32 +110,23 @@ async function changeProductQuantityFromCart(req, res) {
     const parsedUrl = url.parse(req.url, true);
     const queryParams = parsedUrl.query;
 
+
     // ensure that only one query parameter (the user_id)
-    if (Object.keys(queryParams).length !== 1) {
+    if (Object.keys(queryParams).length !== 0) {
       resCode = 400;
       resMsg =
-        "Bad Request: Please Ensure only one query param for user_id is specified";
+        "Bad Request: Please ensure there are no query parameters in the URI";
       resType = "text/plain";
       res.writeHead(resCode, { "Content-Type": resType });
       res.end(resMsg);
       resolve(resMsg);
       return;
     }
-    if (!("user_id" in queryParams)) {
-      resCode = 400;
-      resType = "text/plain";
-      resMsg = "Bad Request: Single query param must have the key 'user_id'";
-      res.writeHead(resCode, { "Content-Type": resType });
-      res.end(resMsg);
-      resolve(resMsg);
-      return;
-    }
-    const user_id = queryParams["user_id"];
+    const user_id = await getID(req, res);
 
+    const currMember = await cartRepo.getMember(user_id);
     try {
-      await req.on("data", (chunk) => {
-        requestBody += chunk;
-      });
+      requestBody = await handleData(req)
       parsedRequestBody = JSON.parse(requestBody);
     } catch (err) {
       console.error(err);
@@ -136,35 +139,32 @@ async function changeProductQuantityFromCart(req, res) {
     ) {
       const reqBodyKeys = Object.keys(parsedRequestBody);
       // Check it has exactly three properties
-      if (reqBodyKeys.length !== 3) {
+      if (reqBodyKeys.length !== 2) {
         resCode = 400;
         resMsg =
-          "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String, email: String}";
+          "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String}";
         resType = "text/plain";
       } else {
         if (
           !reqBodyKeys.includes("quantity") ||
-          !reqBodyKeys.includes("product_id") ||
-          !reqBodyKeys.includes("email")
+          !reqBodyKeys.includes("product_id") 
         ) {
           resCode = 400;
           resMsg =
-            "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String, email: String}";
+            "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String}";
           resType = "text/plain";
         } else {
           if (
             typeof parsedRequestBody.quantity !== "number" ||
-            typeof parsedRequestBody.product_id !== "string" ||
-            typeof parsedRequestBody.email !== "string"
+            typeof parsedRequestBody.product_id !== "string"
           ) {
             resCode = 400;
             resMsg =
-              "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String, email: String}";
+              "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String}";
             resType = "text/plain";
           } else if (
             parsedRequestBody.quantity == null ||
-            parsedRequestBody.product_id == null ||
-            parsedRequestBody.email == null
+            parsedRequestBody.product_id == null
           ) {
             resCode = 400;
             resMsg =
@@ -175,7 +175,7 @@ async function changeProductQuantityFromCart(req, res) {
             // Get JSON body
             const quantity = parsedRequestBody.quantity;
             const product_id = parsedRequestBody.product_id;
-            const email = parsedRequestBody.email;
+            const email = currMember.email;
 
             // Get query params in the URI (should just be user_id)
 
@@ -220,10 +220,12 @@ async function changeProductQuantityFromCart(req, res) {
                 }
               }
 
-              const productInfo = await productRepo.getProductById(
-                parsedRequestBody.product_id
+              let productInfo = await productRepo.getProductById(
+                product_id
               );
+              productInfo = productInfo[0];
               let productPrice = productInfo.price;
+              console.log("\n\n\n\n\nHi\n\n\n\n")
               productPrice = parseFloat(
                 productPrice.match(parseProductPrice)[1]
               );
@@ -244,7 +246,7 @@ async function changeProductQuantityFromCart(req, res) {
                 parsedRequestBody.product_id,
                 currMemberCart._id
               );
-              resCode = 200;
+              resCode = 202;
               resMsg = JSON.stringify(updatedProductInfo);
               resType = "application/json";
             } catch (err) {
@@ -253,7 +255,7 @@ async function changeProductQuantityFromCart(req, res) {
               resCode = 500;
               resType = "text/plain";
             }
-            resCode = 200;
+            resCode = 202;
             resType = "application/json";
           }
         }
@@ -302,9 +304,7 @@ async function addProductToCart(req, res) {
     // Reg Exp test for URI to correct resource *
 
     try {
-      await req.on("data", (chunk) => {
-        requestBody += chunk;
-      });
+      requestBody = await handleData(req);
       parsedRequestBody = JSON.parse(requestBody);
     } catch (err) {
       console.error(err);
@@ -318,10 +318,12 @@ async function addProductToCart(req, res) {
     ) {
       const reqBodyKeys = Object.keys(parsedRequestBody);
       // Check it has exactly three properties
-      if (reqBodyKeys.length !== 3) {
+      const user_id = await getID(req, res);
+      const currMember = await cartRepo.getMember(user_id);
+      if (reqBodyKeys.length !== 2) {
         resCode = 400;
         resMsg =
-          "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String, email: String}";
+          "Bad Request: Please ensure request body has two keys {quantity: Number, product_id: String}";
         resType = "text/plain";
         res.writeHead(resCode, { "Content-Type": resType });
         res.end(resMsg);
@@ -330,12 +332,11 @@ async function addProductToCart(req, res) {
       } else {
         if (
           !reqBodyKeys.includes("quantity") ||
-          !reqBodyKeys.includes("product_id") ||
-          !reqBodyKeys.includes("email")
+          !reqBodyKeys.includes("product_id")
         ) {
           resCode = 400;
           resMsg =
-            "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String, email: String}";
+            "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String}";
           resType = "text/plain";
           res.writeHead(resCode, { "Content-Type": resType });
           res.end(resMsg);
@@ -344,12 +345,11 @@ async function addProductToCart(req, res) {
         } else {
           if (
             typeof parsedRequestBody.quantity !== "number" ||
-            typeof parsedRequestBody.product_id !== "string" ||
-            typeof parsedRequestBody.email !== "string"
+            typeof parsedRequestBody.product_id !== "string"
           ) {
             resCode = 400;
             resMsg =
-              "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String, email: String}";
+              "Bad Request: Please ensure request body has two keys {quantity: Number, product_id: String}";
             resType = "text/plain";
             res.writeHead(resCode, { "Content-Type": resType });
             res.end(resMsg);
@@ -358,12 +358,11 @@ async function addProductToCart(req, res) {
           } // Reaching this else means the request body is good to go
           else if (
             parsedRequestBody.quantity == null ||
-            parsedRequestBody.product_id == null ||
-            parsedRequestBody.email == null
+            parsedRequestBody.product_id == null 
           ) {
             resCode = 400;
             resMsg =
-              "Bad Request: Please ensure request body has three keys {quantity: Number, product_id: String, email: String} that are not null";
+              "Bad Request: Please ensure request body has two keys {quantity: Number, product_id: String} that are not null";
             resType = "text/plain";
             res.writeHead(resCode, { "Content-Type": resType });
             res.end(resMsg);
@@ -372,13 +371,13 @@ async function addProductToCart(req, res) {
           } // Reaching this else means the request body is good to go
           else {
             const currMemberCart = await cartRepo.getCurrCart(
-              parsedRequestBody.email
+              currMember.email
             );
 
             const quantity = parsedRequestBody.quantity;
             const product_id = parsedRequestBody.product_id;
-            const email = parsedRequestBody.email;
-
+            const email = currMember.email;
+              console.log(product_id);
             const existingProduct = await cartRepo.getCurrProduct(
               product_id,
               currMemberCart._id
@@ -401,7 +400,7 @@ async function addProductToCart(req, res) {
               } else {
                 resType = "text/plain";
               }
-              resCode = 200;
+              resCode = 201;
               res.writeHead(resCode, { "Content-Type": resType });
               res.end(resMsg);
               resolve(resMsg);
@@ -435,11 +434,14 @@ async function addProductToCart(req, res) {
 
 
 
-
-                const productInfo = await productRepo.getProductById(
+                  console.log(product_id)
+                let productInfo = await productRepo.getProductById(
                   product_id
                 );
+                productInfo = productInfo[0];
                 let productPrice = productInfo.price;
+                console.log(productInfo.price)
+                console.log("\n\n\n\nooga\n\n\n")
                 productPrice = parseFloat(
                   productPrice.match(parseProductPrice)[1]
                 );
@@ -451,7 +453,7 @@ async function addProductToCart(req, res) {
                     productPrice * parseFloat(quantity)
                 );
 
-                resCode = 200;
+                resCode = 201;
                 resMsg = JSON.stringify(savedNewProduct);
                 resType = "application/json";
                 res.writeHead(resCode, { "Content-Type": resType });
@@ -495,36 +497,26 @@ async function getProducts(req, res) {
     const queryParams = parsedUrl.query;
 
     // ensure that only one query parameter (the user_id)
-    if (Object.keys(queryParams).length !== 1) {
+    if (Object.keys(queryParams).length !== 0) {
       resCode = 400;
       resMsg =
-        "Bad Request: Please Ensure exactly one query params for user_id is specified";
+        "Bad Request: Please ensure there are no query parameters in the URI";
       resType = "text/plain";
       res.writeHead(resCode, { "Content-Type": resType });
       res.end(resMsg);
       resolve(resMsg);
       return;
     }
-    if (!("user_id" in queryParams)) {
-      resCode = 400;
-      resMsg =
-        "Bad Request: Must have exactly one query param with key 'user_id'";
-      resType = "text/plain";
-      res.writeHead(resCode, { "Content-Type": resType });
-      res.end(resMsg);
-      resolve(resMsg);
-      return;
-    }
-    const currUser = queryParams["user_id"];
 
     try {
-      const currMember = await cartRepo.getMember(currUser);
+      const user_id = await getID(req, res);
+      const currMember = await cartRepo.getMember(user_id);
 
       const currMemberCart = await cartRepo.getCurrCart(currMember.email);
 
       if (currMemberCart == null) {
         //No items found in shopping cart
-        resCode = 200;
+        resCode = 204;
         resType = "text/plain";
         resMsg = "There are no items in your shopping cart!";
       } else {
@@ -565,11 +557,11 @@ async function removeProductFromCart(req, res) {
       const queryParams = parsedUrl.query;
 
       // ensure that only one query parameter (the user_id)
-      if (Object.keys(queryParams).length !== 2) {
+      if (Object.keys(queryParams).length !== 1) {
         resCode = 400;
         resMsg = JSON.stringify({
           message:
-            "Bad Request: Please Ensure exactly two query params for user_id and product_id are specified",
+            "Bad Request: Please ensure exactly 1 query param for product_id is specified",
         });
         resType = "application/json";
         res.writeHead(resCode, { "Content-Type": resType });
@@ -577,17 +569,17 @@ async function removeProductFromCart(req, res) {
         resolve(resMsg);
         return;
       }
-      if (!("user_id" in queryParams) || !("product_id" in queryParams)) {
+      if (!("product_id" in queryParams)) {
         resCode = 400;
         resMsg =
-          "Bad Request: Must have exactly two query params with keys 'user_id' and 'product_id'";
+          "Bad Request: Must have exactly one query params with key 'product_id'";
         resType = "text/plain";
         res.writeHead(resCode, { "Content-Type": resType });
         res.end(resMsg);
         resolve(resMsg);
         return;
       }
-      const user_id = queryParams["user_id"];
+      const user_id = await getID(req, res);
       const product_id = queryParams["product_id"];
       const currMember = await cartRepo.getMember(user_id);
       const currMemberCart = await cartRepo.getCurrCart(currMember.email);
@@ -635,8 +627,12 @@ async function removeProductFromCart(req, res) {
         }
       }
       
-      const productInfo = await productRepo.getProductById(product_id);
-
+      let productInfo = await productRepo.getProductById(
+        product_id
+      );
+      productInfo = productInfo[0];
+      console.log(productInfo.price)
+      console.log("\n\n\n\n\nHi\n\n\n\n")
       let productPrice = productInfo.price;
       productPrice = parseFloat(productPrice.match(parseProductPrice)[1]);
 
@@ -649,7 +645,7 @@ async function removeProductFromCart(req, res) {
         ).toFixed(2)
       );
 
-      resCode = 200;
+      resCode = 202;
       resMsg = JSON.stringify(removedCartProduct);
       resType = "application/json";
       res.writeHead(resCode, { "Content-Type": resType });
@@ -714,27 +710,18 @@ async function getCartHistory(req, res) {
     const queryParams = parsedUrl.query;
 
     // ensure that only one query parameter (the user_id)
-    if (Object.keys(queryParams).length !== 1) {
+    if (Object.keys(queryParams).length !== 0) {
       resCode = 400;
       resMsg =
-        "Bad Request: Please Ensure exactly one query params for user_id is specified";
+        "Bad Request: Please ensure no params are in the URI";
       resType = "text/plain";
       res.writeHead(resCode, { "Content-Type": resType });
       res.end(resMsg);
       resolve(resMsg);
       return;
     }
-    if (!("user_id" in queryParams)) {
-      resCode = 400;
-      resMsg =
-        "Bad Request: Must have exactly one query param with key 'user_id'";
-      resType = "text/plain";
-      res.writeHead(resCode, { "Content-Type": resType });
-      res.end(resMsg);
-      resolve(resMsg);
-      return;
-    }
-    const currUser = queryParams["user_id"];
+    
+    const currUser = await getID(req, res);
 
     try {
       const currMember = await cartRepo.getMember(currUser);
@@ -747,7 +734,7 @@ async function getCartHistory(req, res) {
 
       if (currMemberCartHistory == null) {
         //No shopping carts purchased
-        resCode = 200;
+        resCode = 204;
         resType = "text/plain";
         resMsg = "You haven't checkout out yet!";
       } else {
@@ -782,26 +769,17 @@ async function getCartProduct(req, res) {
     const queryParams = parsedUrl.query;
 
     // ensure that only one query parameter (the user_id)
-    if (Object.keys(queryParams).length !== 2) {
+    if (Object.keys(queryParams).length !== 1) {
       resCode = 400;
       resMsg =
-        "Bad Request: Please Ensure user_id and product_id are specified.";
+        "Bad Request: Please ensure product_id is specified.";
       resType = "text/plain";
       res.writeHead(resCode, { "Content-Type": resType });
       res.end(resMsg);
       resolve(resMsg);
       return;
     }
-    if (!("user_id" in queryParams)) {
-      resCode = 400;
-      resMsg =
-        "Bad Request: Must specify user_id.";
-      resType = "text/plain";
-      res.writeHead(resCode, { "Content-Type": resType });
-      res.end(resMsg);
-      resolve(resMsg);
-      return;
-    }
+    
     if (!("product_id" in queryParams)) {
       resCode = 400;
       resMsg =
@@ -812,7 +790,7 @@ async function getCartProduct(req, res) {
       resolve(resMsg);
       return;
     }
-    const currUser = queryParams["user_id"];
+    const currUser = await getID(req, res);
     const productID = queryParams["product_id"];
 
     console.log("*** " + productID);
@@ -827,7 +805,7 @@ async function getCartProduct(req, res) {
 
       if (cartProductInfo == null) {
         //No shopping carts purchased
-        resCode = 200;
+        resCode = 204;
         resType = "text/plain";
         resMsg = "You don't have this product in your cart!";
       } else {
@@ -850,7 +828,21 @@ async function getCartProduct(req, res) {
     resolve(resMsg);
   });
 }
-
+function handleData(req) {
+  return new Promise((resolve, reject) => {
+    let requestBody = '';
+    req.on("data", function (chunk) {
+      requestBody += chunk;
+      console.log("ooga");
+    });
+    req.on("end", function () {
+      resolve(requestBody);
+    });
+    req.on("error", function (error) {
+      reject(error);
+    });
+  });
+}
 module.exports = {
   getProducts,
   removeProductFromCart,

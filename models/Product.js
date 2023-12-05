@@ -45,15 +45,13 @@ const productSchema = new mongoose.Schema({
     firstName: String,
     lastName: String,
     warehouse_address: [{
-
       street1: String,
       street2: String,
       street3: String,
       city: String,
       state: String,
       zip: String,
-      country: String,      
-
+      country: String,
     }],
   },
   length: String,
@@ -73,3 +71,4 @@ Product.createWithCustomId = function (id, productData, callback) {
 };
 
 module.exports = Product;
+
