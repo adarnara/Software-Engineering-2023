@@ -1,23 +1,52 @@
-const ProductController = require('../controller/ProductController');
-const ChatbotController = require('../controller/chatbotCtrl');
-const ShoppingCartController = require('../controller/shoppingCartController');
+const SearchController = require('../controller/SearchController');
 
 module.exports = {
-    'GET/search/:query': async (req, res) => {
+    'GET/search': async (req, res) => {
         try {
-            const query = req.params.query;
+            const { searchText, field, page, pageSize } = req.params;
+            //console.log(searchText);
+            //console.log(field);
+            //console.log(page);
+            //console.log(pageSize);
+           // console.log(req);
 
-            if (!query) {
-                return res.status(400).json({ message: 'Query parameter is missing.' });
+            if (!searchText) {
+                return res.status(400).json({ message: 'Search text parameter is missing.' });
             }
 
-            // Call the searchProducts controller function with the query input
-            await ProductController.searchProducts(query, res);
+            // Call the searchByNameOrProduct controller function with the query input
+            await SearchController.searchByNameOrProduct(req, res);
 
         } catch (error) {
             console.error('Route Handler Error:', error);
-            res.status(500).json({ message: 'Internal Server Error' });
+            // Ensure that res is a proper response object
+            if (res.status && res.json) {
+                res.status(500).json({ message: 'Internal Server Error' });
+            } else {
+                console.error('Invalid response object in search route handler');
+            }
         }
     },
-    'GET/search/category': ProductController.getProductsByCategory,
+    'GET/autocomplete': async (req, res) => {
+        try {
+            const { searchText } = req.params;
+
+            if (!searchText) {
+                return res.status(400).json({ message: 'Search text parameter is missing.' });
+            }
+
+
+            // Call the searchByNameOrProduct controller function with the query input
+            await SearchController.searchAutoComplete(req, res);
+
+        } catch (error) {
+            console.error('Route Handler Error:', error);
+            // Ensure that res is a proper response object
+            if (res.status && res.json) {
+                res.status(500).json({ message: 'Internal Server Error' });
+            } else {
+                console.error('Invalid response object in search route handler');
+            }
+        }
+    }
 };
