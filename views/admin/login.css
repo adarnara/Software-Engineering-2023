@@ -21,6 +21,7 @@ h2 {
 
 .form-group {
   margin-bottom: 15px;
+  margin-right: 10px;
 }
 
 label {
@@ -37,13 +38,14 @@ input[type="password"] {
 }
 
 button {
-  width: 100%;
+  width: 103%;
   padding: 10px;
   background-color: #5cb85c;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  
 }
 
 button:hover {
@@ -71,4 +73,13 @@ button:hover {
   float: right;
   font-size: 20px;
   cursor: pointer;
+}
+
+#registerAdminBtn {
+  margin-top: 10px; 
+  background-color: #337ab7;
+}
+
+#registerAdminBtn:hover {
+  background-color: #286090;
 }
