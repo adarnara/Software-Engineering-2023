@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Admin view for Tickets</title>
-        <link rel="stylesheet">
-        <style>
-            body {
+<head>
+    <meta charset="UTF-8">
+    <title>Admin view for Tickets</title>
+    <link rel="stylesheet">
+    <style>
+        body {
             margin: 0;
             padding: 0;
-            }
+        }
 
-            .navbar {
+        .navbar {
             position: fixed;
             top: 0;
             left: 0;
@@ -25,67 +25,100 @@
             border-bottom-left-radius: 10px;
             border-bottom-right-radius: 10px;
             box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-            }
+        }
 
-
-            .navbar-logo {
+        .navbar-logo {
             display: flex;
             align-items: center;
-            }
+        }
 
-            .navbar-logo img {
+        .navbar-logo img {
             max-width: 60px;
             margin-right: 10px;
-            }
+        }
 
-            .navbar-cart {
+        .navbar-cart {
             display: flex;
             align-items: center;
-            }
+        }
 
-            .navbar-cart img {
+        .navbar-cart img {
             max-width: 40px;
             margin-right: 10px;
-            }
+        }
 
-            .content {
-                margin-top: 70px; /* Give enough space to not overlap the navbar */
-                padding: 20px; /* Spacing around the content */
-            }
+        .content {
+            margin-top: 70px; 
+            padding: 20px;
+        }
 
-            .ticket-display {
-                background-color: #f9f9f9; /* Light grey background */
-                border: 1px solid #ddd; /* Light grey border */
-                border-radius: 4px; /* Rounded corners */
-                padding: 15px; /* Spacing inside the ticket display */
-                margin-bottom: 10px; /* Space between ticket displays */
-            }
+        .ticket-display {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
 
-            .ticket-title {
-                font-size: 24px; /* Larger font size for the title */
-                margin-bottom: 20px; /* Space below the title */
-                color: #333; /* Dark grey color */
-            }
+        .ticket-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
 
-        </style>
-    </head>
-    <body>
-        <div class="navbar">
-            <a href="http://127.0.0.1:5500/views/landingPage.html" style="text-decoration: none; color: inherit;">
-                <div class="navbar-logo">
-                  <img src="../public/Images/logo.png" alt="Logo" />
-                  <span style="font-weight: bold; font-size: 20px;">Reprua</span>
-                </div>
-              </a>
+        .resolve-form {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .resolve-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .resolve-form button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="http://127.0.0.1:5500/views/landingPage.html" style="text-decoration: none; color: inherit;">
+            <div class="navbar-logo">
+                <img src="../public/Images/logo.png" alt="Logo" />
+                <span style="font-weight: bold; font-size: 20px;">Reprua</span>
+            </div>
+        </a>
+    </div>
+    /*
+    <div class="content">
+        <h2 class="ticket-title">First Open Ticket</h2>
+        <div id="getFirstOpen" class="ticket-display">
+        </div>
+        <button onclick="openResolveForm()">Resolve</button>
+        <div class="resolve-form">
+            <textarea id="resolveText" placeholder="Enter resolution"></textarea>
+            <button onclick="submitResolve()">Submit</button>
+        </div>
+    </div>
+
+        <div class="content">
+            <h2 class="AllOpenTittle">All Open Tickets</h2>
+            <div id="getAllOpen" class="ticket-display"></div>
         </div>
 
         <div class="content">
-            <h2 class="ticket-title">First Open Ticket</h2>
-            <div id="getFirstOpen" class="ticket-display">
-            </div>
+            <h2 class="AllResolvedTittle">All Resolved Tickets</h2>
+            <div id="getAllResolved" class="ticket-display"></div>
         </div>
 
-        <script src="ticketsAdminView.js"></script>
-        <script src="../public/js/util.js"></script>
-    </body>
+    <script src="ticketsAdminView.js"></script>
+    <script src="../public/js/util.js"></script>
+</body>
 </html>
