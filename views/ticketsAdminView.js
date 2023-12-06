@@ -1,3 +1,6 @@
+const adminToken = localStorage.getItem('adminToken');
+
+
 async function displayFirstOpenTicket(ticketData) {
     const ticketContainer = document.getElementById('getFirstOpen');
         if (!ticketContainer) {
@@ -145,7 +148,11 @@ function submitResolve() {
 }
 
   document.addEventListener('DOMContentLoaded', () => {
-  fetch('http://localhost:3000/getFirstOpen', { method: 'GET' })
+  fetch('http://localhost:3000/getFirstOpen', { method: 'GET',
+  headers: {
+    'Authorization': `Bearer ${adminToken}`
+  },
+})
     .then(response => response.json())
     .then(async data => {
       await displayFirstOpenTicket(data);
@@ -154,7 +161,10 @@ function submitResolve() {
       console.error('Error fetching data:', error);
     });
 
-  fetch('http://localhost:3000/getAllOpen', { method: 'GET' })
+  fetch('http://localhost:3000/getAllOpen', { method: 'GET',
+  headers: {
+    'Authorization': `Bearer ${adminToken}`
+  }, })
   .then(response => response.json())
   .then(async data => {
     await displayAllOpenTickets(data);
@@ -162,7 +172,10 @@ function submitResolve() {
   .catch(error => {
     console.error('Error fetching data:', error);
   });
-  fetch('http://localhost:3000/getAllResolved', { method: 'GET' })
+  fetch('http://localhost:3000/getAllResolved', { method: 'GET',
+  headers: {
+    'Authorization': `Bearer ${adminToken}`
+  },})
   .then(response => response.json())
   .then(async data => {
     await displayAllResolvedTickets(data);
