@@ -58,7 +58,173 @@
       border-bottom-left-radius: 10px;
       border-bottom-right-radius: 10px;
       box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+      z-index: 100;
     }
+  
+  .search-by-category {
+    position: relative;
+    display: inline-block;
+  }
+
+
+  .category-button {
+    background-color: rgba(0, 135, 255, 0.7); /* Match navbar background */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px; /* Adjust as needed */
+    border-bottom-left-radius: 10px; /* Optional rounded corners */
+    border-bottom-right-radius: 10px;
+  }
+
+  .category-dropdown {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9; /* Light background for the dropdown */
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1000;
+  }
+
+  .category-dropdown a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    
+  }
+
+  .category-dropdown a:hover {
+    background-color: #f1f1f1;
+  }
+
+  .search-by-category:hover .category-dropdown {
+    display: block;
+  }
+
+
+    .navbar-logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-logo img {
+      max-width: 60px;
+      margin-right: 10px;
+    }
+
+    .search-bar {
+      text-align: center;
+      position: relative;
+      transform: translate(-103%, 0%);
+    }
+
+    .search-bar input[type="text"] {
+      width: 60%;
+      padding: 5px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .search-bar button {
+      background-color: #fff;
+      color: #007BFF;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin-left: 5px;
+      cursor: pointer;
+    }
+
+
+    .content-container {
+      position: absolute;
+      top: 70px;
+      left: 0;
+      width: 100vw;
+      height: calc(100vh - 70px);
+      overflow-y: auto;
+      z-index: 13;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 20px;
+      
+    }
+
+    .product-container {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      padding: 20px;
+      border-radius: 5px;
+      background-color: #f8f8f8;
+      width: 100%;
+    }
+    .navbar-cart {
+      display: flex;
+      align-items: center;
+      .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: rgba(0, 135, 255, 0.7);
+      color: #fff;
+      padding: 10px;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    }
+
+  
+  .search-by-category {
+    position: relative;
+    display: inline-block;
+  }
+
+
+  .category-button {
+    background-color: rgba(0, 135, 255, 0.7); /* Match navbar background */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px; /* Adjust as needed */
+    border-bottom-left-radius: 10px; /* Optional rounded corners */
+    border-bottom-right-radius: 10px;
+  }
+
+  .category-dropdown {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9; /* Light background for the dropdown */
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 3000;
+  }
+
+  .category-dropdown a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    
+  }
+
+  .category-dropdown a:hover {
+    background-color: #f1f1f1;
+  }
+
+  .search-by-category:hover .category-dropdown {
+    display: block;
+  }
 
 
     .navbar-logo {
@@ -107,6 +273,7 @@
       align-items: flex-start;
       justify-content: center;
       padding: 20px;
+      
     }
 
     .product-container {
@@ -119,10 +286,8 @@
       border-radius: 5px;
       background-color: #f8f8f8;
       width: 100%;
+
     }
-    .navbar-cart {
-      display: flex;
-      align-items: center;
     }
 
     .navbar-cart img {
@@ -242,6 +407,7 @@
 </head>
 <body>
 
+
 <div class="container">
   <div class="chatbox">
     <div class="chatbox__support">
@@ -265,6 +431,7 @@
   </div>
 </div>
 
+
 <div class="navbar">
   <a href="/views/landingPage.html" style="text-decoration: none; color: inherit;">
     <div class="navbar-logo">
@@ -272,6 +439,19 @@
       <span style="font-weight: bold; font-size: 20px;">Reprua</span>
     </div>
   </a>
+  <div class="search-by-category">
+    <button class="category-button">Filter by Category &#x25BE;</button>
+    <div class="category-dropdown">
+      <!--Going to add more categories here-->
+      <a href="#" data-category="books">Books</a>
+      <a href="#" data-category="ipad">iPad</a>
+      <a href="#" data-category="laptop">Laptop</a>
+      <a href="#" data-category="tshirts">Tshirts</a>
+      
+
+    </div>
+  </div>
+  
   <div>
     <button class="hidden previous-button" onclick="previousPage()">Previous</button>
     <button class="hidden next-button" onclick="nextPage()">Next</button>
