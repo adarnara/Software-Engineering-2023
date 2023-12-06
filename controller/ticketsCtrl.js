@@ -64,18 +64,7 @@ async function createTicket(req, res) {
         res.writeHead(500).end('Internal Server Error');
     }
   }
-  /*
-  async function getAllOpenTickets(req, res){
-    try{
-        const allOpen = await ticketsRepository.getAllOpenTickets();
-        console.log(allOpen);
-    }
-    catch(error){
-        console.error("Error getting all open tickets: ",error);
-        res.writeHead(500).end("Internal Server Error");
-    }
-  }
-  */
+  
   async function getAllOpenTickets(req, res) {
     try {
         const allOpenTickets = await ticketsRepository.getAllOpenTickets();
@@ -124,9 +113,28 @@ async function createTicket(req, res) {
         }
     }
 
+    async function resolution(req, res) {
+        try {
+            if (req.headers["content-type"] !== 'application/json') {
+                res.writeHead(415).end('Unsupported Media Type');
+                return;
+            }
+            let json = await getJSON(req);
+            let resolutionDescription = json.resolution;
+            let id = await ticketsRepository.getFirstOpenId();
+            await ticketsRepository.resolution(id, resolutionDescription);
+            res.writeHead(201, { 'Content-Type': 'application/json' }).end("Ticket resolved successfully.");
+        } catch (error) {
+            console.error("Error in resolution of a ticket: ", error);
+            res.writeHead(500).end("Internal Server Error");
+        }
+    }
+    
+
   module.exports ={
     createTicket:createTicket,
     getFirstOpen:getFirstOpen,
     getAllOpenTickets:getAllOpenTickets,
-    getAllResolvedTickets:getAllResolvedTickets
+    getAllResolvedTickets:getAllResolvedTickets,
+    resolution:resolution
 };

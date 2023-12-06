@@ -156,7 +156,7 @@ async resolution(ticketId, resolutionDescription) {
       ticketId,
       { 
         resolutionDescription: resolutionDescription,
-        closureDate: Date.now, //check if this is working
+        closureDate: Date.now(),
         status: "Resolved"
       },
       { new: true }

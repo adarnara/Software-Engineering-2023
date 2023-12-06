@@ -92,6 +92,10 @@ async function displayFirstOpenTicket(ticketData) {
         email.textContent = `User's email: ${ticketData.userData.email}`;
         const role = document.createElement('p');
         role.textContent = `User's role: ${ticketData.userData.role}`;
+        const resolDate = document.createElement('p');
+        resolDate.textContent = `Resolution Date: ${ticketData.closureDate}`;
+        const resolDescription = document.createElement('p');
+        resolDescription.textContent = `Resolution Description: ${ticketData.resolutionDescription}`;
         ticketDiv.appendChild(statusElem);
         ticketDiv.appendChild(descriptionElem);
         ticketDiv.appendChild(createdDate);
@@ -99,6 +103,8 @@ async function displayFirstOpenTicket(ticketData) {
         ticketDiv.appendChild(lastName);
         ticketDiv.appendChild(email);
         ticketDiv.appendChild(role);
+        ticketDiv.appendChild(resolDate);
+        ticketDiv.appendChild(resolDescription);
         ticketContainer.appendChild(ticketDiv);
         if (index < ticketsData.length - 1) {
             const divider = document.createElement('hr');
@@ -106,6 +112,37 @@ async function displayFirstOpenTicket(ticketData) {
         }
     });
   }
+
+  function openResolveForm() {
+    var resolveForm = document.querySelector('.resolve-form');
+    resolveForm.style.display = 'block';
+}
+
+function submitResolve() {
+    var resolveText = document.getElementById('resolveText').value;
+    console.log('Resolution:', resolveText);
+
+    fetch('http://localhost:3000/ticket-resolution', { 
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ resolution: resolveText })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        window.location.reload();
+        return response.json();
+    })
+    .catch(error => {
+        console.error('Error submitting resolution:', error);
+    });
+
+    var resolveForm = document.querySelector('.resolve-form');
+    resolveForm.style.display = 'none';
+}
 
   document.addEventListener('DOMContentLoaded', () => {
   fetch('http://localhost:3000/getFirstOpen', { method: 'GET' })
@@ -133,4 +170,14 @@ async function displayFirstOpenTicket(ticketData) {
   .catch(error => {
     console.error('Error fetching data:', error);
   });
+  const resolveButton = document.querySelector('#resolveButton');
+    const submitButton = document.querySelector('#submitButton');
+
+    if(resolveButton) {
+        resolveButton.addEventListener('click', openResolveForm);
+    }
+
+    if(submitButton) {
+        submitButton.addEventListener('click', submitResolve);
+    }
 });

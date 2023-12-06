@@ -7,7 +7,6 @@
     "moment-timezone": "^0.5.43",
     "mongodb": "^6.2.0",
     "mongodb-memory-server": "^7.6.3",
-    "mongoose": "^7.5.2",
     "node": "^21.1.0",
     "shippo": "^1.7.1"
   },
@@ -16,7 +15,7 @@
   },
   "devDependencies": {
     "jest": "^29.7.0",
-    "mongoose": "^7.5.2",
+    "mongoose": "^7.6.6",
     "node-nlp": "^3.10.2",
     "path": "^0.12.7",
     "stripe": "^14.2.0",
