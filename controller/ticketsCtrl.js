@@ -51,23 +51,82 @@ async function createTicket(req, res) {
     try {
         const firstOpenTicket = await ticketsRepository.getFirstOpenTicket();
         let user = await userRepo.findUserById(firstOpenTicket.userId);
-        firstOpenTicket.userData = {
+        const ticketObject = firstOpenTicket.toObject();
+        ticketObject.userData = {
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,
             role: user.role
         };
-        console.log(firstOpenTicket);
-        res.writeHead(201, { 'Content-Type': 'application/json' }).end(JSON.stringify(firstOpenTicket));
-  
+        res.writeHead(201, { 'Content-Type': 'application/json' }).end(JSON.stringify(ticketObject));
     } catch (error) {
         console.error(error);
         res.writeHead(500).end('Internal Server Error');
     }
-
   }
+  /*
+  async function getAllOpenTickets(req, res){
+    try{
+        const allOpen = await ticketsRepository.getAllOpenTickets();
+        console.log(allOpen);
+    }
+    catch(error){
+        console.error("Error getting all open tickets: ",error);
+        res.writeHead(500).end("Internal Server Error");
+    }
+  }
+  */
+  async function getAllOpenTickets(req, res) {
+    try {
+        const allOpenTickets = await ticketsRepository.getAllOpenTickets();
+        const formattedTickets = [];
+
+        for (const ticket of allOpenTickets) {
+            let user = await userRepo.findUserById(ticket.userId);
+            const ticketObject = ticket.toObject();
+            ticketObject.userData = {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                role: user.role
+            };
+            formattedTickets.push(ticketObject);
+        }
+
+        res.writeHead(200, { 'Content-Type': 'application/json' }).end(JSON.stringify(formattedTickets));
+    } catch (error) {
+        console.error("Error getting all open tickets: ", error);
+        res.writeHead(500).end("Internal Server Error");
+    }
+    }
+
+    async function getAllResolvedTickets(req, res) {
+        try {
+            const allResolvedTickets = await ticketsRepository.getAllResolvedTickets();
+            const formattedTickets = [];
+    
+            for (const ticket of allResolvedTickets) {
+                let user = await userRepo.findUserById(ticket.userId);
+                const ticketObject = ticket.toObject();
+                ticketObject.userData = {
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email,
+                    role: user.role
+                };
+                formattedTickets.push(ticketObject);
+            }
+    
+            res.writeHead(200, { 'Content-Type': 'application/json' }).end(JSON.stringify(formattedTickets));
+        } catch (error) {
+            console.error("Error getting all open tickets: ", error);
+            res.writeHead(500).end("Internal Server Error");
+        }
+    }
 
   module.exports ={
     createTicket:createTicket,
-    getFirstOpen:getFirstOpen
+    getFirstOpen:getFirstOpen,
+    getAllOpenTickets:getAllOpenTickets,
+    getAllResolvedTickets:getAllResolvedTickets
 };
