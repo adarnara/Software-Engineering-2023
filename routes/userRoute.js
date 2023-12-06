@@ -9,7 +9,7 @@ const routes = {
   'PUT/updateUser/:id': (request,response) => userController.updateUser(request,response), 
   'DELETE/user/:id': (request,response) => userController.removeUser(request,response),
   'GET/user/:id':  (request,response) => userController.getAUser(request,response),
-
+  
     'GET/token': userController.getUserByToken,
 
 };
