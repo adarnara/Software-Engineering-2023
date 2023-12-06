@@ -47,10 +47,10 @@ class SearchController {
 
     async searchByNameOrProduct(req, res) {
         try {
-            const { searchText, field, page, pageSize } = req.params;
+            const { searchText, page, pageSize } = req.params;
             //console.log(searchText);
 
-            const results = await searchRepository.searchByNameOrProduct(searchText, field, page, pageSize);
+            const results = await searchRepository.searchByNameOrProduct(searchText, page, pageSize);
 
             // Send JSON response
             res.writeHead(200, { 'Content-Type': 'application/json' });

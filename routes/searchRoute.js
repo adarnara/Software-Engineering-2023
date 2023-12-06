@@ -3,12 +3,7 @@ const SearchController = require('../controller/SearchController');
 module.exports = {
     'GET/search': async (req, res) => {
         try {
-            const { searchText, field, page, pageSize } = req.params;
-            //console.log(searchText);
-            //console.log(field);
-            //console.log(page);
-            //console.log(pageSize);
-           // console.log(req);
+            const { searchText, page, pageSize } = req.params;
 
             if (!searchText) {
                 return res.status(400).json({ message: 'Search text parameter is missing.' });

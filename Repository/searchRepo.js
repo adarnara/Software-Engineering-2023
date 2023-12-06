@@ -1,7 +1,7 @@
 const Product = require("../models/Product");
 
 class SearchRepository {
-    async searchByNameOrProduct(searchText, field, page, pageSize) {
+    async searchByNameOrProduct(searchText, page, pageSize) {
         const skipCount = (page - 1) * pageSize;
 
         // Convert pageSize to a numeric value
@@ -14,7 +14,7 @@ class SearchRepository {
                     index: 'default', // Replace with your actual index name
                     text: {
                         query: searchText,
-                        path: field,
+                        path: ["name", "category"],
                         fuzzy: {
                             maxEdits: 2,
                             prefixLength: 2,
