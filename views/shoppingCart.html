@@ -1,350 +1,446 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <script src="/public/js/util.js"></script>
+    <meta charset="UTF-8" />
+    <title>CSS Animation Effect</title>
+    <link rel="stylesheet" href="landingPage.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
 
-<head>
-  <meta charset="UTF-8">
-  <title>Shopping Cart</title>
-  <link rel="stylesheet" href="landingPage.css">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-    }
+      .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: rgba(0, 135, 255, 0.7);
+        color: #fff;
+        padding: 10px;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+      }
 
+      .navbar-logo {
+        display: flex;
+        align-items: center;
+      }
 
-    .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: rgba(0, 135, 255, 0.7);
-      color: #fff;
-      padding: 10px;
-      border-bottom-left-radius: 10px;
-      border-bottom-right-radius: 10px;
-      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-    }
+      .navbar-logo img {
+        max-width: 60px;
+        margin-right: 10px;
+      }
 
+      .navbar-cart {
+        display: flex;
+        align-items: center;
+      }
 
-    .navbar-logo {
-      display: flex;
-      align-items: center;
-    }
+      .navbar-cart img {
+        max-width: 40px;
+        margin-right: 10px;
+      }
 
-    .navbar-logo img {
-      max-width: 60px;
-      margin-right: 10px;
-    }
+      .search-bar {
+        text-align: center;
+      }
 
-    .navbar-cart {
-      display: flex;
-      align-items: center;
-    }
+      .search-bar input[type="text"] {
+        width: 60%;
+        padding: 5px;
+        border: none;
+        border-radius: 5px;
+      }
 
-    .navbar-cart img {
-      max-width: 40px;
-      margin-right: 10px;
-    }
-    
+      .search-bar button {
+        background-color: #fff;
+        color: #007bff;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        margin-left: 5px;
+        cursor: pointer;
+      }
 
-    .search-bar {
-      text-align: center;
-    }
+      .content-container {
+        position: absolute;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        height: calc(100vh - 70px);
+        overflow-y: auto;
+        z-index: 1001;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 20px;
+        overflow-y: scroll;
+      }
 
-    .search-bar input[type="text"] {
-      width: 60%;
-      padding: 5px;
-      border: none;
-      border-radius: 5px;
-    }
+      .product-container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        padding: 20px;
+        border-radius: 5px;
+        background-color: #f8f8f8;
+        width: 100%; /* Fixed width */
+        
+      }
+      .deleted-product-container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        padding: 20px;
+        border-radius: 5px;
+        background-color: #f8f8f8;
+        width: 100%; /* Fixed width */
+        
+      }
+      #deleted-products-container{
+        align-items: center;
+        background-color: rgba(121, 80, 80, 0.459);
+        padding: 20px;
+        width: 100%;
+      }
+      #deleted-products-container:hover{
+        background-color: rgba(130, 20, 20, 0.612);
+      }
 
-    .search-bar button {
-      background-color: #fff;
-      color: #007BFF;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 5px;
-      margin-left: 5px;
-      cursor: pointer;
-    }
+      .subtotal {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #f8f8f8;
+        width: 15%;
+        max-width: 600px; /* Set maximum width */
+        margin-bottom: 400px;
+        margin-top: 10px;
+        max-height: 300px;
+        margin-left: 20px; /* Add padding on the left side */
 
+        position: fixed;
+        top: 80px; /* Adjust the top distance */
+        right: 80px; /* Adjust the right distance */
+      }
 
-    .content-container {
-      position: absolute;
-      top: 70px;
-      left: 0;
-      width: 100vw;
-      height: calc(100vh - 70px);
-      overflow-y: auto;
-      z-index: 1001;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding: 20px;
-    }
+      .subtotal h2 {
+        margin-top: 0;
+      }
+      .empty-cart {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -60%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border: 1px solid #ccc;
+        padding: 50px;
+        border-radius: 10px;
+        background-color: #f8f8f8;
+        width: 70%;
+        max-width: 600px; /* Set maximum width */
+        margin-left: 20px; /* Add padding on the left side */
+      }
 
-    .product-container {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      margin-bottom: 20px;
-      border: 1px solid #ccc;
-      padding: 20px;
-      border-radius: 5px;
-      background-color: #f8f8f8;
-      width: 1500px; /* Fixed width */
-    }
-    
-    .subtotal {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    padding: 20px;
-    border-radius: 10px;
-    background-color: #f8f8f8;
-    width: 70%;
-    max-width: 600px; /* Set maximum width */
-    margin-bottom: 400px;
-    margin-top: 10px;
-    max-height: 250px;
-    margin-left: 20px; /* Add padding on the left side */
-}
+      .empty-cart h1 {
+        margin-top: 0;
+        font-size: 50px;
+      }
 
-.subtotal h2 {
-    margin-top: 0;
-}
-.empty-cart {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -60%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border: 1px solid #ccc;
-  padding: 50px;
-  border-radius: 10px;
-  background-color: #f8f8f8;
-  width: 70%;
-  max-width: 600px; /* Set maximum width */
-  margin-left: 20px; /* Add padding on the left side */
-}
+      .product-image {
+        flex: 1;
+        margin-right: 20px;
+        max-width: 200px;
+      }
 
-.empty-cart h1 {
-    margin-top: 0;
-    font-size: 50px;
-}
+      .product-image img {
+        max-width: 100%;
+        height: auto;
+      }
 
-    .product-image {
-      flex: 1;
-      margin-right: 20px;
-      max-width: 200px;
-    }
+      .product-info {
+        flex: 2;
+      }
 
-    .product-image img {
-      max-width: 100%;
-      height: auto;
-    }
+      .product-info h2,
+      .product-info p,
+      .product-info ul {
+        font-size: 14px;
+      }
 
-    .product-info {
-      flex: 2;
-    }
+      .image-navigation button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        margin: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
 
-    .product-info h2,
-    .product-info p,
-    .product-info ul {
-      font-size: 14px;
-    }
+      .product-info ul {
+        padding-left: 20px;
+      }
 
+      .continue-shopping {
+        position: fixed;
+        padding: 10px 20px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 19px;
+        transform: translate(-60%, -55%);
+      }
 
-    .image-navigation button {
-      background-color: #007BFF;
-      color: #fff;
-      border: none;
-      padding: 5px 10px;
-      margin: 5px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+      .continue-shopping:hover {
+        background-color: #2980b9;
+      }
 
+      .continue-shopping-main {
+        padding: 50px 100px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 40px;
+      }
 
-    .product-info ul {
-      padding-left: 20px;
-    }
+      .continue-shopping-main:hover {
+        background-color: #2980b9;
+      }
 
-    .continue-shopping {
-      position: fixed;
-      padding: 10px 20px;
-      background-color: #3498db;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 19px;
-      transform: translate(-60%, -55%);
+      .continue-shopping-small {
+        padding: 20px 30px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 20px;
+      }
 
-    }
+      .continue-shopping-small:hover {
+        background-color: #2980b9;
+      }
+      .checkout {
+        padding: 10px 20px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 19px;
+      }
 
-    .continue-shopping:hover {
-      background-color: #2980b9;
-    }
+      .checkout {
+        background-color: #2980b9;
+      }
+      .checkout:hover {
+        background-color: rgb(41, 185, 87);
+      }
 
-    .continue-shopping-main {
-      padding: 50px 100px;
-      background-color: #3498db;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 40px;
-    }
+      /* CSS */
+      .product-container {
+        display: flex;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+      }
+      .flex-container {
+        border-radius: 8px;
+        padding: 15px;
+        width: 100%;
+        margin-bottom: 20px;
+      }
+      .deleted-product-container {
+        display: flex;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+      }
+      .delete-button {
+        padding: 5px 10px;
+        background-color: #808080;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 20px;
+      }
+      .delete-button:hover {
+        background-color: #d32f2f;
+        
+      }
 
-    .continue-shopping-main:hover {
-      background-color: #2980b9;
-    }
-    .checkout {
-      padding: 10px 20px;
-      background-color: #3498db;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 19px;
-    }
+      .product-image img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 8px;
+      }
 
-    .checkout{
-      background-color: #2980b9;
-    }
-    .checkout:hover{
-      background-color: rgb(41, 185, 87);
-    }
+      .product-info {
+        margin-left: 20px;
+      }
 
-    /* CSS */
-    .product-container {
-      display: flex;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 20px;
-    }
-    .delete-button {
-    padding: 5px 10px;
-    background-color: #d32f2f;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-left: 20px;
-    /* Additional styles for the delete button */
-}
+      .number-control {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+      }
 
-.delete-button:hover {
-    background-color: #b22a2a; /* Change color on hover */
-}
+      .control-btn {
+        padding: 10px 12px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 0 5px;
+        font-size: 16px;
+        transition: background-color 0.3s;
+      }
 
-    .product-image img {
-      width: 150px;
-      height: 150px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
+      .control-btn:hover {
+        background-color: #2980b9;
+      }
 
-    .product-info {
-      margin-left: 20px;
-    }
+      input[type="number"] {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 60px;
+        text-align: center;
+        font-size: 14px;
+      }
+      .content-container {
+        width: 100%;
+        margin: 0 auto;
+        padding-right: 20%;
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .add-button {
+        padding: 5px 10px;
+        background-color: #2fc5d3;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 20px;
+        margin-right: 10px;
+        font-size: 15px;
+        /* Additional styles for the delete button */
+      }
 
-    .number-control {
-      display: flex;
-      align-items: center;
-      margin-top: 10px;
-    }
+      .add-button:hover {
+        background-color: #2ab289; /* Change color on hover */
+      }
+      .hidden {
+        display: none;
+      }
+      .hidden-button {
+        background-color: #808080;
+        color: white;
+        padding: 12px 20px;
+        font-size: 25px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        align-items: center;
+        margin-left: 25%;
+        margin-right: 25%;
+        margin-top: 50px;
+        margin-bottom: 30px;
+        width: 50%;
+        /* width: 30%; */
+      }
+    </style>
+  </head>
 
-    .control-btn {
-      padding: 10px 12px;
-      background-color: #3498db;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin: 0 5px;
-      font-size: 16px;
-      transition: background-color 0.3s;
-    }
-
-    .control-btn:hover {
-      background-color: #2980b9;
-    }
-
-    input[type="number"] {
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      width: 60px;
-      text-align: center;
-      font-size: 14px;
-
-    }
-    .flex-container {
-    display: flex;
-    justify-content: space-between; /* Adjust as needed for spacing */
-}
-  </style>
-</head>
-
-<body>
-
-  <div class="navbar">
-    <a href="http://127.0.0.1:5500/views/landingPage.html" style="text-decoration: none; color: inherit;">
-      <div class="navbar-logo">
-        <img src="../public/Images/logo.png" alt="Logo" />
-        <span style="font-weight: bold; font-size: 20px;">Reprua</span>
-      </div>
-    </a>
-    <div>
-      <button class="continue-shopping" onclick="continueShopping()">Continue Shopping</button>
-    </div>
-    <div id="shopping-icon" class="navbar-cart">
-      <a href="http://127.0.0.1:5500/views/shoppingCart.html">
-        <img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />
-        <span style="font-weight: bold; font-size: 20px;"></span>
+  <body>
+    <div class="navbar">
+      <a
+        href="http://127.0.0.1:5500/views/landingPage.html"
+        style="text-decoration: none; color: inherit"
+      >
+        <div class="navbar-logo">
+          <img src="../public/Images/logo.png" alt="Logo" />
+          <span style="font-weight: bold; font-size: 20px">Reprua</span>
+        </div>
       </a>
-    </div>
-  </div>
+      <div>
+        <button class="continue-shopping" onclick="continueShopping()">
+          Continue Shopping
+        </button>
+      </div>
 
-  <div id="error-message" class="hidden">Failed to load products. Please try again later.
-  </div>
+      
 
+      <div id="shopping-icon" class="navbar-cart">
+        
+        <a href="http://127.0.0.1:5500/views/shoppingCartHistory.html">
+          <img src="../public/Images/shoppingCartHistory.png" alt="shoppingCart" />
+          <span style="font-weight: bold; font-size: 20px"></span>
+        </a>
 
-  <div class="content-container">
-    <div class="flex-container">
+        <a href="http://127.0.0.1:5500/views/shoppingCart.html">
+          <img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />
+          <span style="font-weight: bold; font-size: 20px"></span>
+        </a>
 
-      <div id="products-container">
 
       </div>
-      <div id="subtotal-section">
+    </div>
+
+    <div id="error-message" class="hidden">
+      Failed to load products. Please try again later.
+    </div>
+
+    <div class="content-container">
+      <div class="flex-container">
+        <div id="products-container"></div>
+        <button onclick="toggleDeletedProducts()" class="hidden-button" id = "hidden-button">
+          Products Removed From Cart
+        </button>
+        <div id="subtotal-section"></div>
+        <div id="deleted-products-container" class="hidden"></div>
       </div>
     </div>
-  </div>
 
-  <section>
-    <div class="waves">
-      <div class="wave" id="wave1"></div>
-      <div class="wave" id="wave2"></div>
-      <div class="wave" id="wave3"></div>
-      <div class="wave" id="wave4"></div>
-      <img src="../public/Images/stars.jpg" class="stars">
-      <img src="../public/Images/island.png" class="island">
-    </div>
-  </section>
+    <section>
+      <div class="waves">
+        <div class="wave" id="wave1"></div>
+        <div class="wave" id="wave2"></div>
+        <div class="wave" id="wave3"></div>
+        <div class="wave" id="wave4"></div>
+        <img src="../public/Images/stars.jpg" class="stars" />
+        <img src="../public/Images/island.png" class="island" />
+      </div>
+    </section>
 
-
-  <script src="shoppingCart.js"></script>
-</body>
-
+    <script src="shoppingCart.js"></script>
+  </body>
 </html>

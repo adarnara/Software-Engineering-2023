@@ -10,12 +10,22 @@ document.getElementById("registration-form").addEventListener("submit", async (e
 
     const registerButton = document.getElementById("registerButton");
 
-    const updateRegisterButtonText = (text, delay = 1000) => {
+    const updateRegisterButtonText = (text, delay = 1500) => {
         registerButton.textContent = text;
         setTimeout(() => {
             registerButton.textContent = "Register";
         }, delay);
     };
+
+    // Check for blank fields
+    if (!firstName || !lastName || !email || !password || !confirmPassword || !role) {
+        showAlert("Missing fields. Please make sure to input all fields.");
+        registerButton.textContent = 'Error processing request';
+        setTimeout(() => {
+            registerButton.textContent = 'Register';
+        }, 1000);
+        return;
+    }
 
     if (password !== confirmPassword) {
         updateRegisterButtonText("Passwords do not match");
@@ -77,4 +87,59 @@ document.getElementById("registration-form").addEventListener("submit", async (e
     }
 });
 
+function showAlert(message) {
+    const alertContainer = document.createElement('div');
+    alertContainer.className = 'custom-alert';
 
+    const alertText = document.createElement('p');
+    alertText.textContent = message;
+
+    const okButton = document.createElement('button');
+    okButton.textContent = 'OK';
+    okButton.style.color = 'red';
+    okButton.style.fontWeight = 'bold';
+    okButton.onclick = () => {
+        document.body.removeChild(alertContainer);
+    };
+
+    alertContainer.appendChild(alertText);
+    alertContainer.appendChild(okButton);
+    document.body.appendChild(alertContainer);
+}
+
+function fetchUserInformation(jwtToken) {
+    fetch("http://localhost:3000/token", {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${jwtToken}`,
+        },
+    })
+        .then(response => response.json())
+        .then(data => {
+            const userId = data.id;
+
+            fetch(`http://localhost:3000/user/${userId}`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${jwtToken}`,
+                },
+            })
+                .then(response => response.json())
+                .then(userData => {
+                    // Populate the form with retrieved user information
+                    populateForm(userData);
+                })
+                .catch(error => {
+                    console.error("Error fetching user information:", error);
+                });
+        })
+        .catch(error => {
+            console.error("Error fetching user ID:", error);
+        });
+}
+
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}

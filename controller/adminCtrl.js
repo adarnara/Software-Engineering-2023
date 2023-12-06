@@ -1,6 +1,7 @@
 const adminRepo = require('../Repository/adminRepo');
 const admin = require('../models/adminModel')
 const { generateToken } = require('../config/jwt');
+const { parseJwtHeader } = require("../middlewares/authmiddleware");
 
 const createAdmin = async (req, res) => {
     const name = req.body.adminName;
@@ -34,8 +35,7 @@ const Login = async (req, res) =>{
     const adminKey = req.body.adminKey;
     const name = req.body.adminName;
     const findAdmin = await adminRepo.findByName(name)
-    console.log(findAdmin)
-    console.log(name)
+   
     try{ 
         if(findAdmin && await findAdmin.isAdminKeyMatched(adminKey)){
         res.writeHead(201, { 'Content-Type': 'application/json' });
@@ -113,4 +113,17 @@ function getPostData(request) {
     }
   }
 
-module.exports = { adminRegister,adminLogin,allAdmins };
+  async function getAdminByToken(request, response) {
+    let userData = parseJwtHeader(request, response);
+    // We continue handling if the JWT was valid.
+    if (userData) {
+        let user = await adminRepo.findAdminById(userData["id"]);
+        // Set some properties to return.
+        userData["adminName"] = user["adminName"];
+        userData["adminKey"] = user["adminKey"];
+        // Send the response.
+        response.setHeader("Content-Type", "application/json");
+        response.end(JSON.stringify(userData));
+    }
+}
+module.exports = { adminRegister,adminLogin,allAdmins,getAdminByToken };

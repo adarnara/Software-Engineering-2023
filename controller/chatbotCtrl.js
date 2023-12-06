@@ -1,114 +1,219 @@
 const { NlpManager } = require('node-nlp');
-const manager = new NlpManager({ languages: ['en'] });
+const mongoose = require('mongoose');
+const Product = require('../models/Product'); // Assuming your product model is in a 'models' folder
 
-manager.addDocument('en', 'hello', 'greeting');
-manager.addDocument('en', 'hi', 'greeting');
-manager.addDocument('en', 'hey', 'greeting');
-manager.addDocument('en', 'hey you', 'greeting');
-manager.addDocument('en', 'yo', 'greeting');
-manager.addDocument('en', 'goodmorning', 'greeting');
-manager.addDocument('en', 'goodafternoon', 'greeting');
-manager.addDocument('en', 'good day', 'greeting');
+const manager = new NlpManager({ languages: ['en'], nlu: { useNoneFeature: false }, autoSave: false });
 
-// answers
-manager.addAnswer('en', 'greeting', 'Hey! How may I help you today?');
-manager.addAnswer('en', 'greeting', 'Hey there. How may I help you today?');
-manager.addAnswer('en', 'greeting', 'Hi! How may I help you today?');
-manager.addAnswer('en', 'greeting', 'Yo whatsup! How may I help you today?');
-manager.addAnswer('en', 'greeting', 'Howdy, How may I help you today?');
 
-manager.addDocument('en', 'What is the price of a MacBook Pro?', 'product_price_macbook');
-manager.addDocument('en', 'How much does an iPad cost?', 'product_price_ipad');
-manager.addDocument('en', 'Can you tell me the price of a new laptop?', 'product_price_laptop');
-manager.addDocument('en', 'What is the average price of a T-shirt?', 'product_price_shirts');
-manager.addDocument('en', 'Tell me the cost of a popular book.', 'product_price_book');
 
-// answers for product price
-manager.addAnswer('en', 'product_price_macbook', 'The price of a MacBook Pro starts at $1,299.');
-manager.addAnswer('en', 'product_price_ipad', 'An iPad\'s price varies, but the base model starts at $329.');
-manager.addAnswer('en', 'product_price_laptop', 'The cost of a new laptop can range from $500 to $2,000.');
-manager.addAnswer('en', 'product_price_shirts', 'On average, a T-shirt costs around $15 to $30.');
-manager.addAnswer('en', 'product_price_book', 'The cost of a popular book can range from $10 to $20.');
+async function loadOrTrainModel() {
+    try {
+        // Attempt to load a saved model
+        await manager.load('./controller/Reprua.nlp');
+        console.log('Existing model loaded.');
+    } catch (error) {
+        // Handle the error (e.g., model not found)
+        console.log('No existing model found, starting fresh.');
+        await trainModel();
+    }
+}
+async function trainModel() {
+    const products = await getProductsFromDB();
 
-// additional questions about products
-manager.addDocument('en', 'Tell me about the latest MacBook features.', 'product_info_macbook');
-manager.addDocument('en', 'What are the specifications of the newest iPad?', 'product_info_ipad');
-manager.addDocument('en', 'Which laptops are good for gaming?', 'product_info_laptop');
-manager.addDocument('en', 'Recommend a classic book to read.', 'product_info_book');
-manager.addDocument('en', 'What are some trendy T-shirt designs?', 'product_info_tshirt');
+    // Add greetings
+    addGreetings();
 
-// answers for product info
-manager.addAnswer('en', 'product_info_macbook', 'The latest MacBook features a faster processor and improved battery life.');
-manager.addAnswer('en', 'product_info_ipad', 'The newest iPad has a Retina display and support for the Apple Pencil.');
-manager.addAnswer('en', 'product_info_laptop', 'Gaming laptops often come with high-end graphics cards and fast processors.');
-manager.addAnswer('en', 'product_info_book', 'I recommend reading "To Kill a Mockingbird" by Harper Lee.');
-manager.addAnswer('en', 'product_info_tshirt', 'Trendy T-shirt designs include graphic prints and vintage-inspired patterns.');
+    // Populate questions and answers for each product
+    for (const product of products) {
+        processProduct(product);
+    }
 
-manager.addDocument('en', 'Tell me about the MacBook Pro 13-inch.', 'product_info_macbook');
-manager.addDocument('en', 'What is the storage capacity of the MacBook Air?', 'product_info_macbook');
-manager.addDocument('en', 'How does the new MacBook compare to the previous version?', 'product_info_macbook');
+    console.log('Training the model...');
+    manager.addAnswer('en', 'trigger_log', 'Log training progress');
 
-// Answers for MacBook info
-manager.addAnswer('en', 'product_info_macbook', 'The MacBook Pro 13-inch features the latest M1 chip for improved performance.');
-manager.addAnswer('en', 'product_info_macbook', 'The MacBook Air comes with storage options ranging from 256GB to 2TB.');
-manager.addAnswer('en', 'product_info_macbook', 'The new MacBook boasts better battery life and faster processing compared to the previous version.');
 
-// Additional questions about iPad
-manager.addDocument('en', 'Tell me about the iPad Pro 2023.', 'product_info_ipad');
-manager.addDocument('en', 'What are the color options for the iPad Mini?', 'product_info_ipad');
-manager.addDocument('en', 'How does the iPad Pro differ from the standard iPad?', 'product_info_ipad');
+    await manager.train({ log: true });
+    await manager.save('./controller/Reprua.nlp');
+    console.log('Model training complete.');
+}
 
-// Answers for iPad info
-manager.addAnswer('en', 'product_info_ipad', 'The iPad Pro 2023 comes with a Liquid Retina XDR display for stunning visuals.');
-manager.addAnswer('en', 'product_info_ipad', 'The iPad Mini offers color choices such as Space Gray, Pink, Purple, and more.');
-manager.addAnswer('en', 'product_info_ipad', 'The iPad Pro is more powerful, with additional features like the Apple Pencil support.');
+function addGreetings() {
+    manager.addDocument('en', 'hello', 'greeting');
+    manager.addDocument('en', 'hi', 'greeting');
+    manager.addDocument('en', 'hey', 'greeting');
+    manager.addDocument('en', 'hey you', 'greeting');
+    manager.addDocument('en', 'yo', 'greeting');
+    manager.addDocument('en', 'goodmorning', 'greeting');
+    manager.addDocument('en', 'goodafternoon', 'greeting');
+    manager.addDocument('en', 'good day', 'greeting');
+    manager.addDocument('en', 'Hello my name is %name%', 'greeting.hello');
+    manager.addDocument('en', 'Hi my name is %name%', 'greeting.hello');
+    manager.addDocument('en', 'I have to go', 'greeting.bye');
+    manager.addDocument('en', 'Goodbye', 'leaving');
+    manager.addDocument('en', 'Bye ', 'leaving');
 
-// Additional questions about laptops
-manager.addDocument('en', 'What are the top gaming laptops in 2023?', 'product_info_laptop');
-manager.addDocument('en', 'Tell me about the latest Dell XPS laptop.', 'product_info_laptop');
-manager.addDocument('en', 'What is the battery life of the ASUS ROG laptop?', 'product_info_laptop');
+    // Answers
+    manager.addAnswer('en', 'greeting.hello', 'Hey there!');
+    manager.addAnswer('en', 'greeting.bye', 'Till next time!');
+    manager.addAnswer('en', 'leaving', 'Bye!');
+    manager.addAnswer('en', 'greeting', 'Hey! How may I help you today?');
+    manager.addAnswer('en', 'greeting', 'Hey there. How may I help you today?');
+    manager.addAnswer('en', 'greeting', 'Hi! How may I help you today?');
+    manager.addAnswer('en', 'greeting', 'Yo whatsup! How may I help you today?');
+    manager.addAnswer('en', 'greeting', 'Howdy, How may I help you today?');
+}
 
-// Answers for laptop info
-manager.addAnswer('en', 'product_info_laptop', 'The top gaming laptops in 2023 include models from ASUS, MSI, and Razer.');
-manager.addAnswer('en', 'product_info_laptop', 'The latest Dell XPS laptop offers a stunning InfinityEdge display and powerful performance.');
-manager.addAnswer('en', 'product_info_laptop', 'The ASUS ROG laptop provides up to 8 hours of battery life for on-the-go gaming.');
+async function getProductsFromDB() {
+    try {
+        const products = await Product.find();
+        return products;
+    } catch (error) {
+        console.error('Error retrieving products from the database:', error);
+        return [];
+    }
+}
 
-// Additional questions about T-shirts
-manager.addDocument('en', 'Where can I find eco-friendly T-shirt options?', 'product_info_tshirt');
-manager.addDocument('en', 'Tell me about custom printed T-shirts.', 'product_info_tshirt');
-manager.addDocument('en', 'What are the popular T-shirt brands in 2023?', 'product_info_tshirt');
+function processProduct(product) {
+    console.log(`Processing product: ${product.name}`);
 
-// Answers for T-shirt info
-manager.addAnswer('en', 'product_info_tshirt', 'You can find eco-friendly T-shirt options at stores like Patagonia and H&M.');
-manager.addAnswer('en', 'product_info_tshirt', 'Custom printed T-shirts allow you to design your own unique shirts with personalized graphics.');
-manager.addAnswer('en', 'product_info_tshirt', 'Popular T-shirt brands in 2023 include Nike, Adidas, and Supreme.');
+    const { category, name, price, stars, rating_count, feature_bullets } = product;
 
-manager.addDocument('en', 'Tell me about the author of "The Great Gatsby."', 'product_info_book');
-manager.addDocument('en', 'What\'s the genre of the "Harry Potter" series?', 'product_info_book');
-manager.addDocument('en', 'Recommend a mystery novel for me.', 'product_info_book');
-manager.addDocument('en', 'What is the average price of a hardcover book?', 'product_price_book');
+    if (!name || typeof name !== 'string') {
+        console.error('Invalid product name:', name);
+        return; // Skip this product if the name is invalid
+    }
 
-// Answers for book info
-manager.addAnswer('en', 'product_info_book', 'The author of "The Great Gatsby" is F. Scott Fitzgerald.');
-manager.addAnswer('en', 'product_info_book', 'The "Harry Potter" series falls under the fantasy genre.');
-manager.addAnswer('en', 'product_info_book', 'I recommend reading "Gone Girl" by Gillian Flynn, a popular mystery novel.');
-manager.addAnswer('en', 'product_info_book', 'The average price of a hardcover book is typically around $25 to $30.');
+    addPriceQuestion(name, price);
+    addStarsQuestion(name, stars);
+    addRatingCountQuestion(name, rating_count);
+    addFeatureBulletsQuestions(name, feature_bullets);
+    addFullFeatureBulletsQuestions(name, feature_bullets);
+    addListofAllDetailsQuestion(name, price, stars, rating_count, feature_bullets)
 
-// train model
-manager.train().then(() => {
-    manager.save();
-});
+
+    if (category.toLowerCase().includes('laptop')) {
+        manager.addDocument('en', `Recommend me a laptop`, `recommend_laptop`);
+        manager.addAnswer('en', 'recommend_laptop', `A recommended laptop would be ${name}. Here are some details:\n
+        - Price: ${price}\n
+        - Stars: ${stars}\n
+        - Rating Count: ${rating_count}\n
+        - Features:\n${feature_bullets.map(feature => `  - ${feature}`).join('\n')}`);
+    }
+
+    if (category.toLowerCase().includes('tshirts')) {
+        manager.addDocument('en', `Recommend me a t-shirt`, `recommend_tshirt`);
+        manager.addAnswer('en', 'recommend_tshirt', `A recommended t-shirt would be ${name}. Here are some details:\n
+        - Price: ${price}\n
+        - Stars: ${stars}\n
+        - Rating Count: ${rating_count}\n
+        - Features:\n${feature_bullets.map(feature => `  - ${feature}`).join('\n')}`);
+    }
+    if (category.toLowerCase().includes('books')) {
+        manager.addDocument('en', `Recommend me a book`, `recommend_books`);
+        manager.addAnswer('en', 'recommend_books', `A recommended book would be ${name}. Here are some details:\n
+        - Price: ${price}\n
+        - Stars: ${stars}\n
+        - Rating Count: ${rating_count}\n
+        - Features:\n${feature_bullets.map(feature => `  - ${feature}`).join('\n')}`);
+    }
+    if (category.toLowerCase().includes('ipad')) {
+        manager.addDocument('en', `Recommend me a ipad`, `recommend_ipad`);
+        manager.addAnswer('en', 'recommend_ipad', `A recommended ipad would be ${name}. Here are some details:\n
+        - Price: ${price}\n
+        - Stars: ${stars}\n
+        - Rating Count: ${rating_count}\n
+        - Features:\n${feature_bullets.map(feature => `  - ${feature}`).join('\n')}`);
+    }
+
+}
+
+function addListofAllDetailsQuestion(productName, price, stars, rating_count, feature_bullets){
+    if (productName && price && stars && rating_count && feature_bullets) {
+        manager.addDocument('en', `What is the listing details of ${productName}?`, `product_listing_details_${productName}`);
+        manager.addAnswer('en', `product_listing_details_${productName}`, `For the product: ${productName}. Here are some of the listing details:
+        - Price: ${price} 
+        - Stars: ${stars} 
+        - Rating Count: ${rating_count} 
+        - Features:\n${feature_bullets.map(feature => `  - ${feature}`).join('\n')}`);
+    } else {
+        manager.addDocument('en', `What is the price of ${productName}?`, 'price_not_found');
+        manager.addAnswer('en', 'price_not_found', `Sorry, cannot find the price for ${productName}.`);
+    }
+}
+function addPriceQuestion(productName, price) {
+    if (price) {
+        manager.addDocument('en', `What is the price of ${productName}?`, `product_price_${productName}`);
+        manager.addAnswer('en', `product_price_${productName}`, `The price of ${productName} is ${price}.`);
+    } else {
+        manager.addDocument('en', `What is the price of ${productName}?`, 'price_not_found');
+        manager.addAnswer('en', 'price_not_found', `Sorry, cannot find the price for ${productName}.`);
+    }
+}
+
+function addStarsQuestion(productName, stars) {
+    if (stars) {
+        manager.addDocument('en', `What is the star rating of ${productName}?`, `product_stars_${productName}`);
+        manager.addAnswer('en', `product_stars_${productName}`, `${productName} has a star rating of ${stars}.`);
+    } else {
+        manager.addDocument('en', `What is the star rating of ${productName}?`, 'stars_not_found');
+        manager.addAnswer('en', 'stars_not_found', `Sorry, cannot find the star rating for ${productName}.`);
+    }
+}
+
+function addRatingCountQuestion(productName, ratingCount) {
+    if (ratingCount) {
+        manager.addDocument('en', `How many ratings does ${productName} have?`, `product_rating_count_${productName}`);
+        manager.addAnswer('en', `product_rating_count_${productName}`, `${productName} has ${ratingCount}.`);
+    } else {
+        manager.addDocument('en', `How many ratings does ${productName} have?`, 'rating_count_not_found');
+        manager.addAnswer('en', 'rating_count_not_found', `Sorry, cannot find the rating count for ${productName}.`);
+    }
+}
+
+function addFullFeatureBulletsQuestions(productName, featureBullets) {
+    if (featureBullets) {
+            manager.addDocument('en', `Tell me about the features of ${productName}.`, `product_feature_${productName}`);
+            manager.addAnswer('en', `product_feature_${productName}`, `${productName} features:\n${featureBullets.map(feature => `  - ${feature}`).join('\n')}`);
+    } else {
+        manager.addDocument('en', `Tell me about the features of ${productName}.`, 'features_not_found');
+        manager.addAnswer('en', 'features_not_found', `Sorry, cannot find the features for ${productName}.`);
+    }
+}
+
+function addFeatureBulletsQuestions(productName, featureBullets) {
+    if (featureBullets && featureBullets.length > 0) {
+        for (let i = 0; i < featureBullets.length; i++) {
+            manager.addDocument('en', `Tell me about the ${i + 1}th feature of ${productName}.`, `product_feature_${productName}_${i}`);
+            manager.addAnswer('en', `product_feature_${productName}_${i}`, `${productName} feature ${i + 1}: ${featureBullets[i]}`);
+        }
+    } else {
+        manager.addDocument('en', `Tell me about the features of ${productName}.`, 'features_not_found');
+        manager.addAnswer('en', 'features_not_found', `Sorry, cannot find the features for ${productName}.`);
+    }
+}
 
 async function processUserInput(input) {
+    console.log(`Processing user input: ${input}`);
     let response = await manager.process('en', input);
-    console.log(response);
+    console.log('Response:', response);
+
+    if (!response || !response.answer) {
+        console.log("No answer found.");
+        return "Sorry, wasn't able to answer that! Please ask another question.";
+    }
+
+    console.log(`Answer: ${response.answer}`);
     return response.answer;
 }
 
+async function main() {
+    console.log('Start processing...');
+    await loadOrTrainModel();
+    console.log('Processing complete.');
+}
 
+main();
 
 module.exports = {
     processUserInput,
 };
-
-

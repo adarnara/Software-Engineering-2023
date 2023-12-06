@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const cartProduct = require('./cartProduct.js').schema;
+const Product = require('./Product.js').schema;
 const Schema = mongoose.Schema;
 
 
@@ -10,11 +11,14 @@ const shoppingCartSchema = new Schema({
         required: true
       },
     purchaseTime: {
-        type: Number, // epoch time
+        type: Date, // epoch time
         default: null
     },
     products: {
         type: [cartProduct]
+    },
+    deletedProducts: {
+        type: [String]
     },
     numShipped: {
         type: Number,
@@ -25,5 +29,9 @@ const shoppingCartSchema = new Schema({
         default: 0.00
     }
 });
+
+/*
+
+*/
 
 module.exports = mongoose.model('shoppingCart', shoppingCartSchema);

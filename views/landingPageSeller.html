@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reprua: Where Dreams Come Right to Your Door</title>
+  <link rel="stylesheet" type="text/css" href="/views/landingPageSeller.css">
+
+  <style>
+
+body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .number-control {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
+    input[type="number"] {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 60px;
+      text-align: center;
+      font-size: 14px;
+
+    }
+
+    .delete-button {
+      padding: 5px 10px;
+      background-color: #2fc5d3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-left: 20px;
+      margin-right: 10px;
+      font-size: 15px;
+      /* Additional styles for the delete button */
+    }
+
+    .delete-button:hover {
+        background-color: #2ab289; /* Change color on hover */
+    }
+
+    .edit-button {
+      padding: 5px 10px;
+      background-color: #2fc5d3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-left: 20px;
+      margin-right: 10px;
+      font-size: 15px;
+      /* Additional styles for the delete button */
+    }
+
+    .edit-button:hover {
+        background-color: #2ab289; /* Change color on hover */
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: rgba(0, 135, 255, 0.7);
+      color: #fff;
+      padding: 10px;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    }
+
+
+    .navbar-logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-logo img {
+      max-width: 60px;
+      margin-right: 10px;
+    }
+
+    .search-bar {
+      text-align: center;
+      position: relative;
+      transform: translate(-103%, 0%);
+    }
+
+    .search-bar input[type="text"] {
+      width: 60%;
+      padding: 5px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .search-bar button {
+      background-color: #fff;
+      color: #007BFF;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin-left: 5px;
+      cursor: pointer;
+    }
+
+
+    .content-container {
+      position: absolute;
+      top: 70px;
+      left: 0;
+      width: 100vw;
+      height: calc(100vh - 70px);
+      overflow-y: auto;
+      z-index: 1001;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .product-container {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      padding: 20px;
+      border-radius: 5px;
+      background-color: #f8f8f8;
+      width: 100%;
+    }
+    .navbar-cart {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-cart img {
+      max-width: 40px;
+      margin-right: 10px;
+    }
+    .product-image {
+      flex: 1;
+      margin-right: 20px;
+      max-width: 200px;
+    }
+
+    .product-image img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .product-info {
+      flex: 2;
+    }
+
+    .product-info h2, .product-info p, .product-info ul {
+      font-size: 14px;
+    }
+
+
+    .image-navigation button {
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      margin: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .search-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .search-bar input[type="text"] {
+      width: 60%;
+      padding: 5px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .search-bar button {
+      background-color: #fff;
+      color: #007BFF;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin-left: 5px;
+      cursor: pointer;
+    }
+
+
+    .product-info ul {
+      padding-left: 20px;
+    }
+
+    .hidden {
+      display: none;
+    }
+    .go-to-page-button {
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .go-to-page-button.login-button {
+      background-color: transparent;
+    }
+
+    .createBtn {
+      background-color: #fff;
+  
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin-left: 5px;
+      cursor: pointer;
+    }
+
+    /* The Modal (background) */
+    .modal {
+      display: none; /*Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1; /* Sit on top */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgb(0,0,0); /* Fallback color */
+      background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto; /* 15% from the top and centered */
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%; /* Could be more or less, depending on screen size */
+    }
+
+    .submitBtn {
+      background-color: #fff;
+      border: 1px solid #000000;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin-left: 5px;
+      cursor: pointer;
+    }
+
+    /* The Close Button */
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    /* The Edit Modal (background) */
+    .editmodal {
+      display: none; /*Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1; /* Sit on top */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgb(0,0,0); /* Fallback color */
+      background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .editmodal-content {
+      background-color: #fefefe;
+      margin: 15% auto; /* 15% from the top and centered */
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%; /* Could be more or less, depending on screen size */
+    }
+
+    .editsubmitBtn {
+      background-color: #fff;
+      border: 1px solid #000000;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin-left: 5px;
+      cursor: pointer;
+    }
+
+    /* The Close Button */
+    .editclose {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .editclose:hover,
+    .editclose:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+
+  </style>
+
+  <!-- <script>
+    function checkForNegativeNumber(input) {
+        if (input.value < 0) {
+            input.value = 0;
+        }
+    }
+  </script>
+
+  <script>
+    function checkForInvalidRating(input) {
+        if (input.value < 0 || input.value > 5) {
+            input.value = 0;
+        }
+    }
+  </script> -->
+</head>
+<body>
+
+  <div class="navbar">
+    <a href="/views/landingPage.html" style="text-decoration: none; color: inherit;">
+      <div class="navbar-logo">
+        <img src="/public/Images/logo.png" alt="Logo" />
+        <span style="font-weight: bold; font-size: 20px;">Reprua</span>
+      </div>
+    </a>
+    <div>
+      <button class="hidden previous-button" onclick="previousPage()">Previous</button>
+      <button class="hidden next-button" onclick="nextPage()">Next</button>
+    </div>
+    <div class="search-bar">
+      <input type="text" placeholder="Search Bar" />
+      <button class="search-button">Search</button>
+    </div>
+    <div id="shopping-icon" class="navbar-cart">
+      <a href="/views/shoppingCart.html">
+        <img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />
+  
+        <span style="font-weight: bold; font-size: 20px;"></span>
+      </a>
+      <div id="sign-in-user">
+        <a href="registerAndLoginPage.html">
+          <button class="go-to-page-button">
+            <img src="../public/Images/image-button-two.png" alt="Register/Login" />
+          </button>
+        </a>
+      </div>
+    </div>
+  </div>
+
+<div
+  id="error-message" class="hidden">Failed to load products. Please try again later.
+</div>
+
+
+
+<div class="content-container">
+
+  <div id="products-container">
+
+  </div>
+  <button id="createProductBtn"class="createBtn">Create Product</button>
+  <!-- Create Modal -->
+  <div id="productModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Enter Product Details</h2>
+      <form id="productForm">
+
+        <label for="productType">Product Type:</label>
+        <select name="productType" id="productType">
+          <option value="ipad">Ipad</option>
+          <option value="laptop">Laptop</option>
+          <option value="tshirts">T-Shirt</option>
+          <option value="books">Book</option>
+        </select><br><br>
+
+        <label for="productName">Product Name:</label>
+        <input type="text" id="productName" name="productName" required><br><br>
+
+        <label for="productPrice">Product Price:</label>
+        <input type="number" id="productPrice" name="productPrice" required min="0"><br><br>
+
+        <label for="stars">Stars:</label>
+        <input type="number" id="stars" name="stars" required min="0" max = "5" ><br><br>
+
+        <label for="ratingCount">Total Ratings:</label>
+        <input type="number" id="ratingCount" name="ratingCount" required min="0" ><br><br>
+
+        <label for="featureBullets">Feature Bullets:</label>
+        <input type="text" id="featureBullets" name="featureBullets" required><br><br>
+
+        <label for="images">Images:</label>
+        <input type="file" id="images" name="images" accept="image/*" multiple required><br><br>
+
+
+        <label for="variantData">Variant Data:</label>
+        <input type="text" id="variantData" name="variantData" required><br><br>
+
+        <!--seller data is automatically input-->
+        <!--package information is automaitcally input-->
+
+        <input type="submit" value="Submit" class="submitBtn">
+      </form>
+    </div>
+  </div>
+
+
+<!-- Edit Modal -->
+<div id="editModal" class="editmodal">
+  <!-- Modal content -->
+  <div class="editmodal-content">
+    <span class="editclose">&times;</span>
+    <h2>Edit Product Details</h2>
+    <form id="editForm">
+
+      <label for="productName">Product Name:</label>
+      <input type="text" id="editproductName" name="editproductName" required><br><br>
+
+      <label for="productPrice">Product Price:</label>
+      <input type="number" id="editproductPrice" name="editproductPrice" required min="0"><br><br>
+
+      <label for="stars">Stars:</label>
+      <input type="number" id="editstars" name="editstars" required min="0" max = "5"><br><br>
+
+      <label for="ratingCount">Total Ratings:</label>
+      <input type="number" id="editratingCount" name="editratingCount" required min="0" ><br><br>
+
+      <label for="featureBullets">Feature Bullets:</label>
+      <input type="text" id="editfeatureBullets" name="editfeatureBullets" required><br><br>
+
+      <label for="images">Images:</label>
+      <input type="file" id="editimages" name="editimages" accept="image/*" multiple  required><br><br>
+
+
+      <label for="variantData">Variant Data:</label>
+      <input type="text" id="editvariantData" name="editvariantData" required><br><br>
+
+      <!--seller data is automatically input-->
+      <!--package information is automaitcally input-->
+
+      <input type="submit" value="Submit" class="editsubmitBtn">
+    </form>
+  </div>
+</div>
+
+</div>
+
+<section>
+  <div class="waves">
+    <div class="wave" id="wave1"></div>
+    <div class="wave" id="wave2"></div>
+    <div class="wave" id="wave3"></div>
+    <div class="wave" id="wave4"></div>
+    <img src="../public/Images/stars.jpg" class="stars">
+    <img src="../public/Images/island.png" class="island">
+  </div>
+</section>
+
+<script>
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  }
+
+  function setCookie(name, value, days) {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+  }
+
+  function deleteCookie(name) {
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+  }
+
+  function navigateToPage(route) {
+    window.location.href = route;
+  }
+
+  function logout() {
+    deleteCookie("token");
+    navigateToPage("/views/landingPage.html");
+  }
+
+  const token = getCookie("token");
+
+  if (token) {
+    const profileButton = document.createElement("button");
+    profileButton.className = "go-to-page-button";
+    profileButton.innerHTML = '<img src="../public/Images/profile.png" alt="Profile" />';
+    profileButton.onclick = function () {
+      checkUserRoleAndRedirect();
+    };
+
+
+    const logoutButton = document.createElement("button");
+    logoutButton.className = "go-to-page-button";
+    logoutButton.innerHTML = '<img src="../public/Images/logout-button-again.png" alt="Logout" />';
+    logoutButton.onclick = logout;
+
+  }
+</script>
+
+<script>
+  function checkUserRoleAndRedirect() {
+
+    const token = getCookie("token");
+
+    if (token) {
+      fetch("http://localhost:3000/token", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+              .then(response => response.json())
+              .then(data => {
+                const role = data.role;
+
+                if (role === "Seller") {
+                  window.location.href = "/views/profilePageSeller.html";
+                } else if (role === "Member") {
+                  window.location.href = "/views/profilePageMember.html";
+                } else {
+                  console.error("Unknown role:", role);
+                }
+              })
+              .catch(error => {
+                console.error("Error fetching user role:", error);
+              });
+    } else {
+      console.error("JWT token not found in cookies.");
+    }
+  }
+</script>
+<script src="/public/js/util.js"></script>
+<script src="/views/landingPageSeller.js"></script>
+</body>
+</html>

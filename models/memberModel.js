@@ -24,9 +24,18 @@ const MemberSchema = new mongoose.Schema({
       type:String,
       default:null
     }  
-}
-
+  },
+wishList :[{
+  type: mongoose.Schema.ObjectId,
+  ref: 'Product'
+}],
+orders:[{
+  type: mongoose.Schema.Types.ObjectId,
+  ref: 'order'
+  }],
 });
+
+
 
 const Member = User.discriminator('Member', MemberSchema);
 
