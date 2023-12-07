@@ -5,6 +5,12 @@ document.addEventListener('DOMContentLoaded', function() {
         profilePhotoElement.src = '../public/Images/default-Avatar-2.jpeg';
     });
 
+    const cancelButton = document.getElementById('cancel-button');
+    cancelButton.addEventListener('click', function() {
+        // Redirect to the landing page when the "Cancel" button is clicked.
+        window.location.href = 'landingPage.html';
+    });
+
     assertJwtToken();
     fetchUserInformation();
 });
@@ -14,7 +20,7 @@ function fetchUserInformation() {
         const userId = data.id;
 
 
-        authorize(`${SERVER_URL}/user/${userId}`)
+        authorize(`${SERVER_URL}/profile/getUser`)
 
             .then(response => response.json())
             .then(userData => {
@@ -109,7 +115,7 @@ function saveChanges() {
 
                     console.log(updatedUserData);
 
-                    authorize(`http://localhost:3000/profile/updateProfile/${userId}`, {
+                    authorize(`http://localhost:3000/profile/updateProfile`, {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
@@ -130,7 +136,7 @@ function saveChanges() {
             } else {
             updatedUserData.profileImage = '../public/Images/default-Avatar-2.jpeg';
 
-            authorize(`http://localhost:3000/profile/updateProfile/${userId}`, {
+            authorize(`http://localhost:3000/profile/updateProfile`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

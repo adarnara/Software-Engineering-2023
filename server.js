@@ -68,10 +68,6 @@ const server = http.createServer(async (request, response) => {
     }
 
 
-
-
-
-
     //handling dynamic routes like /user/{id}
     for (const route in userRouter) {
         const methodPart = route.match(/^[A-Z]+/)[0]; // Match the HTTP method part
