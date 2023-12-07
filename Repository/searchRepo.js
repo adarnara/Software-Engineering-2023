@@ -48,6 +48,11 @@ class SearchRepository {
                         query: searchText,
                         path: "name",
                         tokenOrder: "sequential",
+                        fuzzy: {
+                            maxEdits: 2,
+                            prefixLength: 2,
+                            maxExpansions: 10,
+                        },
                     },
                 },
             },
