@@ -281,14 +281,9 @@
     <button class="search-button">Search</button>
   </div>
   <div id="shopping-icon" class="navbar-cart">
-    <a href="/views/shoppingCart.html">
-      <img src="/public/Images/shoppingCartIcon.png" alt="shoppingCart" />
-
-      <span style="font-weight: bold; font-size: 20px;"></span>
-    </a>
     <div id="sign-in-user">
       <button class="go-to-page-button" onclick="navigateToPage('/views/registerAndLoginPage.html')">
-        <img src="/public/Images/image-button-two.png" alt="Register/Login" />
+        <img src="../public/Images/logout-button-again.png" alt="Register/Login" />
       </button>
     </div>
   </div>
@@ -364,7 +359,7 @@
 
     const logoutButton = document.createElement("button");
     logoutButton.className = "go-to-page-button";
-    logoutButton.innerHTML = '<img src="../public/Images/logout-button-again.png" alt="Logout" />';
+    logoutButton.innerHTML = '<img src="/public/Images/image-button-two.png" alt="Logout" />';
     logoutButton.onclick = logout;
 
     document.getElementById("shopping-icon").appendChild(logoutButton);

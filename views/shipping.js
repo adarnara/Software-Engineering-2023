@@ -180,11 +180,11 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         const parcels = [                         // hardcoded... waiting for Adarsh to add randomized weights, heights, etc. to scraped products *
             {
-                "length": "5",
-                "width": "5",
-                "height": "5",
+                "length": (Math.random() * (5 - 1) + 1).toFixed(2),
+                "width": (Math.random() * (5 - 1) + 1).toFixed(2),
+                "height": (Math.random() * (5 - 1) + 1).toFixed(2),
                 "distance_unit": "in",
-                "weight": "2",
+                "weight": (Math.random() * (5 - 1) + 1).toFixed(2),
                 "mass_unit": "lb"
             }  
         ];

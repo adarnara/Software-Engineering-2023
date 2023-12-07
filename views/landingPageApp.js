@@ -288,12 +288,15 @@ function setup() {
 
         const logoutButton = document.createElement("button");
         logoutButton.className = "go-to-page-button";
-        logoutButton.innerHTML = '<img src="../public/Images/logout-button-again.png" alt="Logout" />';
+        logoutButton.innerHTML = '<img src="/public/Images/image-button-two.png" alt="Logout" />';
         logoutButton.onclick = logout;
 
         document.getElementById("shopping-icon").appendChild(logoutButton);
     }
 }
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 // Set up the web page
 setup();
