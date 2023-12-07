@@ -48,20 +48,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const pageSize = 5; //how many products to display per page
     let lastFetchedProductCount = 0; //how many products we're fetched last
 
-
-//    const categoryLinks = document.querySelectorAll('.category-dropdown a');
-//     categoryLinks.forEach(link => {
-//     link.addEventListener('click', (event) => {
-//       event.preventDefault(); // Prevent the default anchor action
-//       const category = link.getAttribute('data-category'); // Get the category from data attribute
-//       categoryButton.textContent = category + ' ▼';
-//       searchProducts(category); //calls search function with the category
-//     });
-//   });
-
+   
+    
 const categoryButton = document.querySelector('.category-button');
     const categoryLinks = document.querySelectorAll('.category-dropdown a');
 
+   
     categoryLinks.forEach(link => {
         link.addEventListener('click', (event) => {
             event.preventDefault(); // Prevent the default anchor action
@@ -95,9 +87,9 @@ const categoryButton = document.querySelector('.category-button');
         currentSearchText = searchText; //stores in global variable so that it can be accessed in next and previous method
         let url = '';
         if (['books', 'ipad', 'laptop', 'tshirts'].includes(searchText.toLowerCase())) {
-            url = `http://localhost:3000/search/category?name=${searchText}&page=${currentPage}&pageSize=${pageSize}`; //searching by category
+            url = `http://localhost:3000/filter/category?name=${searchText}&page=${currentPage}&pageSize=${pageSize}`; //searching by category
         } else {
-            url = `http://localhost:3000/search?productId=${searchText}`; //searching for specific product
+            url = `http://localhost:3000/filter?productId=${searchText}`; //searching for specific product
         }
         fetch(url) //Fetch requested product(s)
             .then(response => response.json())
@@ -142,9 +134,7 @@ const categoryButton = document.querySelector('.category-button');
     }
 
     
-    
-
-
+      
 
     window.nextPage = function() { //go to next page
         currentPage += 1;
@@ -323,7 +313,7 @@ function setup() {
         document.getElementById("shopping-icon").appendChild(logoutButton);
     }
 }
-});
+
 // Set up the web page
 setup();
 

@@ -70,12 +70,15 @@
   .category-button {
     background-color: rgba(0, 135, 255, 0.7); /* Match navbar background */
     color: white;
-    padding: 10px 20px;
+    padding: 10px 10px;
     border: none;
     cursor: pointer;
-    font-size: 16px; /* Adjust as needed */
+    font-size: 14px; 
     border-bottom-left-radius: 10px; /* Optional rounded corners */
     border-bottom-right-radius: 10px;
+    border-top-right-radius:10px;
+    border-top-left-radius:10px;
+
   }
 
   .category-dropdown {
@@ -351,9 +354,34 @@
       padding-left: 20px;
     }
 
-    .hidden {
-      display: none;
-    }
+    .previous-button,
+.next-button {
+  position: fixed; /* Fixed position relative to the viewport */
+  top: 20px; /* 10px from the top, adjust this value as needed */
+  background-color: #fff;
+  color: #007BFF;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.previous-button {
+  background-color: #fff;
+  right: 600px; /* Position the 'Previous' button a bit more to the left */
+}
+
+.next-button {
+  background-color: #fff;
+  right:550px; /* 10px from the right edge of the screen */
+}
+
+.round {
+  border-radius: 50%;
+}
+
+
+
     .go-to-page-button {
       background-color: transparent;
       border: none;
@@ -402,7 +430,6 @@
 .ticket-button:hover {
   background-color: #0056b3;
 }
-
   </style>
 </head>
 <body>
@@ -447,15 +474,21 @@
       <a href="#" data-category="ipad">iPad</a>
       <a href="#" data-category="laptop">Laptop</a>
       <a href="#" data-category="tshirts">Tshirts</a>
-      
-
     </div>
+    
   </div>
-  
-  <div>
+ 
+  <!-- Directly within your body or a main container -->
+<button class="hidden previous-button round" onclick="window.previousPage()">&#8249;</button>
+<button class="hidden next-button round" onclick="window.nextPage()">&#8250;</button>
+
+ <!--<div>
     <button class="hidden previous-button" onclick="previousPage()">Previous</button>
     <button class="hidden next-button" onclick="nextPage()">Next</button>
-  </div>
+  </div>-->
+ 
+
+
   <div class="search-bar">
     <input type="text" placeholder="Search Bar" />
     <button class="search-button">Search</button>
