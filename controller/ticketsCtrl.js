@@ -50,15 +50,20 @@ async function createTicket(req, res) {
   async function getFirstOpen(req,res){
     try {
         const firstOpenTicket = await ticketsRepository.getFirstOpenTicket();
-        let user = await userRepo.findUserById(firstOpenTicket.userId);
-        const ticketObject = firstOpenTicket.toObject();
-        ticketObject.userData = {
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-            role: user.role
-        };
-        res.writeHead(201, { 'Content-Type': 'application/json' }).end(JSON.stringify(ticketObject));
+        if (firstOpenTicket == null){
+            res.writeHead(201, { 'Content-Type': 'application/json' }).end(JSON.stringify({ message: "No tickets." }));
+        }
+        else{
+            let user = await userRepo.findUserById(firstOpenTicket.userId);
+            const ticketObject = firstOpenTicket.toObject();
+            ticketObject.userData = {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                role: user.role
+            };
+            res.writeHead(201, { 'Content-Type': 'application/json' }).end(JSON.stringify(ticketObject));
+        }
     } catch (error) {
         console.error(error);
         res.writeHead(500).end('Internal Server Error');
@@ -68,21 +73,26 @@ async function createTicket(req, res) {
   async function getAllOpenTickets(req, res) {
     try {
         const allOpenTickets = await ticketsRepository.getAllOpenTickets();
-        const formattedTickets = [];
-
-        for (const ticket of allOpenTickets) {
-            let user = await userRepo.findUserById(ticket.userId);
-            const ticketObject = ticket.toObject();
-            ticketObject.userData = {
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email,
-                role: user.role
-            };
-            formattedTickets.push(ticketObject);
+        if (allOpenTickets == null){
+            res.writeHead(201, { 'Content-Type': 'application/json' }).end(JSON.stringify({ message: "No tickets." }));
         }
+        else{
+            const formattedTickets = [];
 
-        res.writeHead(200, { 'Content-Type': 'application/json' }).end(JSON.stringify(formattedTickets));
+            for (const ticket of allOpenTickets) {
+                let user = await userRepo.findUserById(ticket.userId);
+                const ticketObject = ticket.toObject();
+                ticketObject.userData = {
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email,
+                    role: user.role
+                };
+                formattedTickets.push(ticketObject);
+            }
+
+            res.writeHead(200, { 'Content-Type': 'application/json' }).end(JSON.stringify(formattedTickets));
+        }
     } catch (error) {
         console.error("Error getting all open tickets: ", error);
         res.writeHead(500).end("Internal Server Error");

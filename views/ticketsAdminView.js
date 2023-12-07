@@ -1,9 +1,12 @@
 async function displayFirstOpenTicket(ticketData) {
-    const ticketContainer = document.getElementById('getFirstOpen');
-        if (!ticketContainer) {
-      console.error('The ticket container element does not exist.');
-      return;
-    }
+  const ticketContainer = document.getElementById('getFirstOpen');
+  if (ticketData.message == "No tickets."){
+    const message = document.createElement('p');
+    message.textContent = `There are no Open Tickets. All tickets have been resolved`;
+    ticketContainer.innerHTML = '';
+    ticketContainer.appendChild(message);
+  }
+  else{
     const statusElem = document.createElement('p');
     statusElem.textContent = `Status: ${ticketData.status}`;
     const descriptionElem = document.createElement('p');
@@ -27,6 +30,7 @@ async function displayFirstOpenTicket(ticketData) {
     ticketContainer.appendChild(email);
     ticketContainer.appendChild(role);
   }
+  }
 
   async function displayAllOpenTickets(ticketsData) {
     const ticketContainer = document.getElementById('getAllOpen');
@@ -34,6 +38,18 @@ async function displayFirstOpenTicket(ticketData) {
         console.error('The ticket container element does not exist.');
         return;
     }
+    ticketContainer.innerHTML = '';
+    if (Array.isArray(ticketsData) && ticketsData.length === 0) {
+        const message = document.createElement('div');
+        message.textContent = `There are no Open Tickets. All tickets have been resolved`;
+        ticketContainer.appendChild(message);
+    }
+    else if (ticketsData.message === "No tickets.") {
+        const message = document.createElement('div');
+        message.textContent = `There are no Open Tickets. All tickets have been resolved`;
+        ticketContainer.appendChild(message);
+    }
+    else{
     ticketContainer.innerHTML = '';
     ticketsData.forEach((ticketData, index) => {
         const ticketDiv = document.createElement('div');
@@ -64,8 +80,8 @@ async function displayFirstOpenTicket(ticketData) {
             const divider = document.createElement('hr');
             ticketContainer.appendChild(divider);
         }
-
     });
+  }
   }
 
   async function displayAllResolvedTickets(ticketsData){
