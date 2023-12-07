@@ -72,6 +72,17 @@ class SearchRepository {
 
         return products;
     }
+    async findByProductName(searchText) {
+        
+        console.log(searchText);
+        const product = await Product.findOne({ name:searchText });
+
+        if (!product) {
+            throw new Error('Product not found');
+        }
+
+        return product;
+    }
 
 }
 

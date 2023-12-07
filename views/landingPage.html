@@ -159,10 +159,13 @@
       cursor: pointer;
     }
     .search-bar {
+      position: relative;
+      z-index: 2001;
       display: flex;
       align-items: center;
       justify-content: center;
     }
+
 
     .search-bar input[type="text"] {
       width: 60%;
@@ -237,6 +240,31 @@
 .ticket-button:hover {
   background-color: #0056b3;
 }
+#searchResults {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 40vw;
+  max-height: 200px; /* Adjust as needed */
+  overflow-y: auto; /* This is important for scrolling */
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  z-index: 2001; /* Ensure it is above other elements */
+}
+
+#searchResults p {
+  color: black;
+  padding: 10px;
+  margin: 0;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+  z-index:10000;
+}
+
+#searchResults p:hover {
+  background-color: #f0f0f0;
+}
 
   </style>
 </head>
@@ -277,9 +305,12 @@
     <button class="hidden next-button" onclick="nextPage()">Next</button>
   </div>
   <div class="search-bar">
-    <input type="text" placeholder="Search Bar" />
-    <button class="search-button">Search</button>
+    <input type="text" placeholder="Search Bar" id="searchInput" />
+    <button class="search-button" onclick="performSearch()">Search</button>
+    <div id="searchResults" class="autocomplete-results"></div>
+    
   </div>
+  
   <div id="shopping-icon" class="navbar-cart">
     <div id="sign-in-user">
       <button class="go-to-page-button" onclick="navigateToPage('/views/registerAndLoginPage.html')">
@@ -406,31 +437,12 @@
 <script src="/views/landingPageApp.js"></script>
 
 
-<section class="ticket-section">
-  <div>
-    <button id="button2" class="ticket-button">Have experienced issues with a product or seller. Click here.</button>
-  </div>
-</section>
-
 <script>
   // JavaScript function to navigate to another page
   function navigateToPage(route) {
     // Use window.location to navigate to the desired page
     window.location.href = route;
   }
-
-    //This is for tickets
-    document.addEventListener("DOMContentLoaded", () => {
-    const button2 = document.getElementById('button2');
-    if (button2) {
-      button2.addEventListener('click', () => {
-        console.log("Button2 clicked!");
-        window.location.href = "http://localhost:5500/views/ticketsPage.html";
-      });
-    } else {
-      console.log("Button2 not found");
-    }
-  });
 </script>
 
 <script src="landingPageApp.js"></script>

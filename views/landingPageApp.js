@@ -42,113 +42,152 @@ function getCookie(cookieName) {
 document.addEventListener("DOMContentLoaded", () => {
     const productsContainer = document.getElementById("products-container");
     const products = [];
-
     let currentSearchText = '';
     let currentPage = 1;
-    const pageSize = 5; //how many products to display per page
-    let lastFetchedProductCount = 0; //how many products we're fetched last
+    const pageSize = 5;
 
-    //Set up event listener for search bar.
+    const searchInput = document.getElementById('searchInput');
+    const searchResultsElement = document.getElementById('searchResults');
+
+    // Event listener for autocomplete
+    searchInput.addEventListener('input', function() {
+        const searchText = searchInput.value.trim();
+        if (searchText) {
+          fetchAutocompleteSuggestions(searchText);
+        } else {
+          searchResultsElement.innerHTML = '';
+          searchResultsElement.style.display = 'none';
+        }
+      });
+
+    // Set up event listener for search bar.
     const searchButton = document.querySelector('.search-bar .search-button');
     if (searchButton) {
         searchButton.addEventListener('click', function() {
-            currentPage = 1
-            const searchText = document.querySelector('.search-bar input[type="text"]').value;
-            const pattern = /^(books|ipad|tshirts|laptop)\d*$/;
-            if (pattern.test(searchText)) { //only continues if the search was valid
-                currentSearchText = searchText; // Store the current search text
-                searchProducts(searchText);
-            } else {
-                var errorMessage = document.getElementById('error-message');
-                errorMessage.classList.remove('hidden');
-                productsContainer.innerHTML = ''; //Clear the products container
-                products.length = 0; //Reset the products array
-            }
+            performSearch(searchInput.value.trim());
         });
     }
-    //Searches for and displays requested products
-    function searchProducts(searchText) {
-        currentSearchText = searchText; //stores in global variable so that it can be accessed in next and previous method
-        let url = '';
-        if (['books', 'ipad', 'laptop', 'tshirts'].includes(searchText.toLowerCase())) {
-            url = `http://localhost:3000/search/category?name=${searchText}&page=${currentPage}&pageSize=${pageSize}`; //searching by category
-        } else {
-            url = `http://localhost:3000/search?productId=${searchText}`; //searching for specific product
+
+    window.nextPage = function() {
+        if (currentSearchText) {
+            currentPage++;
+            performSearch(currentSearchText);
         }
-        fetch(url) //Fetch requested product(s)
+    };
+
+    window.previousPage = function() {
+        if (currentPage > 1 && currentSearchText) {
+            currentPage--;
+            performSearch(currentSearchText);
+        }
+    };
+
+    async function fetchAutocompleteSuggestions(searchText) {
+        try {
+          const response = await fetch(`http://localhost:3000/autocomplete?searchText=${searchText}`);
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const data = await response.json();
+          displayAutocompleteResults(data);
+        } catch (error) {
+          console.error('Autocomplete Error:', error);
+          searchResultsElement.innerHTML = '';
+          searchResultsElement.style.display = 'none';
+        }
+      }
+
+      function displayAutocompleteResults(results) {
+        var searchResultsElement = document.getElementById('searchResults');
+        searchResultsElement.innerHTML = "";
+        searchResultsElement.style.display = 'block';
+  
+        results.forEach(result => {
+          var resultElement = document.createElement('p');
+          resultElement.textContent = result.name;
+          resultElement.onclick = function() {
+            addSelectedResult(result.name);
+            document.getElementById('searchInput').value = ''; // Clear the search bar
+            searchResultsElement.innerHTML = ''; // Clear autocomplete results
+            searchResultsElement.style.display = 'none';
+          };
+          searchResultsElement.appendChild(resultElement);
+        });
+      }
+  
+      
+      function addSelectedResult(name) {
+        const selectedResultsContainer = document.getElementById('searchResults');
+        console.log(selectedResultsContainer);
+        const newInput = document.createElement('div');
+        newInput.className = 'selected-result';
+        newInput.textContent = name;
+        newInput.onclick = function() {
+          selectedResultsContainer.removeChild(newInput);
+        };
+        selectedResultsContainer.appendChild(newInput);
+  
+        // Fetch exact product info when a selection is made
+        fetchExactProductInfo(name);
+      }
+      
+      
+      
+      
+      
+
+    function fetchExactProductInfo(productName) {
+         productName = productName.replace(/\+/g, "%2B");
+         console.log(productName);
+        fetch(`http://localhost:3000/exactName?searchText=${productName}`)
+            .then(response => response.json())
+            .then(productInfo => {
+                productsContainer.innerHTML = createProductHTML(productInfo);
+            })
+            .catch(error => console.error('Exact Product Fetch Error:', error));
+    }
+
+    function performSearch(searchText) {
+        if (!searchText) {
+            alert('No results found.');
+            return;
+        }
+        currentSearchText = searchText;
+        const url = `http://localhost:3000/search/?searchText=${searchText}&page=${currentPage}&pageSize=${pageSize}`;
+        fetch(url)
             .then(response => response.json())
             .then(data => {
-                console.log(data);
-                lastFetchedProductCount = data.length;
-                let singleSearch = false;
-
-                productsContainer.innerHTML = ''; //Clear the products container
-                products.length = 0; //Reset the products array
-
-                if (Array.isArray(data)) { //add new products and display
-                    data.forEach((product) => {
-                        products.push(product);
-                        productsContainer.innerHTML += createProductHTML(product);
-                    });
-                } else { //add single product and display
-                    singleSearch = true;
-                    products.push(data)
-                    productsContainer.innerHTML += createProductHTML(data);
-                }
-
-                //logic to hide or reveal next/previous button when searching
-                const prevButton = document.querySelector('.previous-button');
-                const nextButton = document.querySelector('.next-button');
-                if (!singleSearch) {
-                    if (prevButton) {
-                        prevButton.classList.toggle('hidden', currentPage === 1); //hide previous button if on the first page
-                    }
-                    if (nextButton) {
-                        //hide next button if the amount of products found is less then the page can fit (meaning theres no more products to display on the next page)
-                        nextButton.classList.toggle('hidden', lastFetchedProductCount < pageSize);
-                    }
-                } else {
-                    prevButton.classList.toggle('hidden', true);
-                    nextButton.classList.toggle('hidden', true);
-                }
+                updateProductDisplay(data);
             })
             .catch(error => {
-                console.error('Error fetching data:', error);
+                console.error('Search Error:', error);
+                alert('No results found.');
             });
     }
 
-    window.nextPage = function() { //go to next page
-        currentPage += 1;
-        searchProducts(currentSearchText);
-    };
-
-    window.previousPage = function() { //go to previous page
-        if (currentPage > 1) {
-            currentPage -= 1;
-            searchProducts(currentSearchText);
+    function updateProductDisplay(data) {
+        if (!data.length) {
+            alert('No results found.');
+            return;
         }
-    };
-
-    fetch('http://localhost:3000/')
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            // console.log('Response from /:', JSON.stringify(data, null, 2));
-
-            data.forEach((product) => {
-                // Push each product into the products array
-                products.push(product);
-                const productHTML = createProductHTML(product);
-                productsContainer.innerHTML += productHTML;
-            });
-        })
-        .catch(error => {
-            console.error('Error fetching product data:', error);
+        productsContainer.innerHTML = '';
+        data.forEach(product => {
+            productsContainer.innerHTML += createProductHTML(product);
         });
+        updateNavigationButtons(data.length);
+    }
+
+    function updateNavigationButtons(fetchedCount) {
+        const prevButton = document.querySelector('.previous-button');
+        const nextButton = document.querySelector('.next-button');
+
+        if (prevButton) {
+            prevButton.classList.toggle('hidden', currentPage === 1);
+        }
+        if (nextButton) {
+            nextButton.classList.toggle('hidden', fetchedCount < pageSize);
+        }
+    }
 
     function createProductHTML(product) {
         //check if variant_data is empty
