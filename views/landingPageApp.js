@@ -9,7 +9,7 @@ function checkPos(quantity) {
  * top right corner of the screen (replacing the sign in button)
  */
 function checkSignedIn() {
-    let token = getJwtToken(); 
+    let token = getJwtToken();
     if (token) {
         // don't qualify domain; this will break if server is hosted
         // non-locally or on a different port.
@@ -73,32 +73,32 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
     // Event listener for autocomplete
-    searchInput.addEventListener('input', function() {
+    searchInput.addEventListener('input', function () {
         const searchText = searchInput.value.trim();
         if (searchText) {
-          fetchAutocompleteSuggestions(searchText);
+            fetchAutocompleteSuggestions(searchText);
         } else {
-          searchResultsElement.innerHTML = '';
-          searchResultsElement.style.display = 'none';
+            searchResultsElement.innerHTML = '';
+            searchResultsElement.style.display = 'none';
         }
-      });
+    });
 
     // Set up event listener for search bar.
     const searchButton = document.querySelector('.search-bar .search-button');
     if (searchButton) {
-        searchButton.addEventListener('click', function() {
+        searchButton.addEventListener('click', function () {
             performSearch(searchInput.value.trim());
         });
     }
 
-    window.nextPage = function() {
+    window.nextPage = function () {
         if (currentSearchText) {
             currentPage++;
             performSearch(currentSearchText);
         }
     };
 
-    window.previousPage = function() {
+    window.previousPage = function () {
         if (currentPage > 1 && currentSearchText) {
             currentPage--;
             performSearch(currentSearchText);
@@ -107,61 +107,61 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function fetchAutocompleteSuggestions(searchText) {
         try {
-          const response = await fetch(`http://localhost:3000/autocomplete?searchText=${searchText}`);
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          const data = await response.json();
-          displayAutocompleteResults(data);
+            const response = await fetch(`http://localhost:3000/autocomplete?searchText=${searchText}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            displayAutocompleteResults(data);
         } catch (error) {
-          console.error('Autocomplete Error:', error);
-          searchResultsElement.innerHTML = '';
-          searchResultsElement.style.display = 'none';
+            console.error('Autocomplete Error:', error);
+            searchResultsElement.innerHTML = '';
+            searchResultsElement.style.display = 'none';
         }
-      }
+    }
 
-      function displayAutocompleteResults(results) {
+    function displayAutocompleteResults(results) {
         var searchResultsElement = document.getElementById('searchResults');
         searchResultsElement.innerHTML = "";
         searchResultsElement.style.display = 'block';
-  
+
         results.forEach(result => {
-          var resultElement = document.createElement('p');
-          resultElement.textContent = result.name;
-          resultElement.onclick = function() {
-            addSelectedResult(result.name);
-            document.getElementById('searchInput').value = ''; // Clear the search bar
-            searchResultsElement.innerHTML = ''; // Clear autocomplete results
-            searchResultsElement.style.display = 'none';
-          };
-          searchResultsElement.appendChild(resultElement);
+            var resultElement = document.createElement('p');
+            resultElement.textContent = result.name;
+            resultElement.onclick = function () {
+                addSelectedResult(result.name);
+                document.getElementById('searchInput').value = ''; // Clear the search bar
+                searchResultsElement.innerHTML = ''; // Clear autocomplete results
+                searchResultsElement.style.display = 'none';
+            };
+            searchResultsElement.appendChild(resultElement);
         });
-      }
-  
-      
-      function addSelectedResult(name) {
+    }
+
+
+    function addSelectedResult(name) {
         const selectedResultsContainer = document.getElementById('searchResults');
         console.log(selectedResultsContainer);
         const newInput = document.createElement('div');
         newInput.className = 'selected-result';
         newInput.textContent = name;
-        newInput.onclick = function() {
-          selectedResultsContainer.removeChild(newInput);
+        newInput.onclick = function () {
+            selectedResultsContainer.removeChild(newInput);
         };
         selectedResultsContainer.appendChild(newInput);
-  
+
         // Fetch exact product info when a selection is made
         fetchExactProductInfo(name);
-      }
-      
-      
-      
-      
-      
+    }
+
+
+
+
+
 
     function fetchExactProductInfo(productName) {
-         productName = productName.replace(/\+/g, "%2B");
-         console.log(productName);
+        productName = productName.replace(/\+/g, "%2B");
+        console.log(productName);
         fetch(`http://localhost:3000/exactName?searchText=${productName}`)
             .then(response => response.json())
             .then(productInfo => {
@@ -187,14 +187,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 alert('No results found.');
                 return;
             });
-            let url2 = `http://localhost:3000/search/?searchText=${searchText}&page=${currentPage}&pageSize=${pageSize+1}`;
+        let url2 = `http://localhost:3000/search/?searchText=${searchText}&page=${currentPage}&pageSize=${pageSize + 1}`;
         fetch(url2)
             .then(response => response.json())
             .then(data => {
                 updateProductDisplay(data);
             })
             .catch(error => {
-                
+
                 nextButton.classList.toggle('hidden');
             });
     }
@@ -347,11 +347,15 @@ function setup() {
         const profileButton = document.createElement("button");
         profileButton.className = "go-to-page-button";
         profileButton.innerHTML = '<img src="../public/Images/profile.png" alt="Profile" />';
-        profileButton.onclick = function() {
+        profileButton.onclick = function () {
             toProfile();
         };
 
         document.getElementById("shopping-icon").innerHTML =
+            `<a href="http://127.0.0.1:5500/views/shoppingCartHistory.html">
+        <img src="../public/Images/shoppingCartHistory.png" alt="shoppingCart" />
+        <span style="font-weight: bold; font-size: 20px"></span>
+      </a>` +
             '<a href="/views/shoppingCart.html" style="text-decoration: none; color: inherit;">' +
             '<img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />' +
             '<span style="font-weight: bold; font-size: 20px;"></span>' +
