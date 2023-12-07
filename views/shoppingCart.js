@@ -56,7 +56,7 @@ async function addProductToCart(product, button) {
     quantity: quantity,
   };
   productContainer.remove();
-  await authorize(`http://localhost:3000/search?productId=${product}`).then(
+  await authorize(`http://localhost:3000/filter?productId=${product}`).then(
     async (response) => {
       // console.log(response);
       response = await response.json();
@@ -156,7 +156,7 @@ async function deleteProduct(productId, button) {
   var productContainer = button.closest(".product-container");
 
   productContainer.remove();
-  await authorize(`http://localhost:3000/search?productId=${productId}`).then(
+  await authorize(`http://localhost:3000/filter?productId=${productId}`).then(
     async (response) => {
       // console.log(response);
       response = await response.json();
@@ -358,7 +358,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         let product = data.products[i];
         console.log(product)
         await authorize(
-          `http://localhost:3000/search?productId=${product.product_id}`
+          `http://localhost:3000/filter?productId=${product.product_id}`
         ).then(async (response) => {
           // console.log(response);
           response = await response.json();
@@ -371,7 +371,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log(data);
       for (let i = 0; i < data.deletedProducts.length; i++) {
         const product = data.deletedProducts[i];
-        await authorize(`http://localhost:3000/search?productId=${product}`).then(
+        await authorize(`http://localhost:3000/filter?productId=${product}`).then(
           async (response) => {
             // console.log(response);
             response = await response.json();

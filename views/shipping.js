@@ -336,7 +336,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                         
                         
                         await authorize(
-                            `http://localhost:3000/search?productId=${product.product_id}`
+                            `http://localhost:3000/filter?productId=${product.product_id}`
                           ).then(async (response) => {
                             // console.log(response);
                             response = await response.json();
@@ -400,7 +400,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         //     for (let i = 0; i < data.products.length; i++) {
         //         const product = data.products[i];
         //         await fetch(
-        //           `http://localhost:3000/search?productId=${product.product_id}`
+        //           `http://localhost:3000/filter?productId=${product.product_id}`
         //         ).then(async (response) => {
         //           // console.log(response);
         //           response = await response.json();
@@ -846,7 +846,7 @@ function test(btn) {
 
 function refreshPrice(price) {
     var priceSpan = newDiv.querySelector('.price-text');
-    priceSpan.textContent = `Total Price: $${price}`;
+    priceSpan.textContent = `Total Price: $${parseFloat(price).toFixed(2)}`;
 }
 
 function changeImage(productId, offset, button) {

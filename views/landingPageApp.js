@@ -185,6 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
             .catch(error => {
                 console.error('Search Error:', error);
                 alert('No results found.');
+                return;
             });
             let url2 = `http://localhost:3000/search/?searchText=${searchText}&page=${currentPage}&pageSize=${pageSize+1}`;
         fetch(url2)
