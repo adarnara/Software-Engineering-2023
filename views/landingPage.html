@@ -292,8 +292,8 @@
 </head>
 <body>
 
-<div class="container">
-  <div class="chatbox">
+<div class="container" style="pointer-events: none;">
+  <div class="chatbox"  id="chatbox__frame">
     <div class="chatbox__support">
       <div class="chatbox__header">
         <div class="chatbox__content--header">
@@ -304,13 +304,13 @@
       <div class="chatbox__messages">
         <div></div>
       </div>
-      <div class="chatbox__footer">
+      <div class="chatbox__footer" >
         <input type="text" placeholder="Write a message...">
-        <button class="chatbox__send--footer send__button">Send</button>
+        <button class="chatbox__send--footer send__button";">Send</button>
       </div>
     </div>
-    <div class="chatbox__button">
-      <button><img src="../public/Images/chatbox-icon.svg" /></button>
+    <div class="chatbox__button" style="pointer-events: none;">
+      <button style="pointer-events: auto;"><img src="../public/Images/chatbox-icon.svg" /></button>
     </div>
   </div>
 </div>
@@ -455,18 +455,31 @@
   }
 </script>
 
+<script>
+  // JavaScript function to navigate to another page
+  function navigateToPage(route) {
+    // Use window.location to navigate to the desired page
+    window.location.href = route;
+  }
+
+    //This is for tickets
+    document.addEventListener("DOMContentLoaded", () => {
+    const button2 = document.getElementById('button2');
+    if (button2) {
+      button2.addEventListener('click', () => {
+        console.log("Button2 clicked!");
+        window.location.href = "http://localhost:5500/views/ticketsPage.html";
+      });
+    } else {
+      console.log("Button2 not found");
+    }
+  });
+</script>
+
 <script src="/views/chatbot.js"></script>
-
-
 
 <script src="/views/landingPageApp.js"></script>
 
-
-<!-- <section class="ticket-section"> -->
-  <!-- <div> -->
-    <!-- <button id="button2" class="ticket-button">Have experienced issues with a product or seller. Click here.</button> -->
-  <!-- </div> -->
-<!-- </section> -->
 
 <script>
   // JavaScript function to navigate to another page
