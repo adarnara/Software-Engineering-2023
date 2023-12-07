@@ -21,6 +21,8 @@ function handleKeyPress(event, productId, inputElement) {
 
 function createProductHTML(product, currCartProduct) {
   // Check if variant_data is empty
+  console.log(currCartProduct);
+console.log(currCartProduct.quantity);
   let colorsHTML = "";
   if (product.variant_data !== undefined && product.variant_data.length > 0) {
     const variantData = JSON.parse(product.variant_data[0]);
@@ -41,6 +43,7 @@ if (    currCartProduct.transaction.tracking_status !== "Shipped!")
 {
   currStatus = "../public/Images/x.png";
 }
+
   const productHTML = `
         <div class="product-container">
             <div class="product-image">
@@ -209,7 +212,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           (laterCart, earlierCart) =>  laterCart.purchaseTime - earlierCart.purchaseTime
           );
           data.reverse();
-      data.forEach((e) => {
+      data.forEach(async (e) => {
         let numShipped = 0;
         console.log(e);
         // create buttons with shopping cart time
@@ -239,13 +242,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         */
         for (let i = 0; i < e.products.length; i++) {
           var product = e.products[i];
-
-          authorize(
-            `http://localhost:3000/search?productId=${product.product_id}`
+          await authorize(
+            `http://localhost:3000/filter?productId=${product.product_id}`
           ).then(async (response) => {
             
             response = await response.json();
-            // console.log(response);
             products.push(response);
             var productHTML = createProductHTML(response[0], product);
             document.getElementById(e.purchaseTime).innerHTML += productHTML;
