@@ -73,8 +73,30 @@
 
     .search-bar {
       text-align: center;
-      position: relative;
-      transform: translate(-103%, 0%);
+        position: absolute;
+        top: 5%;
+        left: 5%;
+        transform: translate(-50%, -2975%);
+        z-index: 1000;
+    }
+    #hidden-next{
+      text-align: center;
+        position: absolute;
+        top: 2.5%;
+        left: 30%;
+        height: 30px;
+        z-index: 1000;
+        width: 100px;
+    }
+    #hidden-prev{
+      text-align: center;
+        position: absolute;
+        top: 2.5%;
+        left: 20%;
+        height: 30px;
+        z-index: 1000;
+        width: 100px;
+
     }
 
     .search-bar input[type="text"] {
@@ -293,6 +315,16 @@
   </div>
 </div>
 
+<div>
+  <button id = "hidden-prev" class="hidden previous-button" onclick="previousPage()">Previous</button>
+  <button id = "hidden-next" class="hidden next-button" onclick="nextPage()">Next</button>
+</div>
+<div class="search-bar">
+  <input type="text" placeholder="Search Bar" id="searchInput" />
+  <button class="search-button" onclick="performSearch()">Search</button>
+  <div id="searchResults" class="autocomplete-results"></div>
+  
+</div>
 <div class="navbar">
   <a href="/views/landingPage.html" style="text-decoration: none; color: inherit;">
     <div class="navbar-logo">
@@ -300,16 +332,7 @@
       <span style="font-weight: bold; font-size: 20px;">Reprua</span>
     </div>
   </a>
-  <div>
-    <button class="hidden previous-button" onclick="previousPage()">Previous</button>
-    <button class="hidden next-button" onclick="nextPage()">Next</button>
-  </div>
-  <div class="search-bar">
-    <input type="text" placeholder="Search Bar" id="searchInput" />
-    <button class="search-button" onclick="performSearch()">Search</button>
-    <div id="searchResults" class="autocomplete-results"></div>
-    
-  </div>
+  
   
   <div id="shopping-icon" class="navbar-cart">
     <div id="sign-in-user">

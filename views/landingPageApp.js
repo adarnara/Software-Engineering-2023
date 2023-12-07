@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById('searchInput');
     const searchResultsElement = document.getElementById('searchResults');
 
+    searchResultsElement.style.display = 'none';
     // Event listener for autocomplete
     searchInput.addEventListener('input', function() {
         const searchText = searchInput.value.trim();
@@ -162,6 +163,16 @@ document.addEventListener("DOMContentLoaded", () => {
             .catch(error => {
                 console.error('Search Error:', error);
                 alert('No results found.');
+            });
+            let url2 = `http://localhost:3000/search/?searchText=${searchText}&page=${currentPage}&pageSize=${pageSize+1}`;
+        fetch(url2)
+            .then(response => response.json())
+            .then(data => {
+                updateProductDisplay(data);
+            })
+            .catch(error => {
+                
+                nextButton.classList.toggle('hidden');
             });
     }
 
@@ -333,9 +344,6 @@ function setup() {
         document.getElementById("shopping-icon").appendChild(logoutButton);
     }
 }
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
 // Set up the web page
 setup();
