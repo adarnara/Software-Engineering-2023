@@ -2,6 +2,7 @@
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 const ProductRepo = require('../Repository/ProductRepo')
 const cartRepo = require('../Repository/cartRepo')
+const { parseJwtHeader } = require("../middlewares/authmiddleware.js");
 const { URL } = require('url')
 
 /*
@@ -11,6 +12,9 @@ const { URL } = require('url')
  */
 const resilientMode = true;
 
+// Determines if we care about the JWT Authorization
+const forceJWTAuth = false;
+
 // Port number for the redirects in case live server is using different port
 const redirectPort = 5500;
 
@@ -18,10 +22,17 @@ const redirectPort = 5500;
  * Returns a JSON object from Stripe that redirects to
  * Stripe's payment checkout page which returns back to
  * some desired page.
- * !!!!!Deperecated!!!!! (I cannot guaranteed that this will not fail in a strange way)
+ * !!!!!Deperecated!!!!!
+ * I cannot guaranteed that this will not fail in a strange way
+ * I also cannot secure this function by its nature
  */
 async function getStripePaymentRedirect(req, res){
     try{
+        if(forceJWTAuth){
+            const auth = isAuthorized(req, res);
+            if(auth.hasFailed)
+                return;
+        }
         if(req.headers["content-type"] != "application/json"){
             res.writeHead(415);
             res.end();
@@ -70,7 +81,8 @@ async function getStripePaymentRedirect(req, res){
         res.writeHead(200);
         res.end(JSON.stringify(session));
     } catch(err){
-        //console.log(err);
+        console.log("Critical Failure : ");
+        console.log(err);
         res.writeHead(500);
         res.end();
     }
@@ -83,6 +95,11 @@ async function getStripePaymentRedirect(req, res){
  */
 async function getStripePaymentRedirectdb(req, res){
     try{
+        if(forceJWTAuth){
+            const auth = isAuthorized(req, res);
+            if(auth.hasFailed)
+                return;
+        }
         const requrl = new URL(req.url, `http://${req.headers.host}`);
         const cart_id = requrl.searchParams.get("cart_id");
         if(cart_id === null){
@@ -136,6 +153,7 @@ async function getStripePaymentRedirectdb(req, res){
         res.end(JSON.stringify(session));
         console.log("Stripe Session Successfully Made");
     } catch(err){
+        console.log("Critical Failure : ");
         console.log(err);
         res.writeHead(500);
         res.end();
@@ -148,10 +166,15 @@ module.exports = {getStripePaymentRedirect, getStripePaymentRedirectdb};
 
 // HELPER FUNCTIONS
 
-/*
- * Returns a JSON object with fields
- * data - Contains a formatted line items array
- * isValid - Contains boolean if operation was successful
+/**
+ * Gets a JSON object containing a formatted array of products that
+ * Stripe can interperate and use to make a list of products being
+ * bought and calculate the tax based on that.
+ * @param array - input array of JSON objects of each cart product
+ *                from the repository
+ * @returns {object} with the fields
+ * data [array] - Contains a formatted line items array
+ * isValid boolean - Contains boolean if operation was successful
  */
 async function getFormatedStripeLineItemsJSON(array){
     let isValid = true;
@@ -195,10 +218,15 @@ async function getFormatedStripeLineItemsJSON(array){
         isValid: isValid
     };
 }
-/*
- * Returns a JSON object with fields
- * data - Returns shipping rate JSON object for Stripe
- * isValid - Contains boolean if operation was successful
+/**
+ * Gets a formatted JSON object that contains a JSON object that
+ * can be fed to Stripe to factor in shipping costs.
+ *
+ * @param array - input array of JSON objects of each cart product
+ *                from the repository
+ * @returns {object} with the fields
+ * data {object} - Returns shipping rate JSON object for Stripe
+ * isValid boolean - Contains boolean if operation was successful
  */
 async function getFormatedStripeShippingRateJSON(array){
     let isValid = true
@@ -227,9 +255,13 @@ async function getFormatedStripeShippingRateJSON(array){
         isValid: isValid
     };
 }
-/*
+/**
  * Converts the string of the price to the number of cents
  * E.g. String $3.14 turns into 314 or 3.14 turns into 314
+ *
+ * @param str String - Input price string to convert to
+ *                     integer number of cents
+ * @returns Integer - Number of cents the input represented
  */
 function strToCents(str){
     number = -1;
@@ -249,9 +281,33 @@ function strToCents(str){
 }
 
 
-/*
+/**
+ * Calls the JWT authenication middleware to determines
+ * if we should accept the request or not.
+ *
+ * @param req {object} - Request object of the http call
+ * @param res {object} - Response object of the http call
+ * @returns {object} with fields
+ * hasFailed boolean - Tells if the authentication failed
+ * obj {object} - Holds the result object from parseJwtHeader
+ */
+function isAuthorized(req, res){
+    const authResult = parseJwtHeader(req, res);
+    return {
+        hasFailed: (authResult === null),
+        obj: authResult
+    };
+}
+
+/**
  * Gets the JSON from a http request object
  * If it fails to do so it returns a empty JSON
+ *
+ * @param req {object} - Request object from the http POST request
+ * @returns {object} - Returns a JSON object that is either
+ * Empty if the JSON object is unusable
+ * A populated JSON object if a JSON object could be made from
+ * the POST method's body.
  */
 async function getJSONBody(req){
     datastr = await new Promise((resolve, reject) => {
@@ -280,7 +336,7 @@ async function getJSONBody(req){
     return json;
 }
 
-/*
+/**
  * Finds if the JSON fields are valid.
  */ //TODO add more exceptions
 function isValidJSON(json){
@@ -292,7 +348,7 @@ function isValidJSON(json){
 
 //REFERENCE DATA
 
-//Expected JSONs
+//Expected array of JSONs Stripe needs
 /*
 Example expected line_items
 [{
@@ -306,13 +362,5 @@ Example expected line_items
     quantity: 1,
 }];
 */
-
-/*
-Sample Expected input JSON
-Curr Member Cart:  {"_id":"6542e4986a75960d68dd0ba2","email":"johndoes@gmail.com","purchaseTime":null,"numShipped":null,"products":[{"parent_cart":"6542e4986a75960d68dd0ba2","product_id":"books9","quantity":6,"from":null,"to":null,"date_shipped":null,"date_arrival":null,"shipping_id":null,"_id":"6543dac070f00ad572f83f92","__v":0}],"__v":0,"totalPrice":47.94}
-Status: 200
-Request Complete
-*/
-
 
 
