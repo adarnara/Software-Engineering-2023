@@ -1,4 +1,4 @@
-const SearchController = require('../controller/SearchController');
+const SearchController = require('../controller/searchController');
 
 module.exports = {
     'GET/search': async (req, res) => {
