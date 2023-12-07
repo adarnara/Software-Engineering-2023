@@ -50,6 +50,28 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchResultsElement = document.getElementById('searchResults');
 
     searchResultsElement.style.display = 'none';
+
+    fetch('http://localhost:3000/')
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // console.log('Response from /:', JSON.stringify(data, null, 2));
+
+            data.forEach((product) => {
+                // Push each product into the products array
+                products.push(product);
+                const productHTML = createProductHTML(product);
+                productsContainer.innerHTML += productHTML;
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching product data:', error);
+        });
+
     // Event listener for autocomplete
     searchInput.addEventListener('input', function() {
         const searchText = searchInput.value.trim();
