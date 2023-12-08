@@ -152,6 +152,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Fetch exact product info when a selection is made
         fetchExactProductInfo(name);
+        const prevButton = document.querySelector('.previous-button');
+        const nextButton = document.querySelector('.next-button');
+        if (prevButton) prevButton.classList.add('hidden');
+        if (nextButton) nextButton.classList.add('hidden');
     }
 
 
