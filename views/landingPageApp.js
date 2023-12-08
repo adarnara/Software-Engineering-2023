@@ -323,7 +323,6 @@ function setup() {
         document.getElementById("shopping-icon").appendChild(logoutButton);
     }
 }
-});
 // Set up the web page
 setup();
 

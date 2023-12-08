@@ -1,6 +1,4 @@
 const ProductRepository = require('../Repository/ProductRepo');
-const { Client } = require('@elastic/elasticsearch');
-const client = new Client({ node: 'http://localhost:9200' }); // replace with your Elasticsearch server URL
 const natural = require('natural');
 const mongoose = require('mongoose');
 const Product = require('../models/Product');
