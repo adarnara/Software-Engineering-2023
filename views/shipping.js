@@ -180,11 +180,11 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         const parcels = [                         // hardcoded... waiting for Adarsh to add randomized weights, heights, etc. to scraped products *
             {
-                "length": "5",
-                "width": "5",
-                "height": "5",
+                "length": (Math.random() * (5 - 1) + 1).toFixed(2),
+                "width": (Math.random() * (5 - 1) + 1).toFixed(2),
+                "height": (Math.random() * (5 - 1) + 1).toFixed(2),
                 "distance_unit": "in",
-                "weight": "2",
+                "weight": (Math.random() * (5 - 1) + 1).toFixed(2),
                 "mass_unit": "lb"
             }  
         ];
@@ -336,7 +336,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                         
                         
                         await authorize(
-                            `http://localhost:3000/search?productId=${product.product_id}`
+                            `http://localhost:3000/filter?productId=${product.product_id}`
                           ).then(async (response) => {
                             // console.log(response);
                             response = await response.json();
@@ -400,7 +400,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         //     for (let i = 0; i < data.products.length; i++) {
         //         const product = data.products[i];
         //         await fetch(
-        //           `http://localhost:3000/search?productId=${product.product_id}`
+        //           `http://localhost:3000/filter?productId=${product.product_id}`
         //         ).then(async (response) => {
         //           // console.log(response);
         //           response = await response.json();
@@ -846,7 +846,7 @@ function test(btn) {
 
 function refreshPrice(price) {
     var priceSpan = newDiv.querySelector('.price-text');
-    priceSpan.textContent = `Total Price: $${price}`;
+    priceSpan.textContent = `Total Price: $${parseFloat(price).toFixed(2)}`;
 }
 
 function changeImage(productId, offset, button) {

@@ -56,7 +56,7 @@ async function addProductToCart(product, button) {
     quantity: quantity,
   };
   productContainer.remove();
-  await authorize(`http://localhost:3000/search?productId=${product}`).then(
+  await authorize(`http://localhost:3000/filter?productId=${product}`).then(
     async (response) => {
       // console.log(response);
       response = await response.json();
@@ -156,7 +156,7 @@ async function deleteProduct(productId, button) {
   var productContainer = button.closest(".product-container");
 
   productContainer.remove();
-  await authorize(`http://localhost:3000/search?productId=${productId}`).then(
+  await authorize(`http://localhost:3000/filter?productId=${productId}`).then(
     async (response) => {
       // console.log(response);
       response = await response.json();
@@ -358,7 +358,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         let product = data.products[i];
         console.log(product)
         await authorize(
-          `http://localhost:3000/search?productId=${product.product_id}`
+          `http://localhost:3000/filter?productId=${product.product_id}`
         ).then(async (response) => {
           // console.log(response);
           response = await response.json();
@@ -371,7 +371,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log(data);
       for (let i = 0; i < data.deletedProducts.length; i++) {
         const product = data.deletedProducts[i];
-        await authorize(`http://localhost:3000/search?productId=${product}`).then(
+        await authorize(`http://localhost:3000/filter?productId=${product}`).then(
           async (response) => {
             // console.log(response);
             response = await response.json();
@@ -417,3 +417,56 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
   window.changeImage = changeImage;
 });
+
+function toProfile() {
+  checkToken().then(function redirect(data) {
+      const role = data.role;
+      if (role === "Seller") {
+          window.location.href = "/views/profilePageSeller.html";
+      } else if (role === "Member") {
+          window.location.href = "/views/profilePageMember.html";
+      } else {
+          console.error("Unknown role:", role);
+      }
+  });
+}
+
+function logout() {
+  removeJwtToken();
+  window.location.href = "/views/landingPage.html";
+}
+
+function setup() {
+  const token = getJwtToken();
+
+  if (token) {
+      const profileButton = document.createElement("button");
+      profileButton.className = "go-to-page-button";
+      profileButton.innerHTML = '<img src="../public/Images/profile.png" alt="Profile" />';
+      profileButton.onclick = function() {
+          toProfile();
+      };
+
+      document.getElementById("shopping-icon").innerHTML = 
+      `<a href="http://127.0.0.1:5500/views/shoppingCartHistory.html">
+      <img src="../public/Images/shoppingCartHistory.png" alt="shoppingCart" />
+      <span style="font-weight: bold; font-size: 20px"></span>
+    </a>` + 
+          '<a href="/views/shoppingCart.html" style="text-decoration: none; color: inherit;">' +
+          '<img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />' +
+          '<span style="font-weight: bold; font-size: 20px;"></span>' +
+          '</a>';
+
+      document.getElementById("shopping-icon").appendChild(profileButton);
+
+      const logoutButton = document.createElement("button");
+      logoutButton.className = "go-to-page-button";
+      logoutButton.innerHTML = '<img src="/public/Images/image-button-two.png" alt="Logout" />';
+      logoutButton.onclick = logout;
+
+      document.getElementById("shopping-icon").appendChild(logoutButton);
+  }
+}
+
+// Set up the web page
+setup();
