@@ -23,7 +23,7 @@ module.exports = {
 
     },
     'GET/search': ProductController.getExactProduct,
-    'GET/search/category': ProductController.getProductsByCategory,
-    'GET/search/categoryLargest': ProductController.getLargestCategoryId,
+    'GET/searchCategory': ProductController.getProductsByCategory,
+    'GET/searchCategoryLargest': ProductController.getLargestCategoryId,
 
 };

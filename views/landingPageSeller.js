@@ -202,13 +202,27 @@ document.addEventListener("DOMContentLoaded", () => {
     
     //create a product JSON based on the currently inputted parameters. 
     async function createProductJSON() {
-        let productData = {};
-        const selectedProductType = document.getElementById('productType').value;
-    
         try {
-            const response = await fetch(`http://localhost:3000/search/categoryLargest?category=${selectedProductType}`); //gets the id of the last product in the categoru
-            const largestId = await response.json() + 1; //add one to largest id to get new unique id
-            const fullId = selectedProductType + largestId; //combine category name and id number
+            let productData = {};
+            const selectedProductType = document.getElementById('productType').value;
+            let newID = 1; 
+            try {
+                console.log(selectedProductType);
+                const response = await authorize(`http://localhost:3000/searchCategoryLargest?category=${selectedProductType}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const largestId = await response.json(); 
+                if (largestId != null && !isNaN(largestId)) {
+                    newID = largestId + 1; 
+                }
+                console.log(response); 
+                fullId = selectedProductType + newID; 
+                console.log(`Full ID: ${fullId}`);
+            } catch (error) {
+                console.error('Error fetching the largest ID:', error);
+            }
+
 
             // Initialize productData with default values
             productData = {
@@ -275,6 +289,8 @@ document.addEventListener("DOMContentLoaded", () => {
     
             return productData;
         } catch (error) {
+            console.error(`Error in getLargestCategoryId: ${error.message}`);
+            console.error(error.stack);
             console.error('Error:', error);
             return null;
         }

@@ -39,11 +39,12 @@ class ProductRepository {
   }
 
   async getLargestCategoryId(category) {
+    console.log("made it to product repo");
     const products = await Product.find({
       category: { $regex: new RegExp(category) } //RegExp will filter the products out that don't belong to the right category.
     })
     if (!products) {
-      throw new Error('No products found');
+      return null;
     }
     let largestId = 0;
     for(let i = 0; i < products.length; i++){

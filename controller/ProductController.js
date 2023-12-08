@@ -90,9 +90,20 @@ class ProductController {
   async getLargestCategoryId(req, res) {
     try{
       const category = req.query.category;
-      const largestId = await ProductRepository.getLargestCategoryId(category);
+      if (!category) {
+        return res.status(400).json({ message: 'Category parameter is required.' });
+      }
+      ProductRepository.getLargestCategoryId(category)
+      .then(largestId => res.status(200).json(largestId))
+      .catch(error => {
+        console.error(`Error fetching category ID: ${error.message}`);
+        res.status(500).json({ message: 'Internal server error.' });
+      });
+
       res.status(200).json(largestId);
     } catch (error) {
+      console.error(`Error in getLargestCategoryId: ${error.message}`);
+      console.error(error.stack);
       res.status(500).json({ message: 'Failed to fetch largest id in category.' });
     }
   }
