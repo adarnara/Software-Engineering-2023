@@ -22,25 +22,46 @@ document.addEventListener('DOMContentLoaded', async function () {
   }
 });
 
+let currentPage = 1;
+const usersPerPage = 10; // Choose an appropriate number for users per page
+let allUsers = []; // This will store all fetched users
+
 async function loadUsers(token) {
   try {
-      const response = await fetch('http://localhost:3000/users', {
-          method: 'GET',
-          headers: {
-              'Authorization': `Bearer ${token}`
-          },
-      });
+    const response = await fetch('http://localhost:3000/users', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+    });
 
-      const users = await response.json();
-      console.log(users)
-      if (response.ok) {
-          populateUserList(users);
-      } else {
-          // Handle errors, like unauthorized access
-          console.error('Failed to load users:', users.message);
-      }
+    allUsers = await response.json(); // Assume this returns an array
+    console.log(allUsers)
+    if (response.ok) {
+      // Sort users by createdAt in descending order (most recent first)
+      allUsers.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      renderUsersForPage(currentPage);
+    } else {
+      console.error('Failed to load users:', allUsers.message);
+    }
   } catch (error) {
-      console.error('Error loading users:', error);
+    console.error('Error loading users:', error);
+  }
+}
+
+function renderUsersForPage(page) {
+  const startIndex = (page - 1) * usersPerPage;
+  const endIndex = startIndex + usersPerPage;
+  const usersToRender = allUsers.slice(startIndex, endIndex);
+  populateUserList(usersToRender);
+}
+function changePage(offset) {
+  const totalPages = Math.ceil(allUsers.length / usersPerPage);
+  const newPage = currentPage + offset;
+
+  if (newPage > 0 && newPage <= totalPages) {
+    currentPage = newPage;
+    renderUsersForPage(currentPage);
   }
 }
 
@@ -53,13 +74,17 @@ function populateUserList(users) {
       userDiv.className = 'user-row';
       userDiv.innerHTML = `
           <span class="user-name">${user.firstName} ${user.lastName}</span>
-          <span class="user-role">${user.role}</span>
+          <span class="user-role">${user.__t}</span>
           <span class="user-email">${user.email}</span>
           <button class="update-user" onclick="updateUser('${user._id}')">Update</button>
           <button class="delete-user" onclick="deleteUser('${user._id}')">Delete</button>
       `;
       userListDiv.appendChild(userDiv);
   });
+  // Update the displayed current page number
+  document.getElementById('currentPage').textContent = currentPage;
+  // Update the displayed total pages
+  document.getElementById('totalPages').textContent = Math.ceil(allUsers.length / usersPerPage);
 }
 
 function updateUser(userId) {
