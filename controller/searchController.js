@@ -80,6 +80,24 @@ class SearchController {
             res.end(JSON.stringify({ error: 'Internal server error' }));
         }
     }
+    async searchByExactName(req, res) {
+        try {
+            const { searchText } = req.params;
+
+            // Use the ProductRepository to search for a product by name
+            const product = await searchRepository.findByProductName(searchText);
+
+            // Send JSON response with the found product
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(product));
+        } catch (error) {
+            console.error('Error searching by name:', error);
+
+            // Send error response
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal server error' }));
+        }
+    }
 }
 
 

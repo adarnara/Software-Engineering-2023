@@ -72,7 +72,7 @@ async function getStripePaymentRedirect(req, res){
             automatic_tax: {
                 enabled: true,
             },
-            success_url: `http://127.0.0.1:${redirectPort}/views/shoppingCart.html`,
+            success_url: `http://127.0.0.1:${redirectPort}/views/successfulTransaction.html`,
             cancel_url: `http://127.0.0.1:${redirectPort}/views/shoppingCart.html`,
             shipping_options: [{
                 shipping_rate_data: shippingRate
@@ -142,7 +142,7 @@ async function getStripePaymentRedirectdb(req, res){
             automatic_tax: {
                 enabled: true,
             },
-            success_url: `http://127.0.0.1:${redirectPort}/views/shoppingCart.html`,
+            success_url: `http://127.0.0.1:${redirectPort}/views/successfulTransaction.html`,
             cancel_url: `http://127.0.0.1:${redirectPort}/views/shoppingCart.html`,
             shipping_options: [{
                 shipping_rate_data: shippingRate
@@ -362,5 +362,3 @@ Example expected line_items
     quantity: 1,
 }];
 */
-
-

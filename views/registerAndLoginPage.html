@@ -15,39 +15,31 @@
         }
 
         .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: rgba(0, 135, 255, 0.7);
-            color: #fff;
-            padding: 5px 20px;
-            height: 50px;
-            border-bottom-left-radius: 10px;
-            border-bottom-right-radius: 10px;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-            z-index: 2;
-        }
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: rgba(0, 135, 255, 0.7);
+        color: #fff;
+        padding: 10px;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+        z-index: 2;
+      }
 
-        .navbar-logo {
-            display: flex;
-            align-items: center;
-        }
-        .navbar-logo a {
-            text-decoration: none;
-            color: #fff;
-            font-weight: bold;
-            font-size: 20px;
-        }
+      .navbar-logo {
+        display: flex;
+        align-items: center;
+      }
 
-        .navbar-logo img {
-            max-width: 40px;
-            margin-right: 10px;
-            vertical-align: middle;
-        }
+      .navbar-logo img {
+        max-width: 60px;
+        margin-right: 10px;
+      }
 
         .search-bar {
             text-align: center;
@@ -116,23 +108,45 @@
         .product-info ul {
             padding-left: 20px;
         }
+        .continue-shopping {
+        position: fixed;
+        padding: 10px 20px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 19px;
+        transform: translate(-60%, -55%);
+      }
+
+      .continue-shopping:hover {
+        background-color: #2980b9;
+      }
     </style>
 </head>
 
 <body>
 
-<div class="navbar">
-    <div class="navbar-logo">
-        <a href="landingPage.html">
-        <img src="../public/Images/logo.png" alt="Logo">
-        <span style="font-weight: bold; font-size: 20px;">Reprua</span>
+    <div class="navbar">
+        <a
+          href="http://127.0.0.1:5500/views/landingPage.html"
+          style="text-decoration: none; color: inherit"
+        >
+          <div class="navbar-logo">
+            <img src="../public/Images/logo.png" alt="Logo" />
+            <span style="font-weight: bold; font-size: 20px">Reprua</span>
+          </div>
         </a>
-    </div>
-    <div class="search-bar">
-        <input type="text" placeholder="Search...">
-        <button>Search</button>
-    </div>
-</div>
+        <div>
+          <button class="continue-shopping" onclick="continueShopping()">
+            Continue Shopping
+          </button>
+        </div>
+        <div id="shopping-icon" class="navbar-cart">
+          
+        </div>
+      </div>
 
 
 <section>
@@ -158,15 +172,15 @@
                     <select id="role">
                         <option value="member">Member</option>
                         <option value="seller">Seller</option>
-                        <option value="admin">Admin</option>
                     </select>
                 </div>
                 <div class="forgot-section">
                     <span><input type="checkbox" name="" id="checked">Remember Me</span>
                     <span><a href="forgetpassword.html">Change Password ?</a></span> <!-- Updated line -->
+                    
+                    <button id="adminLogin" onclick="location.href='/views/admin/login.html'">admin?</button>
                 </div>
-
-
+                
                 <button class="btn" id="loginButton">Login</button>
             </form>
             <p class="RegisteBtn RegiBtn"><a href="#">Register Now</a></p>

@@ -239,8 +239,45 @@
 
     .search-bar {
       text-align: center;
-      position: relative;
-      transform: translate(-103%, 0%);
+        position: absolute;
+        top: 2.5%;
+        left: 50%;
+        height: 30px;
+        z-index: 1000;
+        width: 100px;
+        
+      z-index: 2001;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #hidden-next{
+      text-align: center;
+        position: absolute;
+        background-color: #fff;
+        color: #007BFF;
+        border: none;
+        padding: 8px 16px;
+      border-radius: 50%;
+        top: 2%;
+        left: 65.1%;
+        z-index: 1000;
+        width: 40px;
+        height: 40px;
+    }
+    #hidden-prev{
+      text-align: center;
+        position: absolute;
+        background-color: #fff;
+        color: #007BFF;
+        border: none;
+        padding: 8px 16px;
+      border-radius: 50%;
+        top: 2%;
+        left: 62%;
+        z-index: 1000;
+        width: 40px;
+        height: 40px;
     }
 
     .search-bar input[type="text"] {
@@ -323,14 +360,10 @@
       border-radius: 5px;
       cursor: pointer;
     }
-    .search-bar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+
 
     .search-bar input[type="text"] {
-      width: 60%;
+      width: 600px;
       padding: 5px;
       border: none;
       border-radius: 5px;
@@ -390,6 +423,7 @@
 }
 
 .ticket-button {
+  z-index: 9999;
   padding: 10px 20px;
   background-color: #007bff;
   color: white;
@@ -402,36 +436,67 @@
 .ticket-button:hover {
   background-color: #0056b3;
 }
+#searchResults {
+  position: absolute;
+  top: 100%;
+  left: 20;
+  width: 40vw;
+  max-height: 200px; /* Adjust as needed */
+  overflow-y: auto; /* This is important for scrolling */
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  z-index: 2001; /* Ensure it is above other elements */
+}
+
+#searchResults p {
+  color: black;
+  padding: 10px;
+  margin: 0;
+  cursor: pointer;
+  z-index:10000;
+}
+
+#searchResults p:hover {
+  background-color: #f0f0f0;
+}
 
   </style>
 </head>
 <body>
 
-
-<div class="container">
-  <div class="chatbox">
+<div class="container" style="pointer-events: none;">
+  <div class="chatbox"  id="chatbox__frame">
     <div class="chatbox__support">
       <div class="chatbox__header">
         <div class="chatbox__content--header">
           <h4 class="chatbox__heading--header">Chat support</h4>
-          <p class="chatbox__description--header">Hi. I'm Sally the Chatbot. How may I help you?</p>
+          <p class="chatbox__description--header">Hi. I'm TalkABC the Chatbot. How may I help you?</p>
         </div>
       </div>
       <div class="chatbox__messages">
         <div></div>
       </div>
-      <div class="chatbox__footer">
+      <div class="chatbox__footer" >
         <input type="text" placeholder="Write a message...">
-        <button class="chatbox__send--footer send__button">Send</button>
+        <button class="chatbox__send--footer send__button";">Send</button>
       </div>
     </div>
-    <div class="chatbox__button">
-      <button><img src="../public/Images/chatbox-icon.svg" /></button>
+    <div class="chatbox__button" style="pointer-events: none;">
+      <button style="pointer-events: auto;"><img src="../public/Images/chatbox-icon.svg" /></button>
     </div>
   </div>
 </div>
 
-
+<div class="search-bar" id="search">
+  <input type="text" placeholder="Search Bar" id="searchInput" />
+  <button class="search-button">Search</button>
+  <div id="searchResults" class="autocomplete-results"></div>
+  
+</div>
+<div>
+  <button id = "hidden-prev" class="hidden previous-button" onclick="previousPage()">&#8249;</button>
+  <button id = "hidden-next" class="hidden next-button" onclick="nextPage()">&#8250;</button>
+</div>
 <div class="navbar">
   <a href="/views/landingPage.html" style="text-decoration: none; color: inherit;">
     <div class="navbar-logo">
@@ -439,36 +504,12 @@
       <span style="font-weight: bold; font-size: 20px;">Reprua</span>
     </div>
   </a>
-  <div class="search-by-category">
-    <button class="category-button">Filter by Category &#x25BE;</button>
-    <div class="category-dropdown">
-      <!--Going to add more categories here-->
-      <a href="#" data-category="books">Books</a>
-      <a href="#" data-category="ipad">iPad</a>
-      <a href="#" data-category="laptop">Laptop</a>
-      <a href="#" data-category="tshirts">Tshirts</a>
-      
-
-    </div>
-  </div>
   
-  <div>
-    <button class="hidden previous-button" onclick="previousPage()">Previous</button>
-    <button class="hidden next-button" onclick="nextPage()">Next</button>
-  </div>
-  <div class="search-bar">
-    <input type="text" placeholder="Search Bar" />
-    <button class="search-button">Search</button>
-  </div>
+  
   <div id="shopping-icon" class="navbar-cart">
-    <a href="/views/shoppingCart.html">
-      <img src="/public/Images/shoppingCartIcon.png" alt="shoppingCart" />
-
-      <span style="font-weight: bold; font-size: 20px;"></span>
-    </a>
     <div id="sign-in-user">
       <button class="go-to-page-button" onclick="navigateToPage('/views/registerAndLoginPage.html')">
-        <img src="/public/Images/image-button-two.png" alt="Register/Login" />
+        <img src="../public/Images/logout-button-again.png" alt="Register/Login" />
       </button>
     </div>
   </div>
@@ -485,6 +526,8 @@
 
   </div>
 </div>
+
+<button id="button2" class="ticket-button">Have experienced issues with a product or seller. Click here.</button>
 
 <section>
   <div class="waves">
@@ -544,7 +587,7 @@
 
     const logoutButton = document.createElement("button");
     logoutButton.className = "go-to-page-button";
-    logoutButton.innerHTML = '<img src="../public/Images/logout-button-again.png" alt="Logout" />';
+    logoutButton.innerHTML = '<img src="/public/Images/image-button-two.png" alt="Logout" />';
     logoutButton.onclick = logout;
 
     document.getElementById("shopping-icon").appendChild(logoutButton);
@@ -584,19 +627,6 @@
   }
 </script>
 
-<script src="/views/chatbot.js"></script>
-
-
-
-<script src="/views/landingPageApp.js"></script>
-
-
-<section class="ticket-section">
-  <div>
-    <button id="button2" class="ticket-button">Have experienced issues with a product or seller. Click here.</button>
-  </div>
-</section>
-
 <script>
   // JavaScript function to navigate to another page
   function navigateToPage(route) {
@@ -618,6 +648,18 @@
   });
 </script>
 
+<script src="/views/chatbot.js"></script>
+
+<script src="/views/landingPageApp.js"></script>
+
+
+<script>
+  // JavaScript function to navigate to another page
+  function navigateToPage(route) {
+    // Use window.location to navigate to the desired page
+    window.location.href = route;
+  }
+</script>
+
 <script src="landingPageApp.js"></script>
 </body>
-</html>

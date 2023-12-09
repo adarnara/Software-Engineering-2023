@@ -6,7 +6,9 @@ module.exports = {
             const { searchText, page, pageSize } = req.params;
 
             if (!searchText) {
-                return res.status(400).json({ message: 'Search text parameter is missing.' });
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ message: 'Search text parameter is missing.' }));
+                return;
             }
 
             // Call the searchByNameOrProduct controller function with the query input
@@ -14,12 +16,8 @@ module.exports = {
 
         } catch (error) {
             console.error('Route Handler Error:', error);
-            // Ensure that res is a proper response object
-            if (res.status && res.json) {
-                res.status(500).json({ message: 'Internal Server Error' });
-            } else {
-                console.error('Invalid response object in search route handler');
-            }
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Internal Server Error' }));
         }
     },
     'GET/autocomplete': async (req, res) => {
@@ -27,21 +25,37 @@ module.exports = {
             const { searchText } = req.params;
 
             if (!searchText) {
-                return res.status(400).json({ message: 'Search text parameter is missing.' });
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ message: 'Search text parameter is missing.' }));
+                return;
             }
-
 
             // Call the searchByNameOrProduct controller function with the query input
             await SearchController.searchAutoComplete(req, res);
 
         } catch (error) {
             console.error('Route Handler Error:', error);
-            // Ensure that res is a proper response object
-            if (res.status && res.json) {
-                res.status(500).json({ message: 'Internal Server Error' });
-            } else {
-                console.error('Invalid response object in search route handler');
-            }
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Internal Server Error' }));
         }
-    }
+    },
+    'GET/exactName': async (req, res) => {
+        try {
+            const { searchText } = req.params;
+
+            if (!searchText) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ message: 'Search text parameter is missing.' }));
+                return;
+            }
+
+            // Call the searchByName controller function with the query input
+            await SearchController.searchByExactName(req, res);
+
+        } catch (error) {
+            console.error('Route Handler Error:', error);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Internal Server Error' }));
+        }
+    },
 };

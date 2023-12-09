@@ -48,6 +48,11 @@ class SearchRepository {
                         query: searchText,
                         path: "name",
                         tokenOrder: "sequential",
+                        fuzzy: {
+                            maxEdits: 2,
+                            prefixLength: 2,
+                            maxExpansions: 10,
+                        },
                     },
                 },
             },
@@ -66,6 +71,17 @@ class SearchRepository {
         }
 
         return products;
+    }
+    async findByProductName(searchText) {
+        
+        console.log(searchText);
+        const product = await Product.findOne({ name:searchText });
+
+        if (!product) {
+            throw new Error('Product not found');
+        }
+
+        return product;
     }
 
 }
