@@ -85,11 +85,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Set up event listener for search bar.
     const searchButton = document.querySelector('.search-bar .search-button');
-    if (searchButton) {
-        searchButton.addEventListener('click', function () {
-            performSearch(searchInput.value.trim());
+if (searchButton) {
+    searchButton.addEventListener('click', function () {
+        performSearch(searchInput.value.trim(), function() {
+            // Clear the search input and hide autocomplete results after search
+            searchInput.value = ''; 
+            searchResultsElement.innerHTML = '';
+            searchResultsElement.style.display = 'none';
         });
-    }
+    });
+}
 
     window.nextPage = function () {
         if (currentSearchText) {
@@ -174,56 +179,62 @@ document.addEventListener("DOMContentLoaded", () => {
             .catch(error => console.error('Exact Product Fetch Error:', error));
     }
 
-    function performSearch(searchText) {
+    function performSearch(searchText, callback) {
         if (!searchText) {
-            alert('No results found.');
             return;
         }
         currentSearchText = searchText;
         const url = `http://localhost:3000/search/?searchText=${searchText}&page=${currentPage}&pageSize=${pageSize}`;
+    
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                updateProductDisplay(data);
+                if (data.length === 0) {
+                    // Show no results found when the current page has no data
+                alert('No results found.');
+                    productsContainer.innerHTML = 'No products found.';
+                    updateNavigationButtons(0);
+                } else {
+                    updateProductDisplay(data);
+                    // Check for next page data only if current page has data
+                    checkNextPageData(searchText, currentPage + 1);
+                }
+                if (callback && typeof callback === 'function') {
+                    callback();
+                }
             })
             .catch(error => {
                 console.error('Search Error:', error);
-                alert('No results found.');
-                return;
-            });
-        let url2 = `http://localhost:3000/search/?searchText=${searchText}&page=${currentPage}&pageSize=${pageSize + 1}`;
-        fetch(url2)
-            .then(response => response.json())
-            .then(data => {
-                updateProductDisplay(data);
-            })
-            .catch(error => {
-
-                nextButton.classList.toggle('hidden');
             });
     }
 
+    function checkNextPageData(searchText, nextPage) {
+        const nextPageUrl = `http://localhost:3000/search/?searchText=${searchText}&page=${nextPage}&pageSize=${pageSize}`;
+        fetch(nextPageUrl)
+            .then(response => response.json())
+            .then(nextPageData => {
+                const nextButton = document.querySelector('.next-button');
+                if (nextButton) {
+                    nextButton.classList.toggle('hidden', !nextPageData.length);
+                }
+            })
+            .catch(error => console.error('Next Page Check Error:', error));
+    }
+    
     function updateProductDisplay(data) {
-        if (!data.length) {
-            alert('No results found.');
-            return;
-        }
         productsContainer.innerHTML = '';
         data.forEach(product => {
             productsContainer.innerHTML += createProductHTML(product);
         });
         updateNavigationButtons(data.length);
     }
-
+    
     function updateNavigationButtons(fetchedCount) {
         const prevButton = document.querySelector('.previous-button');
         const nextButton = document.querySelector('.next-button');
-
+    
         if (prevButton) {
             prevButton.classList.toggle('hidden', currentPage === 1);
-        }
-        if (nextButton) {
-            nextButton.classList.toggle('hidden', fetchedCount < pageSize);
         }
     }
 
