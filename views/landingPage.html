@@ -629,22 +629,17 @@
 
 <script>
   // JavaScript function to navigate to another page
-  function navigateToPage(route) {
-    // Use window.location to navigate to the desired page
-    window.location.href = route;
-  }
-
-    //This is for tickets
-    document.addEventListener("DOMContentLoaded", () => {
-    const button2 = document.getElementById('button2');
-    if (button2) {
-      button2.addEventListener('click', () => {
-        console.log("Button2 clicked!");
-        window.location.href = "http://localhost:5500/views/ticketsPage.html";
-      });
-    } else {
-      console.log("Button2 not found");
-    }
+  // This is for tickets
+  document.addEventListener("DOMContentLoaded", () => {
+      const button2 = document.getElementById('button2');
+      if (button2) {
+          button2.addEventListener('click', () => {
+              console.log("Button2 clicked!");
+              window.location.href = "http://localhost:5500/views/ticketsPage.html";
+          });
+      } else {
+          console.log("Button2 not found");
+      }
   });
 </script>
 

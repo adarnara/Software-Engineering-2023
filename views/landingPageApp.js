@@ -375,7 +375,11 @@ function setup() {
         document.getElementById("shopping-icon").appendChild(logoutButton);
     }
 }
-});
+
+function navigateToPage(route) {
+    // Use window.location to navigate to the desired page
+    window.location.href = route;
+}
 // Set up the web page
 setup();
 
