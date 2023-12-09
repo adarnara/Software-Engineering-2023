@@ -8,7 +8,7 @@ const fs = require("fs");
 function viewRouter(req, res) {
     const urlobj = url.parse(req.url);
     const pathname = urlobj.pathname;
-    const filepath = "." + pathname;
+    let filepath = "." + pathname;
     const ext = path.extname(filepath);
     let contentType = "text/html";
     switch (ext) {
