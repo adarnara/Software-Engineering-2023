@@ -51,6 +51,11 @@ const JWT_AUTH_ROUTE = "/token";
  * @throws {Error} Will throw an error on a status code above 300 from the server.
  */
 async function checkToken() {
+    if (!getJwtToken()) {
+        console.warn("Checking token when no token exists!");
+        return null;
+    }
+
     let response = await authorize(JWT_AUTH_ROUTE);
     // Likely caused by no token present
     if (!response) {

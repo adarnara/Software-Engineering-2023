@@ -1,5 +1,3 @@
-const User = require('../models/users')
-const jwt = require('jsonwebtoken')
 const { validateToken } = require("../config/jwt");
 
 /**
@@ -40,12 +38,14 @@ function parseJwtHeader(request, response) {
             if (userData) {
                 return userData;
             } else {
+                // Should not trigger
+                console.error(`Internal authentication error! With token: ${token}`);
                 let errorMsg = "Internal authentication error";
                 response.statusCode = 500;
                 response.setHeader("Content-Type", "application/json");
                 response.setHeader(
                     "WWW-Authenticate",
-                    `realm="example", error="authorization_failed", error_description=${errorMsg}`
+                    `realm="Reprua", error="authorization_failed", error_description=${errorMsg}`
                 )
             }
         } catch (err) {
@@ -64,7 +64,7 @@ function parseJwtHeader(request, response) {
                 // https://www.rfc-editor.org/rfc/rfc6750#section-3
                 // and somewhere else probably
                 "WWW-Authenticate",
-                `realm="example", error="invalid_token", error_description="${errorMsg}"`
+                `realm="Reprua", error="invalid_token", error_description="${errorMsg}"`
             );
             response.end(JSON.stringify({ message: errorMsg }));
             return null;
