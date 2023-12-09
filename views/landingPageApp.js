@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
     // Event listener for autocomplete
-    searchInput.addEventListener('input', function () {
+    searchInput.addEventListener('input', function() {
         const searchText = searchInput.value.trim();
         if (searchText) {
             fetchAutocompleteSuggestions(searchText);
@@ -85,25 +85,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Set up event listener for search bar.
     const searchButton = document.querySelector('.search-bar .search-button');
-if (searchButton) {
-    searchButton.addEventListener('click', function () {
-        performSearch(searchInput.value.trim(), function() {
-            // Clear the search input and hide autocomplete results after search
-            searchInput.value = ''; 
-            searchResultsElement.innerHTML = '';
-            searchResultsElement.style.display = 'none';
+    if (searchButton) {
+        searchButton.addEventListener('click', function() {
+            performSearch(searchInput.value.trim(), function() {
+                // Clear the search input and hide autocomplete results after search
+                searchInput.value = '';
+                searchResultsElement.innerHTML = '';
+                searchResultsElement.style.display = 'none';
+            });
         });
-    });
-}
+    }
 
-    window.nextPage = function () {
+    window.nextPage = function() {
         if (currentSearchText) {
             currentPage++;
             performSearch(currentSearchText);
         }
     };
 
-    window.previousPage = function () {
+    window.previousPage = function() {
         if (currentPage > 1 && currentSearchText) {
             currentPage--;
             performSearch(currentSearchText);
@@ -133,7 +133,7 @@ if (searchButton) {
         results.forEach(result => {
             var resultElement = document.createElement('p');
             resultElement.textContent = result.name;
-            resultElement.onclick = function () {
+            resultElement.onclick = function() {
                 addSelectedResult(result.name);
                 document.getElementById('searchInput').value = ''; // Clear the search bar
                 searchResultsElement.innerHTML = ''; // Clear autocomplete results
@@ -150,7 +150,7 @@ if (searchButton) {
         const newInput = document.createElement('div');
         newInput.className = 'selected-result';
         newInput.textContent = name;
-        newInput.onclick = function () {
+        newInput.onclick = function() {
             selectedResultsContainer.removeChild(newInput);
         };
         selectedResultsContainer.appendChild(newInput);
@@ -185,13 +185,13 @@ if (searchButton) {
         }
         currentSearchText = searchText;
         const url = `http://localhost:3000/search/?searchText=${searchText}&page=${currentPage}&pageSize=${pageSize}`;
-    
+
         fetch(url)
             .then(response => response.json())
             .then(data => {
                 if (data.length === 0) {
                     // Show no results found when the current page has no data
-                alert('No results found.');
+                    alert('No results found.');
                     productsContainer.innerHTML = 'No products found.';
                     updateNavigationButtons(0);
                 } else {
@@ -220,7 +220,7 @@ if (searchButton) {
             })
             .catch(error => console.error('Next Page Check Error:', error));
     }
-    
+
     function updateProductDisplay(data) {
         productsContainer.innerHTML = '';
         data.forEach(product => {
@@ -228,11 +228,11 @@ if (searchButton) {
         });
         updateNavigationButtons(data.length);
     }
-    
+
     function updateNavigationButtons(fetchedCount) {
         const prevButton = document.querySelector('.previous-button');
         const nextButton = document.querySelector('.next-button');
-    
+
         if (prevButton) {
             prevButton.classList.toggle('hidden', currentPage === 1);
         }
@@ -362,7 +362,7 @@ function setup() {
         const profileButton = document.createElement("button");
         profileButton.className = "go-to-page-button";
         profileButton.innerHTML = '<img src="../public/Images/profile.png" alt="Profile" />';
-        profileButton.onclick = function () {
+        profileButton.onclick = function() {
             toProfile();
         };
 
@@ -391,6 +391,20 @@ function navigateToPage(route) {
     // Use window.location to navigate to the desired page
     window.location.href = route;
 }
+
+// Tickets
+document.addEventListener("DOMContentLoaded", () => {
+    const button2 = document.getElementById('button2');
+    if (button2) {
+        button2.addEventListener('click', () => {
+            console.log("Button2 clicked!");
+            window.location.href = "http://localhost:5500/views/ticketsPage.html";
+        });
+    } else {
+        console.log("Button2 not found");
+    }
+});
+
 // Set up the web page
 setup();
 

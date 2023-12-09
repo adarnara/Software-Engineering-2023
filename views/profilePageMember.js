@@ -145,7 +145,7 @@ function validateEmail(email) {
 
     // email validation, checks for @gmail.com
     // return /\S+@\S+\.\S+/.test(email) && email.includes('@gmail.com');
-    
+
     return /[A-Za-z0-9_]+@\S+\.\S+/.test(email);
 }
 
@@ -196,8 +196,8 @@ function getCookie(name) {
 }
 function continueShopping() {
     window.location.href = "http://127.0.0.1:5500/views/landingPage.html";
-  }
-  
+}
+
 function toProfile() {
     checkToken().then(function redirect(data) {
         const role = data.role;
@@ -209,16 +209,16 @@ function toProfile() {
             console.error("Unknown role:", role);
         }
     });
-  }
-  
-  function logout() {
+}
+
+function logout() {
     removeJwtToken();
     window.location.href = "/views/landingPage.html";
-  }
-  
-  function setup() {
+}
+
+function setup() {
     const token = getJwtToken();
-  
+
     if (token) {
         const profileButton = document.createElement("button");
         profileButton.className = "go-to-page-button";
@@ -226,27 +226,27 @@ function toProfile() {
         profileButton.onclick = function() {
             toProfile();
         };
-  
-        document.getElementById("shopping-icon").innerHTML = 
-        `<a href="http://127.0.0.1:5500/views/shoppingCartHistory.html">
+
+        document.getElementById("shopping-icon").innerHTML =
+            `<a href="http://127.0.0.1:5500/views/shoppingCartHistory.html">
         <img src="../public/Images/shoppingCartHistory.png" alt="shoppingCart" />
         <span style="font-weight: bold; font-size: 20px"></span>
-      </a>` + 
+      </a>` +
             '<a href="/views/shoppingCart.html" style="text-decoration: none; color: inherit;">' +
             '<img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />' +
             '<span style="font-weight: bold; font-size: 20px;"></span>' +
             '</a>';
-  
+
         document.getElementById("shopping-icon").appendChild(profileButton);
-  
+
         const logoutButton = document.createElement("button");
         logoutButton.className = "go-to-page-button";
         logoutButton.innerHTML = '<img src="/public/Images/image-button-two.png" alt="Logout" />';
         logoutButton.onclick = logout;
-  
+
         document.getElementById("shopping-icon").appendChild(logoutButton);
     }
-  }
-  
-  // Set up the web page
-  setup();
+}
+
+// Set up the web page
+setup();
