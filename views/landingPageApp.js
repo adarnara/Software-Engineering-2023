@@ -132,17 +132,17 @@ const categoryButton = document.querySelector('.category-button');
                 console.error('Error fetching data:', error);
             });
     }
-
-    
       
-
-    window.nextPage = function() { //go to next page
-        currentPage += 1;
-        searchProducts(currentSearchText);
+    window.nextPage = function() { 
+        if (currentSearchText){
+            currentPage += 1;
+            searchProducts(currentSearchText);
+        }
+        
     };
 
-    window.previousPage = function() { //go to previous page
-        if (currentPage > 1) {
+    window.previousPage = function() { 
+        if (currentPage > 1 && currentSearchText) {
             currentPage -= 1;
             searchProducts(currentSearchText);
         }
