@@ -26,6 +26,7 @@ const searchRouter = require("./routes/searchRoute");
 connectDB();
 
 
+
 const server = http.createServer(async (request, response) => {
     const parsedUrl = url.parse(request.url, true);
     const path = parsedUrl.pathname;
@@ -43,28 +44,14 @@ const server = http.createServer(async (request, response) => {
         return;
     }
 
-
-
-
     // Iterate over landingRouter for dynamic routes
-    for (const route in searchRouter) {
-        console.log(`Checking route: ${route}`);
-        const methodPart = route.match(/^[A-Z]+/)[0];
-        const pathPart = route.substring(methodPart.length);
-
-        console.log(methodPart);
-        console.log(pathPart);
-
-        if (methodPart !== method) continue;
-
-        const params = matchDynamicRoute(pathPart, path);
-        if (params) {
-            // Found a matching dynamic route
+    for (const dynamicRoute in searchRouter) {
+        const dynamicRoutePath = dynamicRoute.split('/')[1]; // Get the dynamic part of the route
+        if (path.startsWith(`/${dynamicRoutePath}`)) {
+            const params = parsedUrl.query;
             request.params = params;
-            console.log(params);
-
             try {
-                await searchRouter[route](request, response);
+                await searchRouter[dynamicRoute](request, response);
                 return;
             } catch (error) {
                 console.error('Route Handler Error:', error);
@@ -76,21 +63,17 @@ const server = http.createServer(async (request, response) => {
     }
 
 
-    //handling dymanic routes like /user/{id}
+    //handling dynamic routes like /user/{id}
     for (const route in userRouter) {
-        // console.log(`Checking route: ${route}`);
         const methodPart = route.match(/^[A-Z]+/)[0]; // Match the HTTP method part
         const pathPart = route.substring(methodPart.length); // Get the path part
 
-        // console.log(methodPart)
-        // console.log(pathPart)
         if (methodPart !== method) continue;
 
         const params = matchDynamicRoute(pathPart, path);
         if (params) {
             // Found a matching dynamic route
             request.params = params;
-            // console.log(params)
             try {
                 await userRouter[route](request, response);
                 return;
@@ -105,47 +88,17 @@ const server = http.createServer(async (request, response) => {
 
     // handling dynamic routes like /profile/updateProfile/{userId}
     for (const route in profileRouter) {
-        // console.log(`Checking route: ${route}`);
         const methodPart = route.match(/^[A-Z]+/)[0]; // Match the HTTP method part
         const pathPart = route.substring(methodPart.length); // Get the path part
 
-        // console.log(methodPart)
-        // console.log(pathPart)
         if (methodPart !== method) continue;
 
         const params = matchDynamicRoute(pathPart, path);
         if (params) {
             // Found a matching dynamic route
             request.params = params;
-            // console.log(params)
             try {
                 await profileRouter[route](request, response);
-                return;
-            } catch (error) {
-                console.error('Route Handler Error:', error);
-                response.writeHead(500);
-                response.end(JSON.stringify({ message: 'Internal Server Error' }));
-                return;
-            }
-        }
-    }
-        // handling dynamic routes like /resolveTicket/{ticketId}
-    for (const route in ticketsRouter) {
-        console.log(`Checking route: ${route}`);
-        const methodPart = route.match(/^[A-Z]+/)[0]; // Match the HTTP method part
-        const pathPart = route.substring(methodPart.length); // Get the path part
-    
-        console.log(methodPart)
-        console.log(pathPart)
-        if (methodPart !== method) continue;
-    
-        const params = matchDynamicRoute(pathPart, path);
-        if (params) {
-            // Found a matching dynamic route
-            request.params = params;
-            console.log(params)
-            try {
-                await ticketsRouter[route](request, response);
                 return;
             } catch (error) {
                 console.error('Route Handler Error:', error);
@@ -195,13 +148,15 @@ const server = http.createServer(async (request, response) => {
         }
     }
 
-
-
-
     const routeKey = `${method}${path}`;
     if (routes[routeKey]) {
         const routeHandler = routes[routeKey];
-        const req = { query: parsedUrl.query };
+        const req = {
+            method: method,
+            url: request.url,
+            query: parsedUrl.query,
+            body: {}, // Initialize an empty body object
+        };
         const res = {
             status(code) {
                 this.statusCode = code;
@@ -253,7 +208,6 @@ const server = http.createServer(async (request, response) => {
         const shippingRouteHandler = shippingRouter[routeKey];
         const sellerRouteHandler = sellerRouter[routeKey];
 
-
         if (userRouteHandler) {
             userRouteHandler(request, response);
         } else if (adminRouteHandler) {
@@ -298,8 +252,6 @@ function matchDynamicRoute(routePattern, path) {
     }
     return params;
 }
-
-
 
 server.listen(PORT, (error) => {
     if (error) {
