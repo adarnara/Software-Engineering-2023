@@ -18,20 +18,37 @@ const { validateToken } = require("../config/jwt");
  */
 function parseJwtHeader(request, response) {
     let auth = request.headers["authorization"];
+
     if (!auth) {
+        console.trace("A user tried to log in without authorization (no token).");
+
         response.statusCode = 401;
         response.setHeader("Content-Type", "application/json");
         response.end(JSON.stringify({ message: "No authorization provided." }));
         return null;
     } else if (!auth.startsWith("Bearer ")) {
+        console.trace("A user tried to log in without authorization (not Bearer scheme).");
+
         response.statusCode = 400;
         response.setHeader("Content-Type", "application/json");
         response.end(JSON.stringify({ message: "Authorization does not follow Bearer scheme." }));
         return null;
     } else {
         let token = auth.slice(7).trim();
-        let userData = parseToken(token);
-        if (!userData) {
+        try {
+            let userData = parseToken(token);
+            if (userData) {
+                return userData;
+            } else {
+                let errorMsg = "Internal authentication error";
+                response.statusCode = 500;
+                response.setHeader("Content-Type", "application/json");
+                response.setHeader(
+                    "WWW-Authenticate",
+                    `realm="example", error="authorization_failed", error_description=${errorMsg}`
+                )
+            }
+        } catch (err) {
             // This message not always correct. It can be triggered the following
             // ways (realistically):
             //  - Expired token
@@ -39,7 +56,7 @@ function parseJwtHeader(request, response) {
             //  - Key change or some server-side change
             // To change this message, the `parseToken` function needs to return
             // some extra information.
-            let errorMsg = "Token expired.";
+            let errorMsg = err.message;
             response.statusCode = 403;
             response.setHeader("Content-Type", "application/json");
             response.setHeader(
@@ -51,8 +68,26 @@ function parseJwtHeader(request, response) {
             );
             response.end(JSON.stringify({ message: errorMsg }));
             return null;
-        } else {
-            return userData;
+        }
+    }
+}
+
+/**
+ * Unlike parseJwtHeader, this function does not send back a response on a missing
+ * or invalid authorization header (JWT token) and instead returns null.
+ * @param request {Request} - The request with the header (or without).
+ * @returns {object | null} Either the object with the id of the user or null.
+ */
+function getAuthorization(request) {
+    let auth = request.headers["authorization"];
+    if (!auth || !auth.startsWith("Bearer ")) {
+        return null;
+    } else {
+        let token = auth.slice(7).trim();
+        try {
+            return parseToken(token);
+        } catch (_) {
+            return null;
         }
     }
 }
@@ -72,38 +107,17 @@ function checkToken(token, id) {
 }
 
 /**
- * Mostly a test function for getting the username on
- * the landing page
- * @returns {object | null} Returns null if the token is not valid.
+ * Processes the token for validation.
+ * @throws {Error} The 
+ * @returns {object | null} Shouldn't realistically return null.
  */
 function parseToken(token) {
-    let data = null;
-    try {
-        data = validateToken(token);
-    } catch {
-        // -!- TODO: Temporary handling (replace with better messages?)
-        // Errors to handle:
-        //  - TokenExpiredError
-        //    - "jwt expired"
-        //  - JsonWebTokenError
-        //    - "invalid token"
-        //    - "jwt malformed"
-        //    - "jwt signature is required"
-        //    - "invalid signature"
-        //    - "jwt audience invalid..."
-        //    - "jwt issuer invalid..."
-        //    - "jwt id invalid..."
-        //    - "jwt subject invalid..."
-        //  - NotBeforeError (not used in our implementation)
-        //    - "jwt inactive"
-        
-        return null;
-    }
-    if (!data) {
+    let data = validateToken(token);
+    if (!data || !data.hasOwnProperty("id")) {
         return null;
     } else {
         return { "id": data.id };
     }
 }
 
-module.exports = { checkToken, parseToken, parseJwtHeader };
+module.exports = { checkToken, parseToken, parseJwtHeader, getAuthorization };

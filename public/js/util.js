@@ -126,11 +126,12 @@ function removeJwtToken() {
  * @param url {string} - The url to send the request to.
  * @param data {object} - Leave blank if not intending to use. Otherwise
  *     this is the Fetch API's data parameter.
+ * @param suppress {boolean} - Set to true to suppress console messages.
+ *     Only use this on really weird edge cases or when you're sure.
  * @returns {null | Promise<Response>} Is null if the token does not exist,
  *     otherwise returns what the fetch request returns.
  */
-async function authorize(url, data = {}) {
-
+async function authorize(url, data = {}, suppress = false) {
     if (url.startsWith("/")) {
         // send the request to the correct server by using the
         // SERVER_URL constant
@@ -140,10 +141,12 @@ async function authorize(url, data = {}) {
     if (typeof data === "object") {
         data.headers = data.headers ?? {};
     } else {
-        console.error("Invalid usage of the `authorize` function. Check"
-            + " that you didn't a non-object in the second parameter? If"
-            + " you're not setting anything there, remember to leave it"
-            + " blank!");
+        if (!suppress) {
+            console.error("Invalid usage of the `authorize` function. Check"
+                + " that you didn't a non-object in the second parameter? If"
+                + " you're not setting anything there, remember to leave it"
+                + " blank!");
+        }
         throw new Error(`Invalid type for data: ${typeof data}`);
     }
 
@@ -153,13 +156,52 @@ async function authorize(url, data = {}) {
     data.headers["Authorization"] = `Bearer ${jwt_token}`;
 
     if (!url.startsWith(SERVER_URL)) {
-        console.warn("Sending an authorization request to a url that does"
-            + " not correspond to the url for the server configured in this"
-            + " file (public/util.js). Either change the constant in this"
-            + " file, or remember to use the SERVER_URL constant from this"
-            + " file!");
+        if (!suppress) {
+            console.warn("Sending an authorization request to a url that does"
+                + " not correspond to the url for the server configured in this"
+                + " file (public/util.js). Either change the constant in this"
+                + " file, or remember to use the SERVER_URL constant from this"
+                + " file!");
+        }
     }
-    return await fetch(url, data);
+
+    let response = await fetch(url, data);
+
+    if (response.status === 403 && response.headers.get("WWW-Authenticate")) {
+        let fields = parseKVHeader(response.headers.get("WWW-Authenticate"));
+
+        if (!suppress) {
+            console.warn(`An error occured when handling JWT:\n`
+                + `  ${fields["error_description"]}\n\n`
+                + "Removing JWT token.");
+        }
+
+        removeJwtToken();
+    }
+
+    return response;
+}
+
+/**
+ * An elementary parser. Doesn't work for keys/values with commas.
+ * @param data {string} - The data associated with the header.
+ * @returns {object} The parsed header
+ */
+function parseKVHeader(data) {
+    let parsed = data.split(",");
+    let fields = {};
+    for (const s of parsed) {
+        let matching = s.trim().match(/([a-zA-Z0-9_]+)\s?=\s?"(.*)"/);
+        if (matching) {
+            let key = matching[1];
+            let value = matching[2];
+            fields[key] = value;
+        } else {
+            console.warn("There was an issue while parsing a K-V header."
+                + " (Probably WWW-Authenticate)");
+        }
+    }
+    return fields;
 }
 
 /**
