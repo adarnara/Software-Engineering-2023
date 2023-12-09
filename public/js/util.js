@@ -64,12 +64,14 @@ async function checkToken() {
     // Check if there is a header for JSON.
     if (response.headers.get("Content-Type") === "application/json") {
         let body = response.json();
-        if (response.status >= 300) {
-            let msg = body.message ?? "No additional information given";
+        if (response.status === 404) {
+            console.warn("The user corresponding to the token was not found."
+                + " Deleting token.");
+            removeJwtToken();
+        } else if (response.status >= 300) {
             throw new Error(
                 `An error occurred while accessing ${JWT_AUTH_ROUTE}\n`
                     + `Status code ${response.status}: ${response.statusText}\n`
-                    + `${msg}`
             );
         }
         return body;
