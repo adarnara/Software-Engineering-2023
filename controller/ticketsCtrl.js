@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const middleware = require('../middlewares/authmiddleware.js');
 const ticketsRepository = require('../Repository/ticketsRepo.js');
 const userRepo = require("../Repository/userRepo.js");
+const { isAdminAuthenticated } = require('../middlewares/adminAuth');
 
 
 async function getJSON(req) {
@@ -48,6 +49,12 @@ async function createTicket(req, res) {
   }
 
   async function getFirstOpen(req,res){
+    const isAuthenticated = await isAdminAuthenticated(req);
+        if (!isAuthenticated) {
+            res.writeHead(401, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Unauthorized' }));
+            return;
+        }
     try {
         const firstOpenTicket = await ticketsRepository.getFirstOpenTicket();
         if (firstOpenTicket == null){
@@ -71,6 +78,12 @@ async function createTicket(req, res) {
   }
   
   async function getAllOpenTickets(req, res) {
+    const isAuthenticated = await isAdminAuthenticated(req);
+        if (!isAuthenticated) {
+            res.writeHead(401, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Unauthorized' }));
+            return;
+        }
     try {
         const allOpenTickets = await ticketsRepository.getAllOpenTickets();
         if (allOpenTickets == null){
@@ -100,6 +113,12 @@ async function createTicket(req, res) {
     }
 
     async function getAllResolvedTickets(req, res) {
+        const isAuthenticated = await isAdminAuthenticated(req);
+        if (!isAuthenticated) {
+            res.writeHead(401, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Unauthorized' }));
+            return;
+        }
         try {
             const allResolvedTickets = await ticketsRepository.getAllResolvedTickets();
             const formattedTickets = [];
@@ -124,6 +143,12 @@ async function createTicket(req, res) {
     }
 
     async function resolution(req, res) {
+        const isAuthenticated = await isAdminAuthenticated(req);
+        if (!isAuthenticated) {
+            res.writeHead(401, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Unauthorized' }));
+            return;
+        }
         try {
             if (req.headers["content-type"] !== 'application/json') {
                 res.writeHead(415).end('Unsupported Media Type');
@@ -131,7 +156,8 @@ async function createTicket(req, res) {
             }
             let json = await getJSON(req);
             let resolutionDescription = json.resolution;
-            let id = await ticketsRepository.getFirstOpenId();
+            const { id } = req.params;
+            console.log("Ticket id: ",id);
             await ticketsRepository.resolution(id, resolutionDescription);
             res.writeHead(201, { 'Content-Type': 'application/json' }).end("Ticket resolved successfully.");
         } catch (error) {
