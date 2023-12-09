@@ -48,6 +48,29 @@ document.addEventListener("DOMContentLoaded", () => {
     const pageSize = 5; //how many products to display per page
     let lastFetchedProductCount = 0; //how many products we're fetched last
 
+
+//    const categoryLinks = document.querySelectorAll('.category-dropdown a');
+//     categoryLinks.forEach(link => {
+//     link.addEventListener('click', (event) => {
+//       event.preventDefault(); // Prevent the default anchor action
+//       const category = link.getAttribute('data-category'); // Get the category from data attribute
+//       categoryButton.textContent = category + ' ▼';
+//       searchProducts(category); //calls search function with the category
+//     });
+//   });
+
+const categoryButton = document.querySelector('.category-button');
+    const categoryLinks = document.querySelectorAll('.category-dropdown a');
+
+    categoryLinks.forEach(link => {
+        link.addEventListener('click', (event) => {
+            event.preventDefault(); // Prevent the default anchor action
+            const category = link.textContent; // Get the category from link text
+            categoryButton.textContent = category + ' ▼'; // Change button text and add the dropdown arrow symbol
+            searchProducts(category.toLowerCase()); // Call the search function with the category
+        });
+    });
+  
     //Set up event listener for search bar.
     const searchButton = document.querySelector('.search-bar .search-button');
     if (searchButton) {
@@ -66,6 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+
     //Searches for and displays requested products
     function searchProducts(searchText) {
         currentSearchText = searchText; //stores in global variable so that it can be accessed in next and previous method
@@ -116,6 +140,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.error('Error fetching data:', error);
             });
     }
+
+    
+    
+
+
 
     window.nextPage = function() { //go to next page
         currentPage += 1;
@@ -294,6 +323,7 @@ function setup() {
         document.getElementById("shopping-icon").appendChild(logoutButton);
     }
 }
-
+});
 // Set up the web page
 setup();
+

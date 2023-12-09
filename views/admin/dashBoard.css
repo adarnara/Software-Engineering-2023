@@ -131,3 +131,48 @@ button.delete-user:hover {
   text-decoration: none;
   cursor: pointer;
 }
+
+.user-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 10px; 
+}
+
+.user-name, .user-role, .user-email {
+  flex: 1;
+  padding: 0 10px; 
+}
+
+
+button.update-user, button.delete-user {
+  margin: 0 5px; 
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.pagination {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 5px 15px;
+  margin: 0 5px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination button:hover {
+  background-color: #2980b9;
+}
+
+.pagination span {
+  padding: 5px 10px;
+}
