@@ -77,9 +77,9 @@ const categoryButton = document.querySelector('.category-button');
     });
   
     //Set up event listener for search bar.
-    const searchButton = document.querySelector('.search-bar .search-button');
-    if (searchButton) {
-        searchButton.addEventListener('click', function() {
+    const searchButtonTwo = document.querySelector('.search-bar .search-button');
+    if (searchButtonTwo) {
+        searchButtonTwo.addEventListener('click', function() {
             currentPage = 1
             const searchText = document.querySelector('.search-bar input[type="text"]').value;
             const pattern = /^(books|ipad|tshirts|laptop)\d*$/;
@@ -100,9 +100,9 @@ const categoryButton = document.querySelector('.category-button');
         currentSearchText = searchText; //stores in global variable so that it can be accessed in next and previous method
         let url = '';
         if (['books', 'ipad', 'laptop', 'tshirts'].includes(searchText.toLowerCase())) {
-            url = `http://localhost:3000/search/category?name=${searchText}&page=${currentPage}&pageSize=${pageSize}`; //searching by category
+            url = `http://localhost:3000/filter/category?name=${searchText}&page=${currentPage}&pageSize=${pageSize}`; //searching by category
         } else {
-            url = `http://localhost:3000/search?productId=${searchText}`; //searching for specific product
+            url = `http://localhost:3000/filter?productId=${searchText}`; //searching for specific product
         }
         fetch(url) //Fetch requested product(s)
             .then(response => response.json())
@@ -192,17 +192,23 @@ const categoryButton = document.querySelector('.category-button');
     });
 
     // Set up event listener for search bar.
-    const searchButton = document.querySelector('.search-bar .search-button');
-if (searchButton) {
-    searchButton.addEventListener('click', function () {
-        performSearch(searchInput.value.trim(), function() {
-            // Clear the search input and hide autocomplete results after search
-            searchInput.value = ''; 
-            searchResultsElement.innerHTML = '';
-            searchResultsElement.style.display = 'none';
-        });
-    });
-}
+     // Update the event listener for the search button
+     const searchButton = document.querySelector('.search-bar .search-button');
+     if (searchButton) {
+         searchButton.addEventListener('click', function () {
+             const searchText = searchInput.value.trim();
+             if (!searchText) {
+                 alert('Please enter a search term.');
+                 return; // Avoid calling performSearch with empty input
+             }
+             performSearch(searchText, function() {
+                 searchInput.value = ''; 
+                 searchResultsElement.innerHTML = '';
+                 searchResultsElement.style.display = 'none';
+             });
+         });
+     }
+     
 
     window.nextPage = function () {
         if (currentSearchText) {
@@ -288,9 +294,11 @@ if (searchButton) {
     }
 
     function performSearch(searchText, callback) {
-        if (!searchText) {
-            return;
+        if (!searchText.trim()) {
+            alert('Please enter a search term.');
+            return; // Return here to avoid altering the product display
         }
+    
         currentSearchText = searchText;
         const url = `http://localhost:3000/search/?searchText=${searchText}&page=${currentPage}&pageSize=${pageSize}`;
     
@@ -298,13 +306,12 @@ if (searchButton) {
             .then(response => response.json())
             .then(data => {
                 if (data.length === 0) {
-                    // Show no results found when the current page has no data
-                alert('No results found.');
-                    productsContainer.innerHTML = 'No products found.';
+                    alert('No results found.');
+                    // Do not clear the products container if no results are found
+                    // productsContainer.innerHTML = 'No products found.';
                     updateNavigationButtons(0);
                 } else {
                     updateProductDisplay(data);
-                    // Check for next page data only if current page has data
                     checkNextPageData(searchText, currentPage + 1);
                 }
                 if (callback && typeof callback === 'function') {
@@ -315,6 +322,10 @@ if (searchButton) {
                 console.error('Search Error:', error);
             });
     }
+    
+   
+
+    
 
     function checkNextPageData(searchText, nextPage) {
         const nextPageUrl = `http://localhost:3000/search/?searchText=${searchText}&page=${nextPage}&pageSize=${pageSize}`;
@@ -498,4 +509,3 @@ function setup() {
 // Set up the web page
 
 setup();
-
