@@ -1,61 +1,23 @@
-const SearchController = require('../controller/searchController');
+const ProductController = require('../controller/ProductController');
+const ChatbotController = require('../controller/chatbotCtrl');
+const ShoppingCartController = require('../controller/shoppingCartController');
 
 module.exports = {
-    'GET/search': async (req, res) => {
+    'GET/search/:query': async (req, res) => {
         try {
-            const { searchText, page, pageSize } = req.params;
+            const query = req.params.query;
 
-            if (!searchText) {
-                res.writeHead(400, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ message: 'Search text parameter is missing.' }));
-                return;
+            if (!query) {
+                return res.status(400).json({ message: 'Query parameter is missing.' });
             }
 
-            // Call the searchByNameOrProduct controller function with the query input
-            await SearchController.searchByNameOrProduct(req, res);
+            // Call the searchProducts controller function with the query input
+            await ProductController.searchProducts(query, res);
 
         } catch (error) {
             console.error('Route Handler Error:', error);
-            res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: 'Internal Server Error' }));
+            res.status(500).json({ message: 'Internal Server Error' });
         }
     },
-    'GET/autocomplete': async (req, res) => {
-        try {
-            const { searchText } = req.params;
-
-            if (!searchText) {
-                res.writeHead(400, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ message: 'Search text parameter is missing.' }));
-                return;
-            }
-
-            // Call the searchByNameOrProduct controller function with the query input
-            await SearchController.searchAutoComplete(req, res);
-
-        } catch (error) {
-            console.error('Route Handler Error:', error);
-            res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: 'Internal Server Error' }));
-        }
-    },
-    'GET/exactName': async (req, res) => {
-        try {
-            const { searchText } = req.params;
-
-            if (!searchText) {
-                res.writeHead(400, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ message: 'Search text parameter is missing.' }));
-                return;
-            }
-
-            // Call the searchByName controller function with the query input
-            await SearchController.searchByExactName(req, res);
-
-        } catch (error) {
-            console.error('Route Handler Error:', error);
-            res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: 'Internal Server Error' }));
-        }
-    },
+    'GET/search/category': ProductController.getProductsByCategory,
 };

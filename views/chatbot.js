@@ -31,10 +31,8 @@ class Chatbox {
         // show or hides the box
         if(this.state) {
             chatbox.classList.add('chatbox--active')
-            chatbox.style.pointerEvents="auto";
         } else {
             chatbox.classList.remove('chatbox--active')
-            chatbox.style.pointerEvents="none";
         }
     }
 

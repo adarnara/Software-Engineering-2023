@@ -9,7 +9,7 @@ function checkPos(quantity) {
  * top right corner of the screen (replacing the sign in button)
  */
 function checkSignedIn() {
-    let token = getJwtToken();
+    let token = getJwtToken(); 
     if (token) {
         // don't qualify domain; this will break if server is hosted
         // non-locally or on a different port.
@@ -42,15 +42,10 @@ function getCookie(cookieName) {
 document.addEventListener("DOMContentLoaded", () => {
     const productsContainer = document.getElementById("products-container");
     const products = [];
+
     let currentSearchText = '';
     let currentPage = 1;
-
-    const pageSize = 5;
-
-    const searchInput = document.getElementById('searchInput');
-    const searchResultsElement = document.getElementById('searchResults');
-
-
+    const pageSize = 5; //how many products to display per page
     let lastFetchedProductCount = 0; //how many products we're fetched last
 
 
@@ -156,8 +151,12 @@ const categoryButton = document.querySelector('.category-button');
         searchProducts(currentSearchText);
     };
 
-
-    searchResultsElement.style.display = 'none';
+    window.previousPage = function() { //go to previous page
+        if (currentPage > 1) {
+            currentPage -= 1;
+            searchProducts(currentSearchText);
+        }
+    };
 
     fetch('http://localhost:3000/')
         .then((response) => {
@@ -179,172 +178,6 @@ const categoryButton = document.querySelector('.category-button');
         .catch(error => {
             console.error('Error fetching product data:', error);
         });
-
-    // Event listener for autocomplete
-    searchInput.addEventListener('input', function () {
-        const searchText = searchInput.value.trim();
-        if (searchText) {
-            fetchAutocompleteSuggestions(searchText);
-        } else {
-            searchResultsElement.innerHTML = '';
-            searchResultsElement.style.display = 'none';
-        }
-    });
-
-    // Set up event listener for search bar.
-    const searchButton = document.querySelector('.search-bar .search-button');
-if (searchButton) {
-    searchButton.addEventListener('click', function () {
-        performSearch(searchInput.value.trim(), function() {
-            // Clear the search input and hide autocomplete results after search
-            searchInput.value = ''; 
-            searchResultsElement.innerHTML = '';
-            searchResultsElement.style.display = 'none';
-        });
-    });
-}
-
-    window.nextPage = function () {
-        if (currentSearchText) {
-            currentPage++;
-            performSearch(currentSearchText);
-        }
-    };
-
-    window.previousPage = function () {
-        if (currentPage > 1 && currentSearchText) {
-            currentPage--;
-            performSearch(currentSearchText);
-        }
-    };
-
-    async function fetchAutocompleteSuggestions(searchText) {
-        try {
-            const response = await fetch(`http://localhost:3000/autocomplete?searchText=${searchText}`);
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            displayAutocompleteResults(data);
-        } catch (error) {
-            console.error('Autocomplete Error:', error);
-            searchResultsElement.innerHTML = '';
-            searchResultsElement.style.display = 'none';
-        }
-    }
-
-    function displayAutocompleteResults(results) {
-        var searchResultsElement = document.getElementById('searchResults');
-        searchResultsElement.innerHTML = "";
-        searchResultsElement.style.display = 'block';
-
-        results.forEach(result => {
-            var resultElement = document.createElement('p');
-            resultElement.textContent = result.name;
-            resultElement.onclick = function () {
-                addSelectedResult(result.name);
-                document.getElementById('searchInput').value = ''; // Clear the search bar
-                searchResultsElement.innerHTML = ''; // Clear autocomplete results
-                searchResultsElement.style.display = 'none';
-            };
-            searchResultsElement.appendChild(resultElement);
-        });
-    }
-
-
-    function addSelectedResult(name) {
-        const selectedResultsContainer = document.getElementById('searchResults');
-        console.log(selectedResultsContainer);
-        const newInput = document.createElement('div');
-        newInput.className = 'selected-result';
-        newInput.textContent = name;
-        newInput.onclick = function () {
-            selectedResultsContainer.removeChild(newInput);
-        };
-        selectedResultsContainer.appendChild(newInput);
-
-        // Fetch exact product info when a selection is made
-        fetchExactProductInfo(name);
-        const prevButton = document.querySelector('.previous-button');
-        const nextButton = document.querySelector('.next-button');
-        if (prevButton) prevButton.classList.add('hidden');
-        if (nextButton) nextButton.classList.add('hidden');
-    }
-
-
-
-
-
-
-    function fetchExactProductInfo(productName) {
-        productName = productName.replace(/\+/g, "%2B");
-        console.log(productName);
-        fetch(`http://localhost:3000/exactName?searchText=${productName}`)
-            .then(response => response.json())
-            .then(productInfo => {
-                productsContainer.innerHTML = createProductHTML(productInfo);
-            })
-            .catch(error => console.error('Exact Product Fetch Error:', error));
-    }
-
-    function performSearch(searchText, callback) {
-        if (!searchText) {
-            return;
-        }
-        currentSearchText = searchText;
-        const url = `http://localhost:3000/search/?searchText=${searchText}&page=${currentPage}&pageSize=${pageSize}`;
-    
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                if (data.length === 0) {
-                    // Show no results found when the current page has no data
-                alert('No results found.');
-                    productsContainer.innerHTML = 'No products found.';
-                    updateNavigationButtons(0);
-                } else {
-                    updateProductDisplay(data);
-                    // Check for next page data only if current page has data
-                    checkNextPageData(searchText, currentPage + 1);
-                }
-                if (callback && typeof callback === 'function') {
-                    callback();
-                }
-            })
-            .catch(error => {
-                console.error('Search Error:', error);
-            });
-    }
-
-    function checkNextPageData(searchText, nextPage) {
-        const nextPageUrl = `http://localhost:3000/search/?searchText=${searchText}&page=${nextPage}&pageSize=${pageSize}`;
-        fetch(nextPageUrl)
-            .then(response => response.json())
-            .then(nextPageData => {
-                const nextButton = document.querySelector('.next-button');
-                if (nextButton) {
-                    nextButton.classList.toggle('hidden', !nextPageData.length);
-                }
-            })
-            .catch(error => console.error('Next Page Check Error:', error));
-    }
-    
-    function updateProductDisplay(data) {
-        productsContainer.innerHTML = '';
-        data.forEach(product => {
-            productsContainer.innerHTML += createProductHTML(product);
-        });
-        updateNavigationButtons(data.length);
-    }
-    
-    function updateNavigationButtons(fetchedCount) {
-        const prevButton = document.querySelector('.previous-button');
-        const nextButton = document.querySelector('.next-button');
-    
-        if (prevButton) {
-            prevButton.classList.toggle('hidden', currentPage === 1);
-        }
-    }
 
     function createProductHTML(product) {
         //check if variant_data is empty
@@ -470,15 +303,11 @@ function setup() {
         const profileButton = document.createElement("button");
         profileButton.className = "go-to-page-button";
         profileButton.innerHTML = '<img src="../public/Images/profile.png" alt="Profile" />';
-        profileButton.onclick = function () {
+        profileButton.onclick = function() {
             toProfile();
         };
 
         document.getElementById("shopping-icon").innerHTML =
-            `<a href="http://127.0.0.1:5500/views/shoppingCartHistory.html">
-        <img src="../public/Images/shoppingCartHistory.png" alt="shoppingCart" />
-        <span style="font-weight: bold; font-size: 20px"></span>
-      </a>` +
             '<a href="/views/shoppingCart.html" style="text-decoration: none; color: inherit;">' +
             '<img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />' +
             '<span style="font-weight: bold; font-size: 20px;"></span>' +
@@ -488,14 +317,13 @@ function setup() {
 
         const logoutButton = document.createElement("button");
         logoutButton.className = "go-to-page-button";
-        logoutButton.innerHTML = '<img src="/public/Images/image-button-two.png" alt="Logout" />';
+        logoutButton.innerHTML = '<img src="../public/Images/logout-button-again.png" alt="Logout" />';
         logoutButton.onclick = logout;
 
         document.getElementById("shopping-icon").appendChild(logoutButton);
     }
 }
-
+});
 // Set up the web page
-
 setup();
 

@@ -21,8 +21,6 @@ function handleKeyPress(event, productId, inputElement) {
 
 function createProductHTML(product, currCartProduct) {
   // Check if variant_data is empty
-  console.log(currCartProduct);
-console.log(currCartProduct.quantity);
   let colorsHTML = "";
   if (product.variant_data !== undefined && product.variant_data.length > 0) {
     const variantData = JSON.parse(product.variant_data[0]);
@@ -43,7 +41,6 @@ if (    currCartProduct.transaction.tracking_status !== "Shipped!")
 {
   currStatus = "../public/Images/x.png";
 }
-
   const productHTML = `
         <div class="product-container">
             <div class="product-image">
@@ -212,7 +209,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           (laterCart, earlierCart) =>  laterCart.purchaseTime - earlierCart.purchaseTime
           );
           data.reverse();
-      data.forEach(async (e) => {
+      data.forEach((e) => {
         let numShipped = 0;
         console.log(e);
         // create buttons with shopping cart time
@@ -242,11 +239,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         */
         for (let i = 0; i < e.products.length; i++) {
           var product = e.products[i];
-          await authorize(
-            `http://localhost:3000/filter?productId=${product.product_id}`
+
+          authorize(
+            `http://localhost:3000/search?productId=${product.product_id}`
           ).then(async (response) => {
             
             response = await response.json();
+            // console.log(response);
             products.push(response);
             var productHTML = createProductHTML(response[0], product);
             document.getElementById(e.purchaseTime).innerHTML += productHTML;
@@ -282,57 +281,3 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
   window.changeImage = changeImage;
 });
-
-
-function toProfile() {
-  checkToken().then(function redirect(data) {
-      const role = data.role;
-      if (role === "Seller") {
-          window.location.href = "/views/profilePageSeller.html";
-      } else if (role === "Member") {
-          window.location.href = "/views/profilePageMember.html";
-      } else {
-          console.error("Unknown role:", role);
-      }
-  });
-}
-
-function logout() {
-  removeJwtToken();
-  window.location.href = "/views/landingPage.html";
-}
-
-function setup() {
-  const token = getJwtToken();
-
-  if (token) {
-      const profileButton = document.createElement("button");
-      profileButton.className = "go-to-page-button";
-      profileButton.innerHTML = '<img src="../public/Images/profile.png" alt="Profile" />';
-      profileButton.onclick = function() {
-          toProfile();
-      };
-
-      document.getElementById("shopping-icon").innerHTML = 
-      `<a href="http://127.0.0.1:5500/views/shoppingCartHistory.html">
-      <img src="../public/Images/shoppingCartHistory.png" alt="shoppingCart" />
-      <span style="font-weight: bold; font-size: 20px"></span>
-    </a>` + 
-          '<a href="/views/shoppingCart.html" style="text-decoration: none; color: inherit;">' +
-          '<img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />' +
-          '<span style="font-weight: bold; font-size: 20px;"></span>' +
-          '</a>';
-
-      document.getElementById("shopping-icon").appendChild(profileButton);
-
-      const logoutButton = document.createElement("button");
-      logoutButton.className = "go-to-page-button";
-      logoutButton.innerHTML = '<img src="/public/Images/image-button-two.png" alt="Logout" />';
-      logoutButton.onclick = logout;
-
-      document.getElementById("shopping-icon").appendChild(logoutButton);
-  }
-}
-
-// Set up the web page
-setup();

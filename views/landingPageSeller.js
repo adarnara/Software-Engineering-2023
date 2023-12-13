@@ -529,6 +529,11 @@ function setup() {
             toProfile();
         };
 
+        document.getElementById("shopping-icon").innerHTML =
+            '<a href="/views/shoppingCart.html" style="text-decoration: none; color: inherit;">' +
+            '<img src="../public/Images/shoppingCartIcon.png" alt="shoppingCart" />' +
+            '<span style="font-weight: bold; font-size: 20px;"></span>' +
+            '</a>';
 
         document.getElementById("shopping-icon").appendChild(profileButton);
 

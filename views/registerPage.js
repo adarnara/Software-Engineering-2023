@@ -143,6 +143,3 @@ function getCookie(name) {
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(';').shift();
 }
-function continueShopping() {
-    window.location.href = "http://127.0.0.1:5500/views/landingPage.html";
-  }

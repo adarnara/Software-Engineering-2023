@@ -22,8 +22,8 @@ module.exports = {
         }
 
     },
-    'GET/filter': ProductController.getExactProduct,
-    'GET/filter/category': ProductController.getProductsByCategory,
-    'GET/filter/categoryLargest': ProductController.getLargestCategoryId,
+    'GET/search': ProductController.getExactProduct,
+    'GET/search/category': ProductController.getProductsByCategory,
+    'GET/search/categoryLargest': ProductController.getLargestCategoryId,
 
 };

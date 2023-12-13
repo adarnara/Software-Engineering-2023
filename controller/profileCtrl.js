@@ -55,36 +55,6 @@ class ProfileController {
             response.end(JSON.stringify({ message: 'Internal Server Error' }));
         }
     }
-    async getUserById(request, response) {
-        try {
-            const userData = parseJwtHeader(request, response);
-
-            // Continue handling if the JWT was valid.
-            if (userData) {
-                const userId = userData.id; // Assuming user ID is in the JWT payload.
-
-                try {
-                    const user = await userRepo.findUserById(userId);
-
-                    if (!user) {
-                        response.writeHead(404, { 'Content-Type': 'application/json' });
-                        response.end(JSON.stringify({ message: 'User not found' }));
-                    } else {
-                        response.writeHead(200, { 'Content-Type': 'application/json' });
-                        response.end(JSON.stringify(user));
-                    }
-                } catch (error) {
-                    console.error('Get User by ID Error:', error);
-                    response.writeHead(500, { 'Content-Type': 'application/json' });
-                    response.end(JSON.stringify({ message: 'Server error. Unable to get user information.' }));
-                }
-            }
-        } catch (error) {
-            console.error('Request Handling Error:', error);
-            response.writeHead(500, { 'Content-Type': 'application/json' });
-            response.end(JSON.stringify({ message: 'Internal Server Error' }));
-        }
-    }
 }
 
 module.exports = new ProfileController();
