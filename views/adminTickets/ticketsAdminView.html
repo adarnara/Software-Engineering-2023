@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin view for Tickets</title>
+    <link rel="stylesheet" href="/views/adminTickets/adminTickets.css">
+  
+</head>
+<body>
+    <div class="navbar">
+        <a href="http://127.0.0.1:5500/views/landingPage.html" style="text-decoration: none; color: inherit;">
+            <div class="navbar-logo">
+                <img src="/public/Images/logo.png" alt="Logo" />
+            </div>
+        </a>
+    </div>
+    <div class="dashboard-container">
+        <div class="button-container">
+            <button id="showTickets-btn" onclick="toggleTickets('open')">Show Open Tickets</button>
+            <button id="showTickets-btn" onclick="toggleTickets('resolved')">Show Resolved Tickets</button>
+        </div>
+
+        <div id="openTicketsContainer" class="tickets-container">
+            <h2>Open Tickets</h2>
+            <div id="openTickets"></div>
+        </div>
+
+        <div id="resolvedTicketsContainer" class="tickets-container" style="display: none;">
+            <h2>Resolved Tickets</h2>
+            <div id="resolvedTickets"></div>
+        </div>
+
+
+        <div id="resolveModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h3>Resolve Ticket</h3>
+                <textarea id="resolutionDescription" placeholder="Enter resolution details"></textarea>
+                <button onclick="submitResolution()">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="ticketsAdminView.js"></script>
+    <script src="/public/js/util.js"></script>
+</body>
+</html>

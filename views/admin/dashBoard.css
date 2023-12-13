@@ -176,3 +176,9 @@ button.update-user, button.delete-user {
 .pagination span {
   padding: 5px 10px;
 }
+
+#tickets {
+  background: rgb(61, 71, 164);
+  color: white;
+  padding: 10px;;
+}
