@@ -1,4 +1,3 @@
- 
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 const ProductRepo = require('../Repository/ProductRepo')
 const cartRepo = require('../Repository/cartRepo')
@@ -142,13 +141,7 @@ async function getStripePaymentRedirectdb(req, res){
             automatic_tax: {
                 enabled: true,
             },
-<<<<<<< HEAD
             success_url: `http://127.0.0.1:${redirectPort}/views/successfulTransaction.html`,
-=======
-
-            success_url: `http://127.0.0.1:${redirectPort}/views/successfulTransaction.html`,
-
->>>>>>> origin/main
             cancel_url: `http://127.0.0.1:${redirectPort}/views/shoppingCart.html`,
             shipping_options: [{
                 shipping_rate_data: shippingRate
@@ -166,8 +159,6 @@ async function getStripePaymentRedirectdb(req, res){
     }
 }
 
-
-
 module.exports = {getStripePaymentRedirect, getStripePaymentRedirectdb};
 
 // HELPER FUNCTIONS
@@ -182,21 +173,17 @@ module.exports = {getStripePaymentRedirect, getStripePaymentRedirectdb};
  * data [array] - Contains a formatted line items array
  * isValid boolean - Contains boolean if operation was successful
  */
-async function getFormatedStripeLineItemsJSON(array){
+async function getFormatedStripeLineItemsJSON(array) {
     let isValid = true;
     // Reformat each item in the array to something Stripe accepts
     let newarray = await Promise.all(array.map(async (item) => {
         const productdata = await ProductRepo.getProductByInternalName(item.product_id, "name price");
-        //console.log(productdata); // Debug
-        if(!(productdata.doesExist)){
+        if (!(productdata.doesExist)){
             return undefined;
-            isValid = false;
-
         }
         const cents = strToCents(productdata.data.price);
-        if(cents === -1){
+        if (cents === -1){
             return undefined;
-            isValid = false;
         }
 
         return {
@@ -213,7 +200,6 @@ async function getFormatedStripeLineItemsJSON(array){
         };
     }));
     let resultarray = [];
-    //console.log(newarray); // Debug
     // Remove faulty cart items
     for(let i = 0; i < newarray.length; i++){
         if(!(typeof(newarray[i]) === "undefined"))
@@ -240,15 +226,12 @@ async function getFormatedStripeShippingRateJSON(array){
     let isValid = true
     // Sum up the shipping costs
     let totalshippingCost = array.reduce((acc, cur) => {
-        //console.log(cur.shipping_rate) // Debug
-        //console.log(typeof(cur))
         if(!(typeof(cur) === "undefined"))
             if(!(cur.shipping_rate === null))
                 return acc + strToCents(cur.shipping_rate.amount);
         isValid = false;
         return acc;
     }, 0);
-    //console.log(totalshippingCost) // Debug
     return {
         data: {
             display_name: "USPS Shipping Costs",
@@ -322,7 +305,6 @@ async function getJSONBody(req){
         const datachunks = [];
         let str;
         req.on("data", chunk => {
-            //console.log("chunks being recieved")
             datachunks.push(chunk);
         });
         req.on("end", () => {
@@ -330,49 +312,37 @@ async function getJSONBody(req){
             resolve(str);
         });
     });
-    //console.log(datastr)
-    let json;
-    let isParsable = true;
-    try{
-        json = JSON.parse(datastr);
+    try {
+        return JSON.parse(datastr);
     } catch (err) {
-        //console.log(err)
-        isParsable = false;
+        return {}
     }
-    if(!isParsable)
-        return {};
-    return json;
 }
 
 /**
  * Finds if the JSON fields are valid.
- */ //TODO add more exceptions
+ */
 function isValidJSON(json){
+    // TODO add more exceptions
     if(json.products === undefined){
         return false;
     }
     return true;
 }
 
-//REFERENCE DATA
+// REFERENCE DATA
 
-//Expected array of JSONs Stripe needs
+// Expected array of JSONs Stripe needs
 /*
-Example expected line_items
-[{
-    price_data: {
-        currency: "usd",
-        product_data: {
-            name: "Pi (Test)",
+    Example expected line_items
+    [{
+        price_data: {
+            currency: "usd",
+            product_data: {
+                name: "Pi (Test)",
+            },
+            unit_amount: 314,
         },
-        unit_amount: 314,
-    },
-    quantity: 1,
-}];
-<<<<<<< HEAD
+        quantity: 1,
+    }];
 */
-=======
-
-*/
-
->>>>>>> origin/main
