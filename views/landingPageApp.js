@@ -367,7 +367,7 @@ function setup() {
         };
 
         document.getElementById("shopping-icon").innerHTML =
-            `<a href="http://127.0.0.1:5500/views/shoppingCartHistory.html">
+            `<a href="/views/shoppingCartHistory.html">
         <img src="../public/Images/shoppingCartHistory.png" alt="shoppingCart" />
         <span style="font-weight: bold; font-size: 20px"></span>
       </a>` +
@@ -398,7 +398,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (button2) {
         button2.addEventListener('click', () => {
             console.log("Button2 clicked!");
-            window.location.href = "http://localhost:5500/views/ticketsPage.html";
+            window.location.href = "/views/ticketsPage.html";
         });
     } else {
         console.log("Button2 not found");

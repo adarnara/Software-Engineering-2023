@@ -19,12 +19,12 @@ document.getElementById('Tickets').addEventListener('submit', function(event){
     })
     .then(data => {
         console.log('Ticket has been posted:', data);
-        window.location.href = "http://localhost:5500/views/landingPage.html";
+        window.location.href = "/views/landingPage.html";
     })
     .catch((error) => {
         if (error.message === 'User is not authenticated') {
             console.error(error.message);
-            window.location.href = "http://localhost:5500/views/registerAndLoginPage.html";
+            window.location.href = "/views/registerAndLoginPage.html";
         } else {
             console.error("Error: ", error.message);
         }

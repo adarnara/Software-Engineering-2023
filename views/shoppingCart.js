@@ -15,7 +15,7 @@ function proceedToCheckout() {
 
 // Go to landing page page when 'Continue Shopping' button is clicked
 function continueShopping() {
-  window.location.href = "http://127.0.0.1:5500/views/landingPage.html";
+  window.location.href = "/views/landingPage.html";
 }
 
 // Update product quantity in database upon text input
@@ -448,7 +448,7 @@ function setup() {
       };
 
       document.getElementById("shopping-icon").innerHTML = 
-      `<a href="http://127.0.0.1:5500/views/shoppingCartHistory.html">
+      `<a href="/views/shoppingCartHistory.html">
       <img src="../public/Images/shoppingCartHistory.png" alt="shoppingCart" />
       <span style="font-weight: bold; font-size: 20px"></span>
     </a>` + 
