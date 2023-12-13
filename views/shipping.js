@@ -47,6 +47,10 @@ function hideEditBtn() {
     document.getElementById('editShippingInfoButton').add('unclickable');
 }
 
+async function getEmail(){
+    let currUser = await checkToken();
+    return currUser.email;
+}
 function showEditShippingInfoForm() {
     disableForm(false);
 
@@ -82,6 +86,8 @@ newDiv.innerHTML = `
 </div>`;
 
 document.addEventListener('DOMContentLoaded', async function () {
+    
+    document.getElementById('email').value = await getEmail();
     document.getElementById("confirm_shipping_info").addEventListener("input", function() {
         const form = document.getElementById("confirm_shipping_info");
         const confirmBtn = document.getElementById("confirmShippingInfoButton");
