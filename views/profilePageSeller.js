@@ -5,6 +5,12 @@ document.addEventListener('DOMContentLoaded', function() {
         profilePhotoElement.src = '../public/Images/default-Avatar-2.jpeg';
     });
 
+    const cancelButton = document.getElementById('cancel-button');
+    cancelButton.addEventListener('click', function() {
+        // Redirect to the landing page when the "Cancel" button is clicked.
+        window.location.href = 'landingPage.html';
+    });
+
     assertJwtToken();
     fetchUserInformation();
 });
@@ -14,7 +20,7 @@ function fetchUserInformation() {
         const userId = data.id;
 
 
-        authorize(`${SERVER_URL}/user/${userId}`)
+        authorize(`${SERVER_URL}/profile/getUser`)
 
             .then(response => response.json())
             .then(userData => {
@@ -109,7 +115,7 @@ function saveChanges() {
 
                     console.log(updatedUserData);
 
-                    authorize(`http://localhost:3000/profile/updateProfile/${userId}`, {
+                    authorize(`http://localhost:3000/profile/updateProfile`, {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
@@ -130,7 +136,7 @@ function saveChanges() {
             } else {
             updatedUserData.profileImage = '../public/Images/default-Avatar-2.jpeg';
 
-            authorize(`http://localhost:3000/profile/updateProfile/${userId}`, {
+            authorize(`http://localhost:3000/profile/updateProfile`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -205,3 +211,50 @@ function getCookie(name) {
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(';').shift();
 }
+function continueShopping() {
+    window.location.href = "http://127.0.0.1:5500/views/landingPageSeller.html";
+  }
+  
+function toProfile() {
+    checkToken().then(function redirect(data) {
+        const role = data.role;
+        if (role === "Seller") {
+            window.location.href = "/views/profilePageSeller.html";
+        } else if (role === "Member") {
+            window.location.href = "/views/profilePageMember.html";
+        } else {
+            console.error("Unknown role:", role);
+        }
+    });
+  }
+  
+  function logout() {
+    removeJwtToken();
+    window.location.href = "/views/landingPage.html";
+  }
+  
+  function setup() {
+    const token = getJwtToken();
+  
+    if (token) {
+        const profileButton = document.createElement("button");
+        profileButton.className = "go-to-page-button";
+        profileButton.innerHTML = '<img src="../public/Images/profile.png" alt="Profile" />';
+        profileButton.onclick = function() {
+            toProfile();
+        };
+  
+  
+        document.getElementById("shopping-icon").appendChild(profileButton);
+  
+        const logoutButton = document.createElement("button");
+        logoutButton.className = "go-to-page-button";
+        logoutButton.innerHTML = '<img src="/public/Images/image-button-two.png" alt="Logout" />';
+        logoutButton.onclick = logout;
+  
+        document.getElementById("shopping-icon").appendChild(logoutButton);
+    }
+  }
+  
+  // Set up the web page
+  setup();

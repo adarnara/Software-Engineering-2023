@@ -26,8 +26,7 @@
             align-items: center;
             background-color: rgba(0, 135, 255, 0.7);
             color: #fff;
-            padding: 5px 20px;
-            height: 50px;
+            padding: 10px;
             border-bottom-left-radius: 10px;
             border-bottom-right-radius: 10px;
             box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
@@ -38,17 +37,20 @@
             display: flex;
             align-items: center;
         }
-        .navbar-logo a {
-            text-decoration: none;
-            color: #fff;
-            font-weight: bold;
-            font-size: 20px;
-        }
 
         .navbar-logo img {
+            max-width: 60px;
+            margin-right: 10px;
+        }
+
+        .navbar-cart {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-cart img {
             max-width: 40px;
             margin-right: 10px;
-            vertical-align: middle;
         }
 
         .search-bar {
@@ -118,6 +120,16 @@
         .product-info ul {
             padding-left: 20px;
         }
+        .go-to-page-button {
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .go-to-page-button.login-button {
+      background-color: transparent;
+    }
     </style>
 </head>
 
@@ -145,21 +157,40 @@
         border: 1px solid rgba(0, 0, 0, 0);
         background-color: rgba(0, 0, 0, 0);
     }
+    .continue-shopping {
+        position: fixed;
+        padding: 10px 20px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 19px;
+        transform: translate(-60%, -55%);
+      }
+
+      .continue-shopping:hover {
+        background-color: #2980b9;
+      }
 </style>
 
 <body style="margin-top: 142px;">
-<div class="navbar">
-    <div class="navbar-logo">
-        <a href="landingPageSeller.html">
-            <img src="../public/Images/logo.png" alt="Logo">
-            <span style="font-weight: bold; font-size: 20px;">Reprua</span>
+    <div class="navbar">
+        <a href="http://127.0.0.1:5500/views/landingPageSeller.html" style="text-decoration: none; color: inherit">
+            <div class="navbar-logo">
+                <img src="../public/Images/logo.png" alt="Logo" />
+                <span style="font-weight: bold; font-size: 20px">Reprua</span>
+            </div>
         </a>
+        <div>
+            <button class="continue-shopping" onclick="continueShopping()">
+                Continue Shopping
+            </button>
+        </div>
+        <div id="shopping-icon" class="navbar-cart">
+
+        </div>
     </div>
-    <div class="search-bar">
-        <input type="text" placeholder="Search...">
-        <button>Search</button>
-    </div>
-</div>
 <div class="container light-style flex-grow-1 container-p-y">
     <h4 class="font-weight-bold py-3 mb-4">
         Profile Page
@@ -307,7 +338,7 @@
 
                 <div class="text-right mt-3">
                     <button type="button" class="btn btn-primary" onclick="saveChanges()">Save changes</button>&nbsp;
-                    <button type="button" class="btn btn-default">Cancel</button>
+                    <button type="button" id="cancel-button" class="btn btn-default">Cancel</button>
                 </div>
             </div>
         </div>
