@@ -72,7 +72,9 @@ async function getStripePaymentRedirect(req, res){
             automatic_tax: {
                 enabled: true,
             },
+
             success_url: `http://127.0.0.1:${redirectPort}/views/successfulTransaction.html`,
+
             cancel_url: `http://127.0.0.1:${redirectPort}/views/shoppingCart.html`,
             shipping_options: [{
                 shipping_rate_data: shippingRate
@@ -142,7 +144,9 @@ async function getStripePaymentRedirectdb(req, res){
             automatic_tax: {
                 enabled: true,
             },
+
             success_url: `http://127.0.0.1:${redirectPort}/views/successfulTransaction.html`,
+
             cancel_url: `http://127.0.0.1:${redirectPort}/views/shoppingCart.html`,
             shipping_options: [{
                 shipping_rate_data: shippingRate
@@ -185,12 +189,14 @@ async function getFormatedStripeLineItemsJSON(array){
         if(!(productdata.doesExist)){
             return undefined;
             isValid = false;
+
         }
         const cents = strToCents(productdata.data.price);
         if(cents === -1){
             return undefined;
             isValid = false;
         }
+
         return {
             price_data:{
                 currency: "usd",
@@ -361,4 +367,6 @@ Example expected line_items
     },
     quantity: 1,
 }];
+
 */
+

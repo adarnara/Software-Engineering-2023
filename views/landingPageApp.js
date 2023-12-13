@@ -44,10 +44,118 @@ document.addEventListener("DOMContentLoaded", () => {
     const products = [];
     let currentSearchText = '';
     let currentPage = 1;
+
     const pageSize = 5;
 
     const searchInput = document.getElementById('searchInput');
     const searchResultsElement = document.getElementById('searchResults');
+
+
+    let lastFetchedProductCount = 0; //how many products we're fetched last
+
+
+//    const categoryLinks = document.querySelectorAll('.category-dropdown a');
+//     categoryLinks.forEach(link => {
+//     link.addEventListener('click', (event) => {
+//       event.preventDefault(); // Prevent the default anchor action
+//       const category = link.getAttribute('data-category'); // Get the category from data attribute
+//       categoryButton.textContent = category + ' ▼';
+//       searchProducts(category); //calls search function with the category
+//     });
+//   });
+
+const categoryButton = document.querySelector('.category-button');
+    const categoryLinks = document.querySelectorAll('.category-dropdown a');
+
+    categoryLinks.forEach(link => {
+        link.addEventListener('click', (event) => {
+            event.preventDefault(); // Prevent the default anchor action
+            const category = link.textContent; // Get the category from link text
+            categoryButton.textContent = category + ' ▼'; // Change button text and add the dropdown arrow symbol
+            searchProducts(category.toLowerCase()); // Call the search function with the category
+        });
+    });
+  
+    //Set up event listener for search bar.
+    const searchButton = document.querySelector('.search-bar .search-button');
+    if (searchButton) {
+        searchButton.addEventListener('click', function() {
+            currentPage = 1
+            const searchText = document.querySelector('.search-bar input[type="text"]').value;
+            const pattern = /^(books|ipad|tshirts|laptop)\d*$/;
+            if (pattern.test(searchText)) { //only continues if the search was valid
+                currentSearchText = searchText; // Store the current search text
+                searchProducts(searchText);
+            } else {
+                var errorMessage = document.getElementById('error-message');
+                errorMessage.classList.remove('hidden');
+                productsContainer.innerHTML = ''; //Clear the products container
+                products.length = 0; //Reset the products array
+            }
+        });
+    }
+
+    //Searches for and displays requested products
+    function searchProducts(searchText) {
+        currentSearchText = searchText; //stores in global variable so that it can be accessed in next and previous method
+        let url = '';
+        if (['books', 'ipad', 'laptop', 'tshirts'].includes(searchText.toLowerCase())) {
+            url = `http://localhost:3000/search/category?name=${searchText}&page=${currentPage}&pageSize=${pageSize}`; //searching by category
+        } else {
+            url = `http://localhost:3000/search?productId=${searchText}`; //searching for specific product
+        }
+        fetch(url) //Fetch requested product(s)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                lastFetchedProductCount = data.length;
+                let singleSearch = false;
+
+                productsContainer.innerHTML = ''; //Clear the products container
+                products.length = 0; //Reset the products array
+
+                if (Array.isArray(data)) { //add new products and display
+                    data.forEach((product) => {
+                        products.push(product);
+                        productsContainer.innerHTML += createProductHTML(product);
+                    });
+                } else { //add single product and display
+                    singleSearch = true;
+                    products.push(data)
+                    productsContainer.innerHTML += createProductHTML(data);
+                }
+
+                //logic to hide or reveal next/previous button when searching
+                const prevButton = document.querySelector('.previous-button');
+                const nextButton = document.querySelector('.next-button');
+                if (!singleSearch) {
+                    if (prevButton) {
+                        prevButton.classList.toggle('hidden', currentPage === 1); //hide previous button if on the first page
+                    }
+                    if (nextButton) {
+                        //hide next button if the amount of products found is less then the page can fit (meaning theres no more products to display on the next page)
+                        nextButton.classList.toggle('hidden', lastFetchedProductCount < pageSize);
+                    }
+                } else {
+                    prevButton.classList.toggle('hidden', true);
+                    nextButton.classList.toggle('hidden', true);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    }
+
+    
+    
+
+
+
+    window.nextPage = function() { //go to next page
+        currentPage += 1;
+        searchProducts(currentSearchText);
+    };
+
 
     searchResultsElement.style.display = 'none';
 
@@ -388,4 +496,6 @@ function setup() {
 }
 
 // Set up the web page
+
 setup();
+
