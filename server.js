@@ -198,7 +198,27 @@ const server = http.createServer(async (request, response) => {
             response.end("Could not find resource!");
         }
     }
+    for (const route in ticketsRouter) {
+        const methodPart = route.match(/^[A-Z]+/)[0]; // Match the HTTP method part
+        const pathPart = route.substring(methodPart.length); // Get the path part
 
+        if (methodPart !== method) continue;
+
+        const params = matchDynamicRoute(pathPart, path);
+        if (params) {
+            // Found a matching dynamic route
+            request.params = params;
+            try {
+                await ticketsRouter[route](request, response);
+                return;
+            } catch (error) {
+                console.error('Route Handler Error:', error);
+                response.writeHead(500);
+                response.end(JSON.stringify({ message: 'Internal Server Error' }));
+                return;
+            }
+        }
+    }
     try {
         const userRouteHandler = userRouter[routeKey];
         const adminRouteHandler = adminRouter[routeKey];
