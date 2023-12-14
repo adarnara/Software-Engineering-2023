@@ -1,8 +1,6 @@
 const userRepo = require('../Repository/userRepo');
 const { generateToken } = require('../config/jwt');
 const { parseJwtHeader } = require("../middlewares/authmiddleware");
-const url = require('url');
-const fs = require('fs');
 const cartRepo = require('../Repository/cartRepo');
 const { isAdminAuthenticated } = require('../middlewares/adminAuth');
 
@@ -172,7 +170,6 @@ async function login(path, request, response) {
         response.writeHead(500, { 'Content-Type': 'application/json' });
         response.end(JSON.stringify({ message: 'Internal Server Error' }));
     }
-
 }
 async function allUsers(request, response) {
     const isAuthenticated = await isAdminAuthenticated(request);
@@ -269,17 +266,22 @@ async function getUserByToken(request, response) {
     // We continue handling if the JWT was valid.
     if (userData) {
         let user = await userRepo.findUserById(userData["id"]);
-        // Set some properties to return.
-        userData["firstName"] = user["firstName"];
-        userData["lastName"] = user["lastName"];
-        userData["email"] = user["email"];
-        userData["role"] = user["role"];
-        // probably should send member/seller/admin information as well
-        response.setHeader("Content-Type", "application/json");
-        response.end(JSON.stringify(userData));
+
+        if (!user) {
+            response.statusCode = 404;
+            response.setHeader("Content-Type", "application/json");
+            response.end(JSON.stringify({ message: "User not found." }));
+        } else {
+            // Set some properties to return.
+            userData["firstName"] = user["firstName"];
+            userData["lastName"] = user["lastName"];
+            userData["email"] = user["email"];
+            userData["role"] = user["role"];
+            // probably should send member/seller/admin information as well
+            response.setHeader("Content-Type", "application/json");
+            response.end(JSON.stringify(userData));
+        }
     }
 }
 
-
 module.exports = { login, register, allUsers, updateUser, getAUser, removeUser, getUserByToken };
-

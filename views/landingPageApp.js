@@ -11,32 +11,15 @@ function checkPos(quantity) {
 function checkSignedIn() {
     let token = getJwtToken();
     if (token) {
-        // don't qualify domain; this will break if server is hosted
-        // non-locally or on a different port.
         checkToken().then(function checkResponse(body) {
             console.info("The user is signed in!");
             console.info(body)
         }).catch(err => console.error(err));
-
         // modify the DOM, specifically at a `<div>` element with:
         // getElementById("sign-in-user")
-
     } else {
         return false;
     }
-}
-
-function getCookie(cookieName) {
-    const cookies = document.cookie.split(";");
-
-    for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.startsWith(cookieName + "=")) {
-            return cookie.substring(cookieName.length + 1);
-        }
-    }
-
-    return null;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -54,17 +37,17 @@ document.addEventListener("DOMContentLoaded", () => {
     let lastFetchedProductCount = 0; //how many products we're fetched last
 
 
-//    const categoryLinks = document.querySelectorAll('.category-dropdown a');
-//     categoryLinks.forEach(link => {
-//     link.addEventListener('click', (event) => {
-//       event.preventDefault(); // Prevent the default anchor action
-//       const category = link.getAttribute('data-category'); // Get the category from data attribute
-//       categoryButton.textContent = category + ' ▼';
-//       searchProducts(category); //calls search function with the category
-//     });
-//   });
+    //    const categoryLinks = document.querySelectorAll('.category-dropdown a');
+    //     categoryLinks.forEach(link => {
+    //     link.addEventListener('click', (event) => {
+    //       event.preventDefault(); // Prevent the default anchor action
+    //       const category = link.getAttribute('data-category'); // Get the category from data attribute
+    //       categoryButton.textContent = category + ' ▼';
+    //       searchProducts(category); //calls search function with the category
+    //     });
+    //   });
 
-const categoryButton = document.querySelector('.category-button');
+    const categoryButton = document.querySelector('.category-button');
     const categoryLinks = document.querySelectorAll('.category-dropdown a');
 
     categoryLinks.forEach(link => {
@@ -75,7 +58,7 @@ const categoryButton = document.querySelector('.category-button');
             searchProducts(category.toLowerCase()); // Call the search function with the category
         });
     });
-  
+
     //Set up event listener for search bar.
     const searchButtonTwo = document.querySelector('.search-bar .search-button');
     if (searchButtonTwo) {
@@ -146,16 +129,10 @@ const categoryButton = document.querySelector('.category-button');
             });
     }
 
-    
-    
-
-
-
     window.nextPage = function() { //go to next page
         currentPage += 1;
         searchProducts(currentSearchText);
     };
-
 
     searchResultsElement.style.display = 'none';
 
@@ -181,7 +158,7 @@ const categoryButton = document.querySelector('.category-button');
         });
 
     // Event listener for autocomplete
-    searchInput.addEventListener('input', function () {
+    searchInput.addEventListener('input', function() {
         const searchText = searchInput.value.trim();
         if (searchText) {
             fetchAutocompleteSuggestions(searchText);
@@ -192,32 +169,31 @@ const categoryButton = document.querySelector('.category-button');
     });
 
     // Set up event listener for search bar.
-     // Update the event listener for the search button
-     const searchButton = document.querySelector('.search-bar .search-button');
-     if (searchButton) {
-         searchButton.addEventListener('click', function () {
-             const searchText = searchInput.value.trim();
-             if (!searchText) {
-                 alert('Please enter a search term.');
-                 return; // Avoid calling performSearch with empty input
-             }
-             performSearch(searchText, function() {
-                 searchInput.value = ''; 
-                 searchResultsElement.innerHTML = '';
-                 searchResultsElement.style.display = 'none';
-             });
-         });
-     }
-     
+    // Update the event listener for the search button
+    const searchButton = document.querySelector('.search-bar .search-button');
+    if (searchButton) {
+        searchButton.addEventListener('click', function() {
+            const searchText = searchInput.value.trim();
+            if (!searchText) {
+                alert('Please enter a search term.');
+                return; // Avoid calling performSearch with empty input
+            }
+            performSearch(searchText, function() {
+                searchInput.value = '';
+                searchResultsElement.innerHTML = '';
+                searchResultsElement.style.display = 'none';
+            });
+        });
+    }
 
-    window.nextPage = function () {
+    window.nextPage = function() {
         if (currentSearchText) {
             currentPage++;
             performSearch(currentSearchText);
         }
     };
 
-    window.previousPage = function () {
+    window.previousPage = function() {
         if (currentPage > 1 && currentSearchText) {
             currentPage--;
             performSearch(currentSearchText);
@@ -247,7 +223,7 @@ const categoryButton = document.querySelector('.category-button');
         results.forEach(result => {
             var resultElement = document.createElement('p');
             resultElement.textContent = result.name;
-            resultElement.onclick = function () {
+            resultElement.onclick = function() {
                 addSelectedResult(result.name);
                 document.getElementById('searchInput').value = ''; // Clear the search bar
                 searchResultsElement.innerHTML = ''; // Clear autocomplete results
@@ -257,14 +233,13 @@ const categoryButton = document.querySelector('.category-button');
         });
     }
 
-
     function addSelectedResult(name) {
         const selectedResultsContainer = document.getElementById('searchResults');
         console.log(selectedResultsContainer);
         const newInput = document.createElement('div');
         newInput.className = 'selected-result';
         newInput.textContent = name;
-        newInput.onclick = function () {
+        newInput.onclick = function() {
             selectedResultsContainer.removeChild(newInput);
         };
         selectedResultsContainer.appendChild(newInput);
@@ -276,11 +251,6 @@ const categoryButton = document.querySelector('.category-button');
         if (prevButton) prevButton.classList.add('hidden');
         if (nextButton) nextButton.classList.add('hidden');
     }
-
-
-
-
-
 
     function fetchExactProductInfo(productName) {
         productName = productName.replace(/\+/g, "%2B");
@@ -298,10 +268,10 @@ const categoryButton = document.querySelector('.category-button');
             alert('Please enter a search term.');
             return; // Return here to avoid altering the product display
         }
-    
+
         currentSearchText = searchText;
         const url = `http://localhost:3000/search/?searchText=${searchText}&page=${currentPage}&pageSize=${pageSize}`;
-    
+
         fetch(url)
             .then(response => response.json())
             .then(data => {
@@ -322,10 +292,6 @@ const categoryButton = document.querySelector('.category-button');
                 console.error('Search Error:', error);
             });
     }
-    
-   
-
-    
 
     function checkNextPageData(searchText, nextPage) {
         const nextPageUrl = `http://localhost:3000/search/?searchText=${searchText}&page=${nextPage}&pageSize=${pageSize}`;
@@ -339,7 +305,7 @@ const categoryButton = document.querySelector('.category-button');
             })
             .catch(error => console.error('Next Page Check Error:', error));
     }
-    
+
     function updateProductDisplay(data) {
         productsContainer.innerHTML = '';
         data.forEach(product => {
@@ -347,11 +313,11 @@ const categoryButton = document.querySelector('.category-button');
         });
         updateNavigationButtons(data.length);
     }
-    
+
     function updateNavigationButtons(fetchedCount) {
         const prevButton = document.querySelector('.previous-button');
         const nextButton = document.querySelector('.next-button');
-    
+
         if (prevButton) {
             prevButton.classList.toggle('hidden', currentPage === 1);
         }
@@ -474,6 +440,13 @@ function logout() {
     window.location.href = "/views/landingPage.html";
 }
 
+/**
+ * Navigate to another page.
+ */
+function navigateToPage(route) {
+    window.location.href = route;
+}
+
 function setup() {
     const token = getJwtToken();
 
@@ -481,7 +454,7 @@ function setup() {
         const profileButton = document.createElement("button");
         profileButton.className = "go-to-page-button";
         profileButton.innerHTML = '<img src="../public/Images/profile.png" alt="Profile" />';
-        profileButton.onclick = function () {
+        profileButton.onclick = function() {
             toProfile();
         };
 
@@ -507,5 +480,4 @@ function setup() {
 }
 
 // Set up the web page
-
 setup();
